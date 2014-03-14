@@ -1,0 +1,317 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		18EFE4EC189F02F800DA6A5D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EFE4EB189F02F800DA6A5D /* Foundation.framework */; };
+		18EFE4EE189F02F800DA6A5D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EFE4ED189F02F800DA6A5D /* CoreGraphics.framework */; };
+		18EFE4F0189F02F800DA6A5D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EFE4EF189F02F800DA6A5D /* UIKit.framework */; };
+		18EFE4F6189F02F800DA6A5D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 18EFE4F4189F02F800DA6A5D /* InfoPlist.strings */; };
+		18EFE4F8189F02F800DA6A5D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EFE4F7189F02F800DA6A5D /* main.m */; };
+		18EFE4FC189F02F800DA6A5D /* FBAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EFE4FB189F02F800DA6A5D /* FBAppDelegate.m */; };
+		18EFE4FE189F02F800DA6A5D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 18EFE4FD189F02F800DA6A5D /* Images.xcassets */; };
+		18EFE524189F04B000DA6A5D /* libFBTweak.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EFE523189F04B000DA6A5D /* libFBTweak.a */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		18EFE4E8189F02F800DA6A5D /* FBTweakExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FBTweakExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		18EFE4EB189F02F800DA6A5D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		18EFE4ED189F02F800DA6A5D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		18EFE4EF189F02F800DA6A5D /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		18EFE4F3189F02F800DA6A5D /* FBTweakExample-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "FBTweakExample-Info.plist"; sourceTree = "<group>"; };
+		18EFE4F5189F02F800DA6A5D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		18EFE4F7189F02F800DA6A5D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		18EFE4F9189F02F800DA6A5D /* FBTweakExample-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FBTweakExample-Prefix.pch"; sourceTree = "<group>"; };
+		18EFE4FA189F02F800DA6A5D /* FBAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FBAppDelegate.h; sourceTree = "<group>"; };
+		18EFE4FB189F02F800DA6A5D /* FBAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FBAppDelegate.m; sourceTree = "<group>"; };
+		18EFE4FD189F02F800DA6A5D /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		18EFE504189F02F800DA6A5D /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		18EFE523189F04B000DA6A5D /* libFBTweak.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libFBTweak.a; path = "../FBTweak/build/Debug-iphoneos/libFBTweak.a"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		18EFE4E5189F02F800DA6A5D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				18EFE524189F04B000DA6A5D /* libFBTweak.a in Frameworks */,
+				18EFE4EE189F02F800DA6A5D /* CoreGraphics.framework in Frameworks */,
+				18EFE4F0189F02F800DA6A5D /* UIKit.framework in Frameworks */,
+				18EFE4EC189F02F800DA6A5D /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		18EFE4DF189F02F800DA6A5D = {
+			isa = PBXGroup;
+			children = (
+				18EFE4F1189F02F800DA6A5D /* FBTweakExample */,
+				18EFE4EA189F02F800DA6A5D /* Frameworks */,
+				18EFE4E9189F02F800DA6A5D /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		18EFE4E9189F02F800DA6A5D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				18EFE4E8189F02F800DA6A5D /* FBTweakExample.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		18EFE4EA189F02F800DA6A5D /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				18EFE523189F04B000DA6A5D /* libFBTweak.a */,
+				18EFE4EB189F02F800DA6A5D /* Foundation.framework */,
+				18EFE4ED189F02F800DA6A5D /* CoreGraphics.framework */,
+				18EFE4EF189F02F800DA6A5D /* UIKit.framework */,
+				18EFE504189F02F800DA6A5D /* XCTest.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		18EFE4F1189F02F800DA6A5D /* FBTweakExample */ = {
+			isa = PBXGroup;
+			children = (
+				18EFE4FA189F02F800DA6A5D /* FBAppDelegate.h */,
+				18EFE4FB189F02F800DA6A5D /* FBAppDelegate.m */,
+				18EFE4FD189F02F800DA6A5D /* Images.xcassets */,
+				18EFE4F2189F02F800DA6A5D /* Supporting Files */,
+			);
+			path = FBTweakExample;
+			sourceTree = "<group>";
+		};
+		18EFE4F2189F02F800DA6A5D /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				18EFE4F3189F02F800DA6A5D /* FBTweakExample-Info.plist */,
+				18EFE4F4189F02F800DA6A5D /* InfoPlist.strings */,
+				18EFE4F7189F02F800DA6A5D /* main.m */,
+				18EFE4F9189F02F800DA6A5D /* FBTweakExample-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		18EFE4E7189F02F800DA6A5D /* FBTweakExample */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 18EFE514189F02F800DA6A5D /* Build configuration list for PBXNativeTarget "FBTweakExample" */;
+			buildPhases = (
+				18EFE4E4189F02F800DA6A5D /* Sources */,
+				18EFE4E5189F02F800DA6A5D /* Frameworks */,
+				18EFE4E6189F02F800DA6A5D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FBTweakExample;
+			productName = FBTweakExample;
+			productReference = 18EFE4E8189F02F800DA6A5D /* FBTweakExample.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		18EFE4E0189F02F800DA6A5D /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = FB;
+				LastUpgradeCheck = 0510;
+				ORGANIZATIONNAME = Facebook;
+			};
+			buildConfigurationList = 18EFE4E3189F02F800DA6A5D /* Build configuration list for PBXProject "FBTweakExample" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 18EFE4DF189F02F800DA6A5D;
+			productRefGroup = 18EFE4E9189F02F800DA6A5D /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				18EFE4E7189F02F800DA6A5D /* FBTweakExample */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		18EFE4E6189F02F800DA6A5D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				18EFE4F6189F02F800DA6A5D /* InfoPlist.strings in Resources */,
+				18EFE4FE189F02F800DA6A5D /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		18EFE4E4189F02F800DA6A5D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				18EFE4FC189F02F800DA6A5D /* FBAppDelegate.m in Sources */,
+				18EFE4F8189F02F800DA6A5D /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		18EFE4F4189F02F800DA6A5D /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				18EFE4F5189F02F800DA6A5D /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		18EFE512189F02F800DA6A5D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"$(SYMROOT)/Headers",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		18EFE513189F02F800DA6A5D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"$(SYMROOT)/Headers",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		18EFE515189F02F800DA6A5D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "FBTweakExample/FBTweakExample-Prefix.pch";
+				INFOPLIST_FILE = "FBTweakExample/FBTweakExample-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		18EFE516189F02F800DA6A5D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "FBTweakExample/FBTweakExample-Prefix.pch";
+				INFOPLIST_FILE = "FBTweakExample/FBTweakExample-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		18EFE4E3189F02F800DA6A5D /* Build configuration list for PBXProject "FBTweakExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				18EFE512189F02F800DA6A5D /* Debug */,
+				18EFE513189F02F800DA6A5D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		18EFE514189F02F800DA6A5D /* Build configuration list for PBXNativeTarget "FBTweakExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				18EFE515189F02F800DA6A5D /* Debug */,
+				18EFE516189F02F800DA6A5D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 18EFE4E0189F02F800DA6A5D /* Project object */;
+}

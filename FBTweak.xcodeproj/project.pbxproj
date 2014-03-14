@@ -1,0 +1,542 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		184A94F018D26871005F2774 /* _FBTweakBindObserver.h in Headers */ = {isa = PBXBuildFile; fileRef = 184A94EE18D26871005F2774 /* _FBTweakBindObserver.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		184A94F118D26871005F2774 /* _FBTweakBindObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = 184A94EF18D26871005F2774 /* _FBTweakBindObserver.m */; };
+		18EFE472189EBA4900DA6A5D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EFE471189EBA4900DA6A5D /* Foundation.framework */; };
+		18EFE480189EBA4900DA6A5D /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EFE47F189EBA4900DA6A5D /* XCTest.framework */; };
+		18EFE481189EBA4900DA6A5D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EFE471189EBA4900DA6A5D /* Foundation.framework */; };
+		18EFE483189EBA4900DA6A5D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EFE482189EBA4900DA6A5D /* UIKit.framework */; };
+		18EFE486189EBA4900DA6A5D /* libFBTweak.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EFE46E189EBA4900DA6A5D /* libFBTweak.a */; };
+		18EFE48C189EBA4900DA6A5D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 18EFE48A189EBA4900DA6A5D /* InfoPlist.strings */; };
+		18EFE4A7189EBA9E00DA6A5D /* FBTweakViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EFE4A5189EBA9E00DA6A5D /* FBTweakViewController.m */; };
+		18EFE4AB189EBAAD00DA6A5D /* FBTweakInline.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EFE4A9189EBAAD00DA6A5D /* FBTweakInline.m */; };
+		18EFE4AF189EBABA00DA6A5D /* FBTweakShakeWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EFE4AD189EBABA00DA6A5D /* FBTweakShakeWindow.m */; };
+		18EFE4B2189EBAC200DA6A5D /* FBTweakInline.h in Headers */ = {isa = PBXBuildFile; fileRef = 18EFE4A8189EBAAD00DA6A5D /* FBTweakInline.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		18EFE4B3189EBAC200DA6A5D /* FBTweakShakeWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 18EFE4AC189EBABA00DA6A5D /* FBTweakShakeWindow.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		18EFE4B4189EBAC200DA6A5D /* FBTweakViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 18EFE4A4189EBA9E00DA6A5D /* FBTweakViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		18EFE4B7189EBC3100DA6A5D /* FBTweak.h in Headers */ = {isa = PBXBuildFile; fileRef = 18EFE4B5189EBC3100DA6A5D /* FBTweak.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		18EFE4B8189EBC3100DA6A5D /* FBTweak.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EFE4B6189EBC3100DA6A5D /* FBTweak.m */; };
+		18EFE4BC189EBC4B00DA6A5D /* FBTweakCollection.h in Headers */ = {isa = PBXBuildFile; fileRef = 18EFE4BA189EBC4B00DA6A5D /* FBTweakCollection.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		18EFE4BD189EBC4B00DA6A5D /* FBTweakCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EFE4BB189EBC4B00DA6A5D /* FBTweakCollection.m */; };
+		18EFE4C1189EBEAD00DA6A5D /* FBTweakStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 18EFE4BF189EBEAD00DA6A5D /* FBTweakStore.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		18EFE4C2189EBEAD00DA6A5D /* FBTweakStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EFE4C0189EBEAD00DA6A5D /* FBTweakStore.m */; };
+		18EFE4D0189EC70300DA6A5D /* FBTweakInlineInternal.h in Headers */ = {isa = PBXBuildFile; fileRef = 18EFE4CF189EC70300DA6A5D /* FBTweakInlineInternal.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		18EFE4D2189ECF2000DA6A5D /* FBTweakInlineTestsARC.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EFE4D1189ECF2000DA6A5D /* FBTweakInlineTestsARC.m */; };
+		18EFE4D5189EEBC500DA6A5D /* _FBTweakCategoryViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 18EFE4D3189EEBC500DA6A5D /* _FBTweakCategoryViewController.h */; };
+		18EFE4D6189EEBC500DA6A5D /* _FBTweakCategoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EFE4D4189EEBC500DA6A5D /* _FBTweakCategoryViewController.m */; };
+		18EFE4D9189EEED800DA6A5D /* _FBTweakCollectionViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 18EFE4D7189EEED800DA6A5D /* _FBTweakCollectionViewController.h */; };
+		18EFE4DA189EEED800DA6A5D /* _FBTweakCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EFE4D8189EEED800DA6A5D /* _FBTweakCollectionViewController.m */; };
+		18EFE4DD189EF75800DA6A5D /* _FBTweakTableViewCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 18EFE4DB189EF75800DA6A5D /* _FBTweakTableViewCell.h */; };
+		18EFE4DE189EF75800DA6A5D /* _FBTweakTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EFE4DC189EF75800DA6A5D /* _FBTweakTableViewCell.m */; };
+		18EFE527189F19B300DA6A5D /* FBTweakCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = 18EFE525189F19B300DA6A5D /* FBTweakCategory.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		18EFE528189F19B300DA6A5D /* FBTweakCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EFE526189F19B300DA6A5D /* FBTweakCategory.m */; };
+		18EFE52D189F250700DA6A5D /* FBTweakInlineTestsMRR.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EFE52C189F250700DA6A5D /* FBTweakInlineTestsMRR.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		18EFE536189F38D500DA6A5D /* FBTweakEnabled.h in Headers */ = {isa = PBXBuildFile; fileRef = 18EFE535189F38D500DA6A5D /* FBTweakEnabled.h */; settings = {ATTRIBUTES = (Public, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		18EFE484189EBA4900DA6A5D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 18EFE466189EBA4900DA6A5D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 18EFE46D189EBA4900DA6A5D;
+			remoteInfo = FBTweak;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		184A94EE18D26871005F2774 /* _FBTweakBindObserver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _FBTweakBindObserver.h; sourceTree = "<group>"; };
+		184A94EF18D26871005F2774 /* _FBTweakBindObserver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _FBTweakBindObserver.m; sourceTree = "<group>"; };
+		18EFE46E189EBA4900DA6A5D /* libFBTweak.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libFBTweak.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		18EFE471189EBA4900DA6A5D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		18EFE475189EBA4900DA6A5D /* FBTweak-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FBTweak-Prefix.pch"; sourceTree = "<group>"; };
+		18EFE47E189EBA4900DA6A5D /* FBTweakTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FBTweakTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		18EFE47F189EBA4900DA6A5D /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		18EFE482189EBA4900DA6A5D /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
+		18EFE489189EBA4900DA6A5D /* FBTweakTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "FBTweakTests-Info.plist"; sourceTree = "<group>"; };
+		18EFE48B189EBA4900DA6A5D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		18EFE4A4189EBA9E00DA6A5D /* FBTweakViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBTweakViewController.h; sourceTree = "<group>"; };
+		18EFE4A5189EBA9E00DA6A5D /* FBTweakViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBTweakViewController.m; sourceTree = "<group>"; };
+		18EFE4A8189EBAAD00DA6A5D /* FBTweakInline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBTweakInline.h; sourceTree = "<group>"; };
+		18EFE4A9189EBAAD00DA6A5D /* FBTweakInline.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBTweakInline.m; sourceTree = "<group>"; };
+		18EFE4AC189EBABA00DA6A5D /* FBTweakShakeWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBTweakShakeWindow.h; sourceTree = "<group>"; };
+		18EFE4AD189EBABA00DA6A5D /* FBTweakShakeWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBTweakShakeWindow.m; sourceTree = "<group>"; };
+		18EFE4B5189EBC3100DA6A5D /* FBTweak.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBTweak.h; sourceTree = "<group>"; };
+		18EFE4B6189EBC3100DA6A5D /* FBTweak.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBTweak.m; sourceTree = "<group>"; };
+		18EFE4BA189EBC4B00DA6A5D /* FBTweakCollection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBTweakCollection.h; sourceTree = "<group>"; };
+		18EFE4BB189EBC4B00DA6A5D /* FBTweakCollection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBTweakCollection.m; sourceTree = "<group>"; };
+		18EFE4BF189EBEAD00DA6A5D /* FBTweakStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBTweakStore.h; sourceTree = "<group>"; };
+		18EFE4C0189EBEAD00DA6A5D /* FBTweakStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBTweakStore.m; sourceTree = "<group>"; };
+		18EFE4CF189EC70300DA6A5D /* FBTweakInlineInternal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBTweakInlineInternal.h; sourceTree = "<group>"; };
+		18EFE4D1189ECF2000DA6A5D /* FBTweakInlineTestsARC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBTweakInlineTestsARC.m; sourceTree = "<group>"; };
+		18EFE4D3189EEBC500DA6A5D /* _FBTweakCategoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _FBTweakCategoryViewController.h; sourceTree = "<group>"; };
+		18EFE4D4189EEBC500DA6A5D /* _FBTweakCategoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _FBTweakCategoryViewController.m; sourceTree = "<group>"; };
+		18EFE4D7189EEED800DA6A5D /* _FBTweakCollectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _FBTweakCollectionViewController.h; sourceTree = "<group>"; };
+		18EFE4D8189EEED800DA6A5D /* _FBTweakCollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _FBTweakCollectionViewController.m; sourceTree = "<group>"; };
+		18EFE4DB189EF75800DA6A5D /* _FBTweakTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _FBTweakTableViewCell.h; sourceTree = "<group>"; };
+		18EFE4DC189EF75800DA6A5D /* _FBTweakTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _FBTweakTableViewCell.m; sourceTree = "<group>"; };
+		18EFE525189F19B300DA6A5D /* FBTweakCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBTweakCategory.h; sourceTree = "<group>"; };
+		18EFE526189F19B300DA6A5D /* FBTweakCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBTweakCategory.m; sourceTree = "<group>"; };
+		18EFE52C189F250700DA6A5D /* FBTweakInlineTestsMRR.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBTweakInlineTestsMRR.m; sourceTree = "<group>"; };
+		18EFE535189F38D500DA6A5D /* FBTweakEnabled.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBTweakEnabled.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		18EFE46B189EBA4900DA6A5D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				18EFE472189EBA4900DA6A5D /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		18EFE47B189EBA4900DA6A5D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				18EFE480189EBA4900DA6A5D /* XCTest.framework in Frameworks */,
+				18EFE483189EBA4900DA6A5D /* UIKit.framework in Frameworks */,
+				18EFE486189EBA4900DA6A5D /* libFBTweak.a in Frameworks */,
+				18EFE481189EBA4900DA6A5D /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		18EFE465189EBA4900DA6A5D = {
+			isa = PBXGroup;
+			children = (
+				18EFE473189EBA4900DA6A5D /* FBTweak */,
+				18EFE487189EBA4900DA6A5D /* FBTweakTests */,
+				18EFE470189EBA4900DA6A5D /* Frameworks */,
+				18EFE46F189EBA4900DA6A5D /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		18EFE46F189EBA4900DA6A5D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				18EFE46E189EBA4900DA6A5D /* libFBTweak.a */,
+				18EFE47E189EBA4900DA6A5D /* FBTweakTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		18EFE470189EBA4900DA6A5D /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				18EFE471189EBA4900DA6A5D /* Foundation.framework */,
+				18EFE47F189EBA4900DA6A5D /* XCTest.framework */,
+				18EFE482189EBA4900DA6A5D /* UIKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		18EFE473189EBA4900DA6A5D /* FBTweak */ = {
+			isa = PBXGroup;
+			children = (
+				18EFE535189F38D500DA6A5D /* FBTweakEnabled.h */,
+				18EFE532189F286000DA6A5D /* Inline */,
+				18EFE4B9189EBC3500DA6A5D /* Model */,
+				18EFE4BE189EBD0800DA6A5D /* UI */,
+				18EFE474189EBA4900DA6A5D /* Supporting Files */,
+			);
+			path = FBTweak;
+			sourceTree = "<group>";
+		};
+		18EFE474189EBA4900DA6A5D /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				18EFE475189EBA4900DA6A5D /* FBTweak-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		18EFE487189EBA4900DA6A5D /* FBTweakTests */ = {
+			isa = PBXGroup;
+			children = (
+				18EFE4D1189ECF2000DA6A5D /* FBTweakInlineTestsARC.m */,
+				18EFE52C189F250700DA6A5D /* FBTweakInlineTestsMRR.m */,
+				18EFE488189EBA4900DA6A5D /* Supporting Files */,
+			);
+			path = FBTweakTests;
+			sourceTree = "<group>";
+		};
+		18EFE488189EBA4900DA6A5D /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				18EFE489189EBA4900DA6A5D /* FBTweakTests-Info.plist */,
+				18EFE48A189EBA4900DA6A5D /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		18EFE4B9189EBC3500DA6A5D /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				18EFE4B5189EBC3100DA6A5D /* FBTweak.h */,
+				18EFE4B6189EBC3100DA6A5D /* FBTweak.m */,
+				18EFE4BA189EBC4B00DA6A5D /* FBTweakCollection.h */,
+				18EFE4BB189EBC4B00DA6A5D /* FBTweakCollection.m */,
+				18EFE525189F19B300DA6A5D /* FBTweakCategory.h */,
+				18EFE526189F19B300DA6A5D /* FBTweakCategory.m */,
+				18EFE4BF189EBEAD00DA6A5D /* FBTweakStore.h */,
+				18EFE4C0189EBEAD00DA6A5D /* FBTweakStore.m */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		18EFE4BE189EBD0800DA6A5D /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				18EFE4AC189EBABA00DA6A5D /* FBTweakShakeWindow.h */,
+				18EFE4AD189EBABA00DA6A5D /* FBTweakShakeWindow.m */,
+				18EFE4A4189EBA9E00DA6A5D /* FBTweakViewController.h */,
+				18EFE4A5189EBA9E00DA6A5D /* FBTweakViewController.m */,
+				18EFE4D3189EEBC500DA6A5D /* _FBTweakCategoryViewController.h */,
+				18EFE4D4189EEBC500DA6A5D /* _FBTweakCategoryViewController.m */,
+				18EFE4D7189EEED800DA6A5D /* _FBTweakCollectionViewController.h */,
+				18EFE4D8189EEED800DA6A5D /* _FBTweakCollectionViewController.m */,
+				18EFE4DB189EF75800DA6A5D /* _FBTweakTableViewCell.h */,
+				18EFE4DC189EF75800DA6A5D /* _FBTweakTableViewCell.m */,
+			);
+			name = UI;
+			sourceTree = "<group>";
+		};
+		18EFE532189F286000DA6A5D /* Inline */ = {
+			isa = PBXGroup;
+			children = (
+				18EFE4A8189EBAAD00DA6A5D /* FBTweakInline.h */,
+				18EFE4CF189EC70300DA6A5D /* FBTweakInlineInternal.h */,
+				18EFE4A9189EBAAD00DA6A5D /* FBTweakInline.m */,
+				184A94EE18D26871005F2774 /* _FBTweakBindObserver.h */,
+				184A94EF18D26871005F2774 /* _FBTweakBindObserver.m */,
+			);
+			name = Inline;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		18EFE497189EBA5A00DA6A5D /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				18EFE4B7189EBC3100DA6A5D /* FBTweak.h in Headers */,
+				18EFE4D5189EEBC500DA6A5D /* _FBTweakCategoryViewController.h in Headers */,
+				18EFE4D9189EEED800DA6A5D /* _FBTweakCollectionViewController.h in Headers */,
+				18EFE4B4189EBAC200DA6A5D /* FBTweakViewController.h in Headers */,
+				18EFE4C1189EBEAD00DA6A5D /* FBTweakStore.h in Headers */,
+				18EFE4B2189EBAC200DA6A5D /* FBTweakInline.h in Headers */,
+				18EFE4B3189EBAC200DA6A5D /* FBTweakShakeWindow.h in Headers */,
+				18EFE536189F38D500DA6A5D /* FBTweakEnabled.h in Headers */,
+				18EFE4D0189EC70300DA6A5D /* FBTweakInlineInternal.h in Headers */,
+				18EFE527189F19B300DA6A5D /* FBTweakCategory.h in Headers */,
+				18EFE4BC189EBC4B00DA6A5D /* FBTweakCollection.h in Headers */,
+				18EFE4DD189EF75800DA6A5D /* _FBTweakTableViewCell.h in Headers */,
+				184A94F018D26871005F2774 /* _FBTweakBindObserver.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		18EFE46D189EBA4900DA6A5D /* FBTweak */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 18EFE491189EBA4900DA6A5D /* Build configuration list for PBXNativeTarget "FBTweak" */;
+			buildPhases = (
+				18EFE46A189EBA4900DA6A5D /* Sources */,
+				18EFE46B189EBA4900DA6A5D /* Frameworks */,
+				18EFE497189EBA5A00DA6A5D /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FBTweak;
+			productName = FBTweak;
+			productReference = 18EFE46E189EBA4900DA6A5D /* libFBTweak.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		18EFE47D189EBA4900DA6A5D /* FBTweakTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 18EFE494189EBA4900DA6A5D /* Build configuration list for PBXNativeTarget "FBTweakTests" */;
+			buildPhases = (
+				18EFE47A189EBA4900DA6A5D /* Sources */,
+				18EFE47B189EBA4900DA6A5D /* Frameworks */,
+				18EFE47C189EBA4900DA6A5D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				18EFE485189EBA4900DA6A5D /* PBXTargetDependency */,
+			);
+			name = FBTweakTests;
+			productName = FBTweakTests;
+			productReference = 18EFE47E189EBA4900DA6A5D /* FBTweakTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		18EFE466189EBA4900DA6A5D /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0510;
+				ORGANIZATIONNAME = Facebook;
+			};
+			buildConfigurationList = 18EFE469189EBA4900DA6A5D /* Build configuration list for PBXProject "FBTweak" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 18EFE465189EBA4900DA6A5D;
+			productRefGroup = 18EFE46F189EBA4900DA6A5D /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				18EFE46D189EBA4900DA6A5D /* FBTweak */,
+				18EFE47D189EBA4900DA6A5D /* FBTweakTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		18EFE47C189EBA4900DA6A5D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				18EFE48C189EBA4900DA6A5D /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		18EFE46A189EBA4900DA6A5D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				18EFE4A7189EBA9E00DA6A5D /* FBTweakViewController.m in Sources */,
+				18EFE4BD189EBC4B00DA6A5D /* FBTweakCollection.m in Sources */,
+				18EFE4C2189EBEAD00DA6A5D /* FBTweakStore.m in Sources */,
+				18EFE4AB189EBAAD00DA6A5D /* FBTweakInline.m in Sources */,
+				18EFE4B8189EBC3100DA6A5D /* FBTweak.m in Sources */,
+				18EFE4DE189EF75800DA6A5D /* _FBTweakTableViewCell.m in Sources */,
+				18EFE528189F19B300DA6A5D /* FBTweakCategory.m in Sources */,
+				18EFE4D6189EEBC500DA6A5D /* _FBTweakCategoryViewController.m in Sources */,
+				18EFE4AF189EBABA00DA6A5D /* FBTweakShakeWindow.m in Sources */,
+				18EFE4DA189EEED800DA6A5D /* _FBTweakCollectionViewController.m in Sources */,
+				184A94F118D26871005F2774 /* _FBTweakBindObserver.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		18EFE47A189EBA4900DA6A5D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				18EFE52D189F250700DA6A5D /* FBTweakInlineTestsMRR.m in Sources */,
+				18EFE4D2189ECF2000DA6A5D /* FBTweakInlineTestsARC.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		18EFE485189EBA4900DA6A5D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 18EFE46D189EBA4900DA6A5D /* FBTweak */;
+			targetProxy = 18EFE484189EBA4900DA6A5D /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		18EFE48A189EBA4900DA6A5D /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				18EFE48B189EBA4900DA6A5D /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		18EFE48F189EBA4900DA6A5D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INSTALL_PATH = "$(SYMROOT)/Headers";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				ONLY_ACTIVE_ARCH = YES;
+				PUBLIC_HEADERS_FOLDER_PATH = "../Headers/$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		18EFE490189EBA4900DA6A5D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INSTALL_PATH = "$(SYMROOT)/Headers";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				PUBLIC_HEADERS_FOLDER_PATH = "../Headers/$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		18EFE492189EBA4900DA6A5D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DSTROOT = /tmp/FBTweak.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "FBTweak/FBTweak-Prefix.pch";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		18EFE493189EBA4900DA6A5D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DSTROOT = /tmp/FBTweak.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "FBTweak/FBTweak-Prefix.pch";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		18EFE495189EBA4900DA6A5D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "FBTweak/FBTweak-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "FBTweakTests/FBTweakTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Debug;
+		};
+		18EFE496189EBA4900DA6A5D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "FBTweak/FBTweak-Prefix.pch";
+				INFOPLIST_FILE = "FBTweakTests/FBTweakTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		18EFE469189EBA4900DA6A5D /* Build configuration list for PBXProject "FBTweak" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				18EFE48F189EBA4900DA6A5D /* Debug */,
+				18EFE490189EBA4900DA6A5D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		18EFE491189EBA4900DA6A5D /* Build configuration list for PBXNativeTarget "FBTweak" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				18EFE492189EBA4900DA6A5D /* Debug */,
+				18EFE493189EBA4900DA6A5D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		18EFE494189EBA4900DA6A5D /* Build configuration list for PBXNativeTarget "FBTweakTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				18EFE495189EBA4900DA6A5D /* Debug */,
+				18EFE496189EBA4900DA6A5D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 18EFE466189EBA4900DA6A5D /* Project object */;
+}
