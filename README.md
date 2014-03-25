@@ -97,7 +97,7 @@ In release builds, the macros just expand to the default value. Nothing extra is
 ## Installation
 There are two options:
 
- 1. Tweaks will soon be available as `Tweaks` in [Cocoapods](http://cocoapods.org). For now, you can reference this repository directly.
+ 1. Tweaks is available as `Tweaks` in [Cocoapods](http://cocoapods.org).
  2. Manually add the files from `FBTweak/` into your Xcode project. Slightly simpler, but updates are also manual.
 
 Tweaks requires iOS 6 or later.
