@@ -13,7 +13,7 @@ Some of the most useful parameters to adjust are animation timings, velocity thr
 Tweaks was invaluable for building [Paper](http://www.facebook.com/paper). We hope it can be useful for your app too.
 
 ## Usage
-Each configurable value is called a tweak. There's a few ways to set them up, found in `<FBTweak/FBTweakInline.h>`.
+Each configurable value is called a tweak. There's a few ways to set them up, found in `FBTweakInline.h`.
 
 ### Value
 The simplest way to create a tweak is to replace a constant with `FBTweakValue`:
