@@ -57,7 +57,19 @@ As with `FBTweakValue`, in release builds `FBTweakBind` expands to just setting 
 ### Tweaks UI
 To configure your tweaks, you need a way to show the configuration UI. There's two options for that:
 
- - Traditionally, tweaks is activated by shaking your phone. To use that, just replace your root `UIWindow` with a `FBTweakShakeWindow`. 
+ - Traditionally, tweaks is activated by shaking your phone. To use that, just replace your root `UIWindow` with a `FBTweakShakeWindow`. If you're using Storyboards, you can override `-window` on your app delegate:
+
+```objective-c
+- (UIWindow *)window
+{
+  if (!_window) {
+    _window = [[FBTweakShakeWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+  }
+
+  return _window;
+}
+```
+
  - You can present a `FBTweakViewController` from anywhere in your app. Be sure to restrict the activation UI to debug builds!
 
 ### Advanced
