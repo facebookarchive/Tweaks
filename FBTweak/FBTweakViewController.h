@@ -9,6 +9,8 @@
 
 #import <UIKit/UIKit.h>
 
+@class FBTweakStore;
+
 /**
   @abstract A view controller that shows the list of tweaks.
  */
