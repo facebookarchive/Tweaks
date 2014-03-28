@@ -18,6 +18,11 @@ static CFTimeInterval _FBTweakShakeWindowMinTimeInterval = 0.4;
   BOOL _shaking;
 }
 
+- (void)tweakViewControllerPressedDone:(FBTweakViewController *)tweakViewController
+{
+  [tweakViewController dismissViewControllerAnimated:YES completion:NULL];
+}
+
 - (void)_presentTweaks
 {
   UIViewController *rootViewController = self.rootViewController;

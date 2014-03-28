@@ -10,6 +10,7 @@
 #import <UIKit/UIKit.h>
 
 @class FBTweakStore;
+@protocol FBTweakViewControllerDelegate;
 
 /**
   @abstract A view controller that shows the list of tweaks.
@@ -22,5 +23,25 @@
   @discussion The designated initializer.
  */
 - (instancetype)initWithStore:(FBTweakStore *)store;
+
+/**
+  @abstract Responds to tweak view controller actions.
+  @discussion Named {@ref tweaksDelegate} to avoid conflicting with UINavigationController.
+ */
+@property (nonatomic, weak, readwrite) id<FBTweakViewControllerDelegate> tweaksDelegate;
+
+@end
+
+/**
+  @abstract Responds to actions from the tweak view controller.
+ */
+@protocol FBTweakViewControllerDelegate <UINavigationControllerDelegate>
+
+/**
+  @abstract Called when the tweak view controller pressed done.
+  @param tweakViewController The view controller that had done pressed.
+  @discussion The implementation should dismiss the tweak view controller.
+ */
+- (void)tweakViewControllerPressedDone:(FBTweakViewController *)tweakViewController;
 
 @end

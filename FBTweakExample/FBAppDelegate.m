@@ -14,7 +14,7 @@
 
 #import "FBAppDelegate.h"
 
-@interface FBAppDelegate () <FBTweakObserver>
+@interface FBAppDelegate () <FBTweakObserver, FBTweakViewControllerDelegate>
 @end
 
 @implementation FBAppDelegate {
@@ -77,7 +77,13 @@
 - (void)buttonTapped
 {
   FBTweakViewController *viewController = [[FBTweakViewController alloc] initWithStore:[FBTweakStore sharedInstance]];
+  viewController.delegate = self;
   [_window.rootViewController presentViewController:viewController animated:YES completion:NULL];
+}
+
+- (void)tweakViewControllerPressedDone:(FBTweakViewController *)tweakViewController
+{
+  [tweakViewController dismissViewControllerAnimated:YES completion:NULL];
 }
 
 - (void)labelTapped

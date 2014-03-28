@@ -9,10 +9,12 @@
 
 #import <UIKit/UIKit.h>
 
+#import "FBTweakViewController.h"
+
 /**
   @abstract A UIWindow that automatically presents tweaks when the user shakes the device.
   @discussion Use this window as your app's root window to enable shaking to open tweaks.
  */
-@interface FBTweakShakeWindow : UIWindow
+@interface FBTweakShakeWindow : UIWindow <FBTweakViewControllerDelegate>
 
 @end
