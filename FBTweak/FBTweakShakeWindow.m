@@ -31,6 +31,7 @@ static CFTimeInterval _FBTweakShakeWindowMinTimeInterval = 0.4;
   if (![rootViewController.presentedViewController isKindOfClass:[FBTweakViewController class]]) {
     FBTweakStore *store = [FBTweakStore sharedInstance];
     FBTweakViewController *viewController = [[FBTweakViewController alloc] initWithStore:store];
+    viewController.tweaksDelegate = self;
     [rootViewController presentViewController:viewController animated:YES completion:NULL];
   }
 }

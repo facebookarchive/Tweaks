@@ -40,7 +40,7 @@
 
 - (void)tweakCategoryViewControllerSelectedDone:(_FBTweakCategoryViewController *)viewController
 {
-  [self dismissViewControllerAnimated:YES completion:NULL];
+  [_tweaksDelegate tweakViewControllerPressedDone:self];
 }
 
 @end

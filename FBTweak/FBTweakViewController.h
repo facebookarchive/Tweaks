@@ -36,6 +36,7 @@
   @abstract Responds to actions from the tweak view controller.
  */
 @protocol FBTweakViewControllerDelegate <UINavigationControllerDelegate>
+@required
 
 /**
   @abstract Called when the tweak view controller pressed done.

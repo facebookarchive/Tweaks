@@ -77,7 +77,7 @@
 - (void)buttonTapped
 {
   FBTweakViewController *viewController = [[FBTweakViewController alloc] initWithStore:[FBTweakStore sharedInstance]];
-  viewController.delegate = self;
+  viewController.tweaksDelegate = self;
   [_window.rootViewController presentViewController:viewController animated:YES completion:NULL];
 }
 
