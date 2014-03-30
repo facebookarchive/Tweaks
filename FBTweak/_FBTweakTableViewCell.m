@@ -64,8 +64,6 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
 
 - (void)layoutSubviews
 {
-  [super layoutSubviews];
-  
   if (_mode == _FBTweakTableViewCellModeBoolean) {
     [_switch sizeToFit];
     _accessoryView.bounds = _switch.bounds;
@@ -88,6 +86,9 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
     _textField.frame = CGRectIntegral(textBounds);
     _accessoryView.bounds = CGRectIntegral(textBounds);
   }
+
+  // This positions the accessory view, so call it after updating its bounds.
+  [super layoutSubviews];
 }
 
 #pragma mark - Configuration
