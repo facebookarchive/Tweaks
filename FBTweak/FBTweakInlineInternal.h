@@ -97,8 +97,12 @@ extern NSString *_FBTweakIdentifier(fb_tweak_entry *entry);
   return _Generic(default_, \
     float: [currentValue floatValue], \
     double: [currentValue doubleValue], \
-    NSInteger: [currentValue integerValue], \
-    NSUInteger: [currentValue unsignedIntegerValue], \
+    short: [currentValue shortValue], \
+    unsigned short: [currentValue unsignedShortValue], \
+    int: [currentValue intValue], \
+    unsigned int: [currentValue unsignedIntValue], \
+    long long: [currentValue longLongValue], \
+    unsigned long long: [currentValue unsignedLongLongValue], \
     BOOL: [currentValue boolValue], \
     id: currentValue, \
     /* assume char * as the default. */ \
