@@ -14,7 +14,14 @@
 		18EFE4F8189F02F800DA6A5D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EFE4F7189F02F800DA6A5D /* main.m */; };
 		18EFE4FC189F02F800DA6A5D /* FBAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EFE4FB189F02F800DA6A5D /* FBAppDelegate.m */; };
 		18EFE4FE189F02F800DA6A5D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 18EFE4FD189F02F800DA6A5D /* Images.xcassets */; };
-		18EFE524189F04B000DA6A5D /* libFBTweak.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EFE523189F04B000DA6A5D /* libFBTweak.a */; };
+		EC1B6C8A18E7883200FF5364 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC1B6C8918E7883200FF5364 /* Cocoa.framework */; };
+		EC1B6C9418E7883200FF5364 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = EC1B6C9218E7883200FF5364 /* InfoPlist.strings */; };
+		EC1B6C9618E7883200FF5364 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EC1B6C9518E7883200FF5364 /* main.m */; };
+		EC1B6C9A18E7883200FF5364 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = EC1B6C9818E7883200FF5364 /* Credits.rtf */; };
+		EC1B6C9D18E7883200FF5364 /* FBAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EC1B6C9C18E7883200FF5364 /* FBAppDelegate.m */; };
+		EC1B6CA018E7883200FF5364 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = EC1B6C9E18E7883200FF5364 /* MainMenu.xib */; };
+		EC1B6CA218E7883200FF5364 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EC1B6CA118E7883200FF5364 /* Images.xcassets */; };
+		EC1B6D1718E78B2700FF5364 /* libFBTweak.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EC1B6D1618E78B2700FF5364 /* libFBTweak.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +38,38 @@
 		18EFE4FD189F02F800DA6A5D /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		18EFE504189F02F800DA6A5D /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		18EFE523189F04B000DA6A5D /* libFBTweak.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libFBTweak.a; path = "../FBTweak/build/Debug-iphoneos/libFBTweak.a"; sourceTree = "<group>"; };
+		EC1B6C8818E7883200FF5364 /* FBTweakExample-OSX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "FBTweakExample-OSX.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		EC1B6C8918E7883200FF5364 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
+		EC1B6C8C18E7883200FF5364 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		EC1B6C8D18E7883200FF5364 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		EC1B6C8E18E7883200FF5364 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		EC1B6C9118E7883200FF5364 /* FBTweakExample-OSX-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "FBTweakExample-OSX-Info.plist"; sourceTree = "<group>"; };
+		EC1B6C9318E7883200FF5364 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		EC1B6C9518E7883200FF5364 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		EC1B6C9718E7883200FF5364 /* FBTweakExample-OSX-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FBTweakExample-OSX-Prefix.pch"; sourceTree = "<group>"; };
+		EC1B6C9918E7883200FF5364 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
+		EC1B6C9B18E7883200FF5364 /* FBAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FBAppDelegate.h; sourceTree = "<group>"; };
+		EC1B6C9C18E7883200FF5364 /* FBAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FBAppDelegate.m; sourceTree = "<group>"; };
+		EC1B6C9F18E7883200FF5364 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		EC1B6CA118E7883200FF5364 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		EC1B6D0118E78A4E00FF5364 /* Application-iOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Application-iOS.xcconfig"; sourceTree = "<group>"; };
+		EC1B6D0218E78A4E00FF5364 /* Application-OSX.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Application-OSX.xcconfig"; sourceTree = "<group>"; };
+		EC1B6D0318E78A4E00FF5364 /* Base-iOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Base-iOS.xcconfig"; sourceTree = "<group>"; };
+		EC1B6D0418E78A4E00FF5364 /* Base-OSX.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Base-OSX.xcconfig"; sourceTree = "<group>"; };
+		EC1B6D0618E78A4E00FF5364 /* Compiler.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Compiler.xcconfig; sourceTree = "<group>"; };
+		EC1B6D0718E78A4E00FF5364 /* iOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = iOS.xcconfig; sourceTree = "<group>"; };
+		EC1B6D0818E78A4E00FF5364 /* OSX.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = OSX.xcconfig; sourceTree = "<group>"; };
+		EC1B6D0A18E78A4E00FF5364 /* Project-Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Project-Debug.xcconfig"; sourceTree = "<group>"; };
+		EC1B6D0B18E78A4E00FF5364 /* Project-GCOV.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Project-GCOV.xcconfig"; sourceTree = "<group>"; };
+		EC1B6D0C18E78A4E00FF5364 /* Project-Profile.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Project-Profile.xcconfig"; sourceTree = "<group>"; };
+		EC1B6D0D18E78A4E00FF5364 /* Project-Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Project-Release.xcconfig"; sourceTree = "<group>"; };
+		EC1B6D0E18E78A4E00FF5364 /* Project.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Project.xcconfig; sourceTree = "<group>"; };
+		EC1B6D1018E78A4E00FF5364 /* StaticLibrary-iOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "StaticLibrary-iOS.xcconfig"; sourceTree = "<group>"; };
+		EC1B6D1118E78A4E00FF5364 /* StaticLibrary-OSX.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "StaticLibrary-OSX.xcconfig"; sourceTree = "<group>"; };
+		EC1B6D1318E78A4E00FF5364 /* ApplicationTests.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = ApplicationTests.xcconfig; sourceTree = "<group>"; };
+		EC1B6D1418E78A4E00FF5364 /* LogicTests-iOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "LogicTests-iOS.xcconfig"; sourceTree = "<group>"; };
+		EC1B6D1518E78A4E00FF5364 /* LogicTests-OSX.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "LogicTests-OSX.xcconfig"; sourceTree = "<group>"; };
+		EC1B6D1618E78B2700FF5364 /* libFBTweak.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libFBTweak.a; path = "build/Debug-iphoneos/libFBTweak.a"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -38,10 +77,18 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				18EFE524189F04B000DA6A5D /* libFBTweak.a in Frameworks */,
+				EC1B6D1718E78B2700FF5364 /* libFBTweak.a in Frameworks */,
 				18EFE4EE189F02F800DA6A5D /* CoreGraphics.framework in Frameworks */,
 				18EFE4F0189F02F800DA6A5D /* UIKit.framework in Frameworks */,
 				18EFE4EC189F02F800DA6A5D /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EC1B6C8518E7883200FF5364 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EC1B6C8A18E7883200FF5364 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -51,7 +98,9 @@
 		18EFE4DF189F02F800DA6A5D = {
 			isa = PBXGroup;
 			children = (
+				EC1B6CFF18E78A4E00FF5364 /* Configuration */,
 				18EFE4F1189F02F800DA6A5D /* FBTweakExample */,
+				EC1B6C8F18E7883200FF5364 /* FBTweakExample-OSX */,
 				18EFE4EA189F02F800DA6A5D /* Frameworks */,
 				18EFE4E9189F02F800DA6A5D /* Products */,
 			);
@@ -61,6 +110,7 @@
 			isa = PBXGroup;
 			children = (
 				18EFE4E8189F02F800DA6A5D /* FBTweakExample.app */,
+				EC1B6C8818E7883200FF5364 /* FBTweakExample-OSX.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -68,11 +118,14 @@
 		18EFE4EA189F02F800DA6A5D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				EC1B6D1618E78B2700FF5364 /* libFBTweak.a */,
 				18EFE523189F04B000DA6A5D /* libFBTweak.a */,
 				18EFE4EB189F02F800DA6A5D /* Foundation.framework */,
 				18EFE4ED189F02F800DA6A5D /* CoreGraphics.framework */,
 				18EFE4EF189F02F800DA6A5D /* UIKit.framework */,
 				18EFE504189F02F800DA6A5D /* XCTest.framework */,
+				EC1B6C8918E7883200FF5364 /* Cocoa.framework */,
+				EC1B6C8B18E7883200FF5364 /* Other Frameworks */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -99,6 +152,104 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		EC1B6C8B18E7883200FF5364 /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				EC1B6C8C18E7883200FF5364 /* AppKit.framework */,
+				EC1B6C8D18E7883200FF5364 /* CoreData.framework */,
+				EC1B6C8E18E7883200FF5364 /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		EC1B6C8F18E7883200FF5364 /* FBTweakExample-OSX */ = {
+			isa = PBXGroup;
+			children = (
+				EC1B6C9B18E7883200FF5364 /* FBAppDelegate.h */,
+				EC1B6C9C18E7883200FF5364 /* FBAppDelegate.m */,
+				EC1B6C9E18E7883200FF5364 /* MainMenu.xib */,
+				EC1B6CA118E7883200FF5364 /* Images.xcassets */,
+				EC1B6C9018E7883200FF5364 /* Supporting Files */,
+			);
+			path = "FBTweakExample-OSX";
+			sourceTree = "<group>";
+		};
+		EC1B6C9018E7883200FF5364 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				EC1B6C9118E7883200FF5364 /* FBTweakExample-OSX-Info.plist */,
+				EC1B6C9218E7883200FF5364 /* InfoPlist.strings */,
+				EC1B6C9518E7883200FF5364 /* main.m */,
+				EC1B6C9718E7883200FF5364 /* FBTweakExample-OSX-Prefix.pch */,
+				EC1B6C9818E7883200FF5364 /* Credits.rtf */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		EC1B6CFF18E78A4E00FF5364 /* Configuration */ = {
+			isa = PBXGroup;
+			children = (
+				EC1B6D0018E78A4E00FF5364 /* Applications */,
+				EC1B6D0318E78A4E00FF5364 /* Base-iOS.xcconfig */,
+				EC1B6D0418E78A4E00FF5364 /* Base-OSX.xcconfig */,
+				EC1B6D0518E78A4E00FF5364 /* Platform */,
+				EC1B6D0918E78A4E00FF5364 /* Projects */,
+				EC1B6D0F18E78A4E00FF5364 /* Static Libraries */,
+				EC1B6D1218E78A4E00FF5364 /* Tests */,
+			);
+			path = Configuration;
+			sourceTree = "<group>";
+		};
+		EC1B6D0018E78A4E00FF5364 /* Applications */ = {
+			isa = PBXGroup;
+			children = (
+				EC1B6D0118E78A4E00FF5364 /* Application-iOS.xcconfig */,
+				EC1B6D0218E78A4E00FF5364 /* Application-OSX.xcconfig */,
+			);
+			path = Applications;
+			sourceTree = "<group>";
+		};
+		EC1B6D0518E78A4E00FF5364 /* Platform */ = {
+			isa = PBXGroup;
+			children = (
+				EC1B6D0618E78A4E00FF5364 /* Compiler.xcconfig */,
+				EC1B6D0718E78A4E00FF5364 /* iOS.xcconfig */,
+				EC1B6D0818E78A4E00FF5364 /* OSX.xcconfig */,
+			);
+			path = Platform;
+			sourceTree = "<group>";
+		};
+		EC1B6D0918E78A4E00FF5364 /* Projects */ = {
+			isa = PBXGroup;
+			children = (
+				EC1B6D0A18E78A4E00FF5364 /* Project-Debug.xcconfig */,
+				EC1B6D0B18E78A4E00FF5364 /* Project-GCOV.xcconfig */,
+				EC1B6D0C18E78A4E00FF5364 /* Project-Profile.xcconfig */,
+				EC1B6D0D18E78A4E00FF5364 /* Project-Release.xcconfig */,
+				EC1B6D0E18E78A4E00FF5364 /* Project.xcconfig */,
+			);
+			path = Projects;
+			sourceTree = "<group>";
+		};
+		EC1B6D0F18E78A4E00FF5364 /* Static Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				EC1B6D1018E78A4E00FF5364 /* StaticLibrary-iOS.xcconfig */,
+				EC1B6D1118E78A4E00FF5364 /* StaticLibrary-OSX.xcconfig */,
+			);
+			path = "Static Libraries";
+			sourceTree = "<group>";
+		};
+		EC1B6D1218E78A4E00FF5364 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				EC1B6D1318E78A4E00FF5364 /* ApplicationTests.xcconfig */,
+				EC1B6D1418E78A4E00FF5364 /* LogicTests-iOS.xcconfig */,
+				EC1B6D1518E78A4E00FF5364 /* LogicTests-OSX.xcconfig */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -119,6 +270,23 @@
 			productReference = 18EFE4E8189F02F800DA6A5D /* FBTweakExample.app */;
 			productType = "com.apple.product-type.application";
 		};
+		EC1B6C8718E7883200FF5364 /* FBTweakExample-OSX */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EC1B6CB818E7883200FF5364 /* Build configuration list for PBXNativeTarget "FBTweakExample-OSX" */;
+			buildPhases = (
+				EC1B6C8418E7883200FF5364 /* Sources */,
+				EC1B6C8518E7883200FF5364 /* Frameworks */,
+				EC1B6C8618E7883200FF5364 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "FBTweakExample-OSX";
+			productName = "FBTweakExample-OSX";
+			productReference = EC1B6C8818E7883200FF5364 /* FBTweakExample-OSX.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -135,6 +303,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = 18EFE4DF189F02F800DA6A5D;
 			productRefGroup = 18EFE4E9189F02F800DA6A5D /* Products */;
@@ -142,6 +311,7 @@
 			projectRoot = "";
 			targets = (
 				18EFE4E7189F02F800DA6A5D /* FBTweakExample */,
+				EC1B6C8718E7883200FF5364 /* FBTweakExample-OSX */,
 			);
 		};
 /* End PBXProject section */
@@ -153,6 +323,17 @@
 			files = (
 				18EFE4F6189F02F800DA6A5D /* InfoPlist.strings in Resources */,
 				18EFE4FE189F02F800DA6A5D /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EC1B6C8618E7883200FF5364 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EC1B6C9418E7883200FF5364 /* InfoPlist.strings in Resources */,
+				EC1B6CA218E7883200FF5364 /* Images.xcassets in Resources */,
+				EC1B6C9A18E7883200FF5364 /* Credits.rtf in Resources */,
+				EC1B6CA018E7883200FF5364 /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -168,6 +349,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		EC1B6C8418E7883200FF5364 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EC1B6C9D18E7883200FF5364 /* FBAppDelegate.m in Sources */,
+				EC1B6C9618E7883200FF5364 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
@@ -179,11 +369,36 @@
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
+		EC1B6C9218E7883200FF5364 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				EC1B6C9318E7883200FF5364 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		EC1B6C9818E7883200FF5364 /* Credits.rtf */ = {
+			isa = PBXVariantGroup;
+			children = (
+				EC1B6C9918E7883200FF5364 /* en */,
+			);
+			name = Credits.rtf;
+			sourceTree = "<group>";
+		};
+		EC1B6C9E18E7883200FF5364 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				EC1B6C9F18E7883200FF5364 /* Base */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		18EFE512189F02F800DA6A5D /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = EC1B6D0A18E78A4E00FF5364 /* Project-Debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -228,6 +443,7 @@
 		};
 		18EFE513189F02F800DA6A5D /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = EC1B6D0D18E78A4E00FF5364 /* Project-Release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -266,12 +482,17 @@
 		};
 		18EFE515189F02F800DA6A5D /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = EC1B6D0118E78A4E00FF5364 /* Application-iOS.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FBTweakExample/FBTweakExample-Prefix.pch";
 				INFOPLIST_FILE = "FBTweakExample/FBTweakExample-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/build/Debug-iphoneos",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -279,13 +500,67 @@
 		};
 		18EFE516189F02F800DA6A5D /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = EC1B6D0118E78A4E00FF5364 /* Application-iOS.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FBTweakExample/FBTweakExample-Prefix.pch";
 				INFOPLIST_FILE = "FBTweakExample/FBTweakExample-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/build/Debug-iphoneos",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		EC1B6CB418E7883200FF5364 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = EC1B6D0218E78A4E00FF5364 /* Application-OSX.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "FBTweakExample-OSX/FBTweakExample-OSX-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				INFOPLIST_FILE = "FBTweakExample-OSX/FBTweakExample-OSX-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		EC1B6CB518E7883200FF5364 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = EC1B6D0218E78A4E00FF5364 /* Application-OSX.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "FBTweakExample-OSX/FBTweakExample-OSX-Prefix.pch";
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				INFOPLIST_FILE = "FBTweakExample-OSX/FBTweakExample-OSX-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -307,6 +582,15 @@
 			buildConfigurations = (
 				18EFE515189F02F800DA6A5D /* Debug */,
 				18EFE516189F02F800DA6A5D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EC1B6CB818E7883200FF5364 /* Build configuration list for PBXNativeTarget "FBTweakExample-OSX" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EC1B6CB418E7883200FF5364 /* Debug */,
+				EC1B6CB518E7883200FF5364 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

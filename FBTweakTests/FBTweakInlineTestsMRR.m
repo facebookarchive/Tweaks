@@ -21,10 +21,15 @@
 
 @implementation FBTweakInlineTestsMRR
 
+- (void)setUp
+{
+  [[FBTweakStore sharedInstance] reset];
+}
+
 - (void)testValueTypes
 {
-  __attribute__((unused)) int testInt = FBTweakValue(@"Int", @"Int", @"Int", 1);
-  XCTAssertEqual(testInt, (int)1, @"Int %d", testInt);
+  __attribute__((unused)) NSInteger testInt = (NSInteger)FBTweakValue(@"Int", @"Int", @"Int", 1);
+  XCTAssertEqual(testInt, (int)1, @"Int %ld", (long)testInt);
   
   __attribute__((unused)) float testFloat = FBTweakValue(@"Float", @"Float", @"Float", 1.0);
   XCTAssertEqual(testFloat, (float)1.0, @"Float %f", testFloat);

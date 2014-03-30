@@ -51,6 +51,12 @@ static FBTweak *_FBTweakCreateWithEntry(NSString *identifier, fb_tweak_entry *en
       tweak.minimumValue = [NSNumber numberWithLongLong:*(long long *)entry->min];
       tweak.maximumValue = [NSNumber numberWithLongLong:*(long long *)entry->max];
     }
+  } else if (strcmp(*entry->encoding, @encode(int)) == 0) {
+    tweak.defaultValue = [NSNumber numberWithInt:*(int *)entry->value];
+    if (entry->min != NULL && entry->max != NULL) {
+      tweak.minimumValue = [NSNumber numberWithInt:*(int *)entry->min];
+      tweak.maximumValue = [NSNumber numberWithInt:*(int *)entry->max];
+    }
   } else if (strcmp(*entry->encoding, @encode(NSUInteger)) == 0) {
     tweak.defaultValue = [NSNumber numberWithUnsignedInteger:*(NSUInteger *)entry->value];
     if (entry->min != NULL && entry->max != NULL) {
