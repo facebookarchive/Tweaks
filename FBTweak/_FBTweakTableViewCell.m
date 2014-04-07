@@ -16,7 +16,10 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
   _FBTweakTableViewCellModeInteger,
   _FBTweakTableViewCellModeReal,
   _FBTweakTableViewCellModeString,
+  _FBTweakTableViewCellModeColor,
 };
+
+extern UIColor* _FBColorFromHEXString(NSString* rgb);
 
 @interface _FBTweakTableViewCell () <UITextFieldDelegate>
 @end
@@ -30,7 +33,7 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
   UIStepper *_stepper;
 }
 
-- (instancetype)initWithReuseIdentifier:(NSString *)reuseIdentifier;
+- (instancetype)initWithReuseIdentifier:(NSString *)reuseIdentifier
 {
   if ((self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier])) {
     self.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -81,7 +84,7 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
     
     CGRect accessoryFrame = CGRectUnion(stepperFrame, textFrame);
     _accessoryView.bounds = CGRectIntegral(accessoryFrame);
-  } else if (_mode == _FBTweakTableViewCellModeString) {
+  } else if (_mode == _FBTweakTableViewCellModeString || _mode == _FBTweakTableViewCellModeColor) {
     CGRect textBounds = CGRectMake(0, 0, self.bounds.size.width / 3, self.bounds.size.height);
     _textField.frame = CGRectIntegral(textBounds);
     _accessoryView.bounds = CGRectIntegral(textBounds);
@@ -104,7 +107,11 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
 
     _FBTweakTableViewCellMode mode = _FBTweakTableViewCellModeNone;
     if ([value isKindOfClass:[NSString class]]) {
-      mode = _FBTweakTableViewCellModeString;
+      if ([value hasPrefix:@"#"]) {
+        mode = _FBTweakTableViewCellModeColor;
+      } else {
+        mode = _FBTweakTableViewCellModeString;
+      }
     } else if ([value isKindOfClass:[NSNumber class]]) {
       // In the 64-bit runtime, BOOL is a real boolean.
       // NSNumber doesn't always agree; compare both.
@@ -160,7 +167,7 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
     }
     
     _stepper.stepValue = (_stepper.maximumValue - _stepper.minimumValue) / 100.0;
-  } else if (_mode == _FBTweakTableViewCellModeString) {
+  } else if (_mode == _FBTweakTableViewCellModeString || _mode == _FBTweakTableViewCellModeColor) {
     _switch.hidden = YES;
     _textField.hidden = NO;
     _textField.keyboardType = UIKeyboardTypeDefault;
@@ -190,7 +197,7 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
 
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
-  if (_mode == _FBTweakTableViewCellModeString) {
+  if (_mode == _FBTweakTableViewCellModeString || _mode == _FBTweakTableViewCellModeColor) {
     [self _updateValue:_textField.text write:YES];
   } else {
     NSNumber *number = @([_textField.text doubleValue]);
@@ -211,7 +218,7 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
   
   if (_mode == _FBTweakTableViewCellModeBoolean) {
     _switch.on = [value boolValue];
-  } else if (_mode == _FBTweakTableViewCellModeString) {
+  } else if (_mode == _FBTweakTableViewCellModeString || _mode == _FBTweakTableViewCellModeColor) {
     _textField.text = value;
   } else if (_mode == _FBTweakTableViewCellModeInteger) {
     _stepper.value = [value longLongValue];
