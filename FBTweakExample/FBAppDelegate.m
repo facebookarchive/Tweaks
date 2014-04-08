@@ -64,7 +64,7 @@ FBTweakAction(@"Actions", @"Global", @"Hello", ^{
   
   _flipTweak = FBTweakInline(@"Window", @"Effects", @"Upside Down", NO);
   [_flipTweak addObserver:self];
-  
+
   CGRect tweaksButtonFrame = _window.bounds;
   tweaksButtonFrame.origin.y = _label.bounds.size.height;
   tweaksButtonFrame.size.height = tweaksButtonFrame.size.height - _label.bounds.size.height;
@@ -78,7 +78,7 @@ FBTweakAction(@"Actions", @"Global", @"Hello", ^{
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Hello" message:@"Scoped alert test #2." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Done", nil];
     [alert show];
   });
-  
+
   return YES;
 }
 
