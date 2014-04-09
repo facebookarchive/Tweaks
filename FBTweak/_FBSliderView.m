@@ -22,7 +22,7 @@ static const CGFloat sBarHeight = 3.0f;
 
 @implementation FBSliderView
 
-- (id)initWithFrame:(CGRect)frame
+- (instancetype)initWithFrame:(CGRect)frame
 {
   NSParameterAssert(CGRectGetWidth(frame) > sMargin * 2 );
   CGSize sliderSize = frame.size;
