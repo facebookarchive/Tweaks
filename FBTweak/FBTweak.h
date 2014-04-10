@@ -67,6 +67,18 @@ typedef id FBTweakValue;
 @property (nonatomic, strong, readwrite) FBTweakValue maximumValue;
 
 /**
+ @abstract The step value of the tweak.
+ @discussion Optional. If nil, the step value is calculated of miniumum and maxium.
+ */
+@property (nonatomic, strong, readwrite) FBTweakValue stepValue;
+
+/**
+ @abstract The decimal precision value of the tweak.
+ @discussion Optional. If nil, the precision value is calculated of the step value.
+ */
+@property (nonatomic, strong, readwrite) FBTweakValue precisionValue;
+
+/**
   @abstract Adds an observer to the tweak.
   @param object The observer. Must not be nil.
   @discussion A weak reference is taken on the observer.
