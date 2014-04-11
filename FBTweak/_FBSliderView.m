@@ -1,11 +1,10 @@
-/**
- Copyright (c) 2014-present, Facebook, Inc.
- All rights reserved.
-
- This source code is licensed under the BSD-style license found in the
- LICENSE file in the root directory of this source tree. An additional grant
- of patent rights can be found in the PATENTS file in the same directory.
- */
+//
+//  SliderView.m
+//  VBColorPicker
+//
+//  Created by Maksym Shcheglov on 06/04/14.
+//  Copyright (c) 2014 www.injoit.com. All rights reserved.
+//
 
 #import "_FBSliderView.h"
 
@@ -58,7 +57,7 @@ static const CGFloat sBarHeight = 3.0f;
     [self.layer addSublayer:_indicatorLayer];
 
     _value = 0.5f;
-    __attribute__((objc_precise_lifetime)) id color = (__bridge id)[UIColor whiteColor].CGColor;
+    __attribute__((objc_precise_lifetime)) id color = (__bridge id)[UIColor blueColor].CGColor;
     [self setColors:@[color, color]];
   }
   return self;
@@ -80,7 +79,6 @@ static const CGFloat sBarHeight = 3.0f;
                    forKey:kCATransactionDisableActions];
   self.indicatorLayer.position = CGPointMake(width * percentage + sMargin, sSliderHeight / 2);
   [CATransaction commit];
-  [self sendActionsForControlEvents:UIControlEventValueChanged];
 }
 
 - (void)setColors:(NSArray*)colors
@@ -130,6 +128,7 @@ static const CGFloat sBarHeight = 3.0f;
   CGFloat percentage = position / width;
   CGFloat value = self.minimumValue + percentage * (self.maximumValue - self.minimumValue);
   [self setValue:value];
+  [self sendActionsForControlEvents:UIControlEventValueChanged];
 }
 
 @end

@@ -26,7 +26,6 @@
 @property(nonatomic, strong) UITextField* alphaTextField;
 
 @property(nonatomic, strong) UIView* colorSample;
-@property(nonatomic, assign) BOOL skipCallback;
 
 @property(nonatomic, strong) UIView* contentView;
 @property(nonatomic, strong) UIScrollView* view;
@@ -194,14 +193,19 @@
     _colorComponents[2] = components[2];
     _colorComponents[3] = components[3];
   }
-  [self updateColors];
+  [self updateSliders];
+  [self.colorSample setBackgroundColor:[self selectedColor]];
+  [self updateTextFields];
 }
 
 - (IBAction)onSliderValueChanged:(FBSliderView*)slider
 {
-  int colorIndex = slider.tag;
-  _colorComponents[colorIndex] = slider.value;
-  [self updateColors];
+  [self updateColorComponentAtIndex:slider.tag withValue:slider.value];
+  [self.colorSample setBackgroundColor:[self selectedColor]];
+  [self updateTextFields];
+  if (self.colorValueDidChangeCallback) {
+    self.colorValueDidChangeCallback([self selectedColor]);
+  }
 }
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField
@@ -232,71 +236,15 @@
 
   BOOL isValid = [newString floatValue] <= 255.0f;
   if (isValid) {
-    self.skipCallback = YES;
     FBSliderView* slider = [self sliderWithTag:textField.tag];
     [slider setValue:[newString floatValue] / 255.0f];
+    [self updateColorComponentAtIndex:textField.tag withValue:slider.value];
+    [self.colorSample setBackgroundColor:[self selectedColor]];
+    if (self.colorValueDidChangeCallback) {
+      self.colorValueDidChangeCallback([self selectedColor]);
+    }
   }
   return isValid;
-}
-
-#pragma mark - Private
-
-- (FBSliderView*)sliderWithTag:(NSUInteger)tag
-{
-  switch (tag) {
-    case 0:
-      return self.redSlider;
-      break;
-    case 1:
-      return self.greenSlider;
-      break;
-    case 2:
-      return self.blueSlider;
-      break;
-    default:
-      return self.alphaSlider;
-      break;
-  }
-}
-
-- (void)updateColors
-{
-  [self setSlider:_redSlider colorIndex:0];
-  [self setSlider:_greenSlider colorIndex:1];
-  [self setSlider:_blueSlider colorIndex:2];
-
-  UIColor *currentColor = [UIColor colorWithRed:_colorComponents[0] green:_colorComponents[1] blue:_colorComponents[2] alpha:_colorComponents[3]];
-  [self.colorSample setBackgroundColor:currentColor];
-  if (self.colorValueDidChangeCallback) {
-    self.colorValueDidChangeCallback(currentColor);
-  }
-  if (self.skipCallback) {
-    self.skipCallback = NO;
-    return;
-  }
-  self.redTextField.text = [NSString stringWithFormat:@"%d", (NSInteger)(_colorComponents[0] * 255)];
-  self.greenTextField.text = [NSString stringWithFormat:@"%d", (NSInteger)(_colorComponents[1] * 255)];
-  self.blueTextField.text = [NSString stringWithFormat:@"%d", (NSInteger)(_colorComponents[2] * 255)];
-  self.alphaTextField.text = [NSString stringWithFormat:@"%d", (NSInteger)(_colorComponents[3] * 100)];
-}
-
-- (void)setSlider:(FBSliderView*)slider colorIndex:(NSInteger)colorIndex
-{
-  float currentColorValue = _colorComponents[colorIndex];
-  float colors[12];
-  for (int i = 0; i < 4 ; i++)
-  {
-    colors[i] = _colorComponents[i];
-    colors[i + 4] = _colorComponents[i];
-    colors[i + 8] = _colorComponents[i];
-  }
-  colors[colorIndex] = 0;
-  colors[colorIndex + 4] = currentColorValue;
-  colors[colorIndex + 8] = 1.0;
-  UIColor* start = [UIColor colorWithRed:colors[0] green:colors[1] blue:colors[2] alpha:1.0f];
-  UIColor* middle = [UIColor colorWithRed:colors[4] green:colors[5] blue:colors[6] alpha:1.0f];
-  UIColor* end = [UIColor colorWithRed:colors[8] green:colors[9] blue:colors[10] alpha:1.0f];
-  [slider setColors:@[(id)start.CGColor, (id)middle.CGColor, (id)end.CGColor]];
 }
 
 - (void)keyboardWasShown:(NSNotification*)aNotification
@@ -322,6 +270,71 @@
   UIEdgeInsets contentInsets = UIEdgeInsetsZero;
   self.view.contentInset = contentInsets;
   self.view.scrollIndicatorInsets = contentInsets;
+}
+
+#pragma mark - Private
+
+- (FBSliderView*)sliderWithTag:(NSUInteger)tag
+{
+  switch (tag) {
+    case 0:
+      return self.redSlider;
+      break;
+    case 1:
+      return self.greenSlider;
+      break;
+    case 2:
+      return self.blueSlider;
+      break;
+    default:
+      return self.alphaSlider;
+      break;
+  }
+}
+
+- (UIColor*)selectedColor
+{
+  return [UIColor colorWithRed:_colorComponents[0] green:_colorComponents[1] blue:_colorComponents[2] alpha:_colorComponents[3]];
+}
+
+- (void)updateColorComponentAtIndex:(NSUInteger)index withValue:(CGFloat)value
+{
+  _colorComponents[index] = value;
+  [self updateSliders];
+}
+
+- (void)updateSliders
+{
+  [self updateSlider:self.redSlider colorIndex:0];
+  [self updateSlider:self.greenSlider colorIndex:1];
+  [self updateSlider:self.blueSlider colorIndex:2];
+}
+
+- (void)updateTextFields
+{
+  self.redTextField.text = [NSString stringWithFormat:@"%d", (NSInteger)(_colorComponents[0] * 255)];
+  self.greenTextField.text = [NSString stringWithFormat:@"%d", (NSInteger)(_colorComponents[1] * 255)];
+  self.blueTextField.text = [NSString stringWithFormat:@"%d", (NSInteger)(_colorComponents[2] * 255)];
+  self.alphaTextField.text = [NSString stringWithFormat:@"%d", (NSInteger)(_colorComponents[3] * 100)];
+}
+
+- (void)updateSlider:(FBSliderView*)slider colorIndex:(NSInteger)colorIndex
+{
+  float currentColorValue = _colorComponents[colorIndex];
+  float colors[12];
+  for (int i = 0; i < 4 ; i++)
+  {
+    colors[i] = _colorComponents[i];
+    colors[i + 4] = _colorComponents[i];
+    colors[i + 8] = _colorComponents[i];
+  }
+  colors[colorIndex] = 0;
+  colors[colorIndex + 4] = currentColorValue;
+  colors[colorIndex + 8] = 1.0;
+  UIColor* start = [UIColor colorWithRed:colors[0] green:colors[1] blue:colors[2] alpha:1.0f];
+  UIColor* middle = [UIColor colorWithRed:colors[4] green:colors[5] blue:colors[6] alpha:1.0f];
+  UIColor* end = [UIColor colorWithRed:colors[8] green:colors[9] blue:colors[10] alpha:1.0f];
+  [slider setColors:@[(id)start.CGColor, (id)middle.CGColor, (id)end.CGColor]];
 }
 
 @end
