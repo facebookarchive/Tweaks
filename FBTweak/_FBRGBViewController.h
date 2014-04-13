@@ -9,7 +9,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface RGBViewController : UIViewController
+@interface FBRGBViewController : UIViewController
 
 @property(nonatomic, copy) void(^colorValueDidChangeCallback)(UIColor* color);
 

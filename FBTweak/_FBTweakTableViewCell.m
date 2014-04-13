@@ -10,17 +10,6 @@
 #import "FBTweak.h"
 #import "_FBTweakTableViewCell.h"
 
-typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
-  _FBTweakTableViewCellModeNone = 0,
-  _FBTweakTableViewCellModeBoolean,
-  _FBTweakTableViewCellModeInteger,
-  _FBTweakTableViewCellModeReal,
-  _FBTweakTableViewCellModeString,
-  _FBTweakTableViewCellModeColor,
-};
-
-extern UIColor* _FBColorFromHEXString(NSString* rgb);
-
 @interface _FBTweakTableViewCell () <UITextFieldDelegate>
 @end
 
@@ -94,39 +83,41 @@ extern UIColor* _FBColorFromHEXString(NSString* rgb);
   [super layoutSubviews];
 }
 
+- (_FBTweakTableViewCellMode)mode
+{
+  FBTweakValue value = (_tweak.currentValue ?: _tweak.defaultValue);
+  _FBTweakTableViewCellMode mode = _FBTweakTableViewCellModeNone;
+  if ([value isKindOfClass:[NSString class]]) {
+    if ([value hasPrefix:@"#"]) {
+      mode = _FBTweakTableViewCellModeColor;
+    } else {
+      mode = _FBTweakTableViewCellModeString;
+    }
+  } else if ([value isKindOfClass:[NSNumber class]]) {
+    // In the 64-bit runtime, BOOL is a real boolean.
+    // NSNumber doesn't always agree; compare both.
+    if (strcmp([value objCType], @encode(char)) == 0 ||
+        strcmp([value objCType], @encode(_Bool)) == 0) {
+      mode = _FBTweakTableViewCellModeBoolean;
+    } else if (strcmp([value objCType], @encode(NSInteger)) == 0 ||
+               strcmp([value objCType], @encode(NSUInteger)) == 0) {
+      mode = _FBTweakTableViewCellModeInteger;
+    } else {
+      mode = _FBTweakTableViewCellModeReal;
+    }
+  }
+  return mode;
+}
+
 #pragma mark - Configuration
 
 - (void)setTweak:(FBTweak *)tweak
 {
   if (_tweak != tweak) {
     _tweak = tweak;
-    
     self.textLabel.text = tweak.name;
-    
-    FBTweakValue value = (_tweak.currentValue ?: _tweak.defaultValue);
-
-    _FBTweakTableViewCellMode mode = _FBTweakTableViewCellModeNone;
-    if ([value isKindOfClass:[NSString class]]) {
-      if ([value hasPrefix:@"#"]) {
-        mode = _FBTweakTableViewCellModeColor;
-      } else {
-        mode = _FBTweakTableViewCellModeString;
-      }
-    } else if ([value isKindOfClass:[NSNumber class]]) {
-      // In the 64-bit runtime, BOOL is a real boolean.
-      // NSNumber doesn't always agree; compare both.
-      if (strcmp([value objCType], @encode(char)) == 0 ||
-          strcmp([value objCType], @encode(_Bool)) == 0) {
-        mode = _FBTweakTableViewCellModeBoolean;
-      } else if (strcmp([value objCType], @encode(NSInteger)) == 0 ||
-                 strcmp([value objCType], @encode(NSUInteger)) == 0) {
-        mode = _FBTweakTableViewCellModeInteger;
-      } else {
-        mode = _FBTweakTableViewCellModeReal;
-      }
-    }
-    
-    [self _updateMode:mode];
+    FBTweakValue value = (tweak.currentValue ?: tweak.defaultValue);
+    [self _updateMode:[self mode]];
     [self _updateValue:value write:NO];
   }
 }
@@ -167,11 +158,19 @@ extern UIColor* _FBColorFromHEXString(NSString* rgb);
     }
     
     _stepper.stepValue = (_stepper.maximumValue - _stepper.minimumValue) / 100.0;
-  } else if (_mode == _FBTweakTableViewCellModeString || _mode == _FBTweakTableViewCellModeColor) {
+  } else if (_mode == _FBTweakTableViewCellModeString) {
     _switch.hidden = YES;
     _textField.hidden = NO;
     _textField.keyboardType = UIKeyboardTypeDefault;
     _stepper.hidden = YES;
+  } else if (_mode == _FBTweakTableViewCellModeColor) {
+    _switch.hidden = YES;
+    _textField.hidden = YES;
+//    _textField.keyboardType = UIKeyboardTypeDefault;
+    _stepper.hidden = YES;
+    self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+     self.accessoryView = nil;
+    [self setNeedsDisplay];
   } else {
     _switch.hidden = YES;
     _textField.hidden = YES;

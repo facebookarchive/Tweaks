@@ -9,33 +9,33 @@
 
 #import "_FBRGBViewController.h"
 #import "_FBSliderView.h"
+#import "_FBColorComponentView.h"
 
-@interface RGBViewController () <UITextFieldDelegate>
+@interface FBRGBViewController () <UITextFieldDelegate>
 {
   CGFloat _colorComponents[4];
 }
 
-@property(nonatomic, strong) FBSliderView* redSlider;
-@property(nonatomic, strong) FBSliderView* greenSlider;
-@property(nonatomic, strong) FBSliderView* blueSlider;
-@property(nonatomic, strong) FBSliderView* alphaSlider;
-
-@property(nonatomic, strong) UITextField* redTextField;
-@property(nonatomic, strong) UITextField* greenTextField;
-@property(nonatomic, strong) UITextField* blueTextField;
-@property(nonatomic, strong) UITextField* alphaTextField;
-
 @property(nonatomic, strong) UIView* colorSample;
-
 @property(nonatomic, strong) UIView* contentView;
 @property(nonatomic, strong) UIScrollView* view;
+@property(nonatomic, strong) NSArray* colorComponentViews;
 
 @property(nonatomic, assign) BOOL keyboardIsShown;
 @property(nonatomic, weak) UITextField* activeField;
 
 @end
 
-@implementation RGBViewController
+@implementation FBRGBViewController
+
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+  self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+  if (self) {
+    [self setColor:[UIColor whiteColor]];
+  }
+  return self;
+}
 
 - (void)loadView
 {
@@ -44,113 +44,49 @@
   scrollView.contentSize = [[UIScreen mainScreen] bounds].size;
   self.contentView = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
   self.contentView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+  self.contentView.backgroundColor = [UIColor lightGrayColor];
   [scrollView addSubview:self.contentView];
   self.view = scrollView;
+
+  CGFloat width = CGRectGetWidth(self.view.bounds);
+
+  self.colorSample = [[UIView alloc] initWithFrame:CGRectMake(10, 20, width - 20, 30)];
+  self.colorSample.layer.borderColor = [UIColor blackColor].CGColor;
+  self.colorSample.layer.borderWidth = .5f;
+  self.colorSample.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin;
+  [self.contentView addSubview:_colorSample];
+
+  NSMutableArray* tmp = [NSMutableArray array];
+  CGFloat y = CGRectGetMaxY(self.colorSample.frame) + 20;
+  CGFloat x = CGRectGetMidX(self.colorSample.frame);
+  NSArray* titles = @[@"Red", @"Green", @"Blue", @"Alpha"];
+  for(int i = 0; i < 4; ++i) {
+    UIView* colorComponentView = [self colorComponentViewWithTitle:titles[i] tag:i];
+    colorComponentView.center = CGPointMake(x, y);
+    [self.contentView addSubview:colorComponentView];
+    [tmp addObject:colorComponentView];
+    y += CGRectGetHeight(colorComponentView.frame) + 20;
+  }
+  self.colorComponentViews = [tmp copy];
 }
 
 - (void)viewDidLoad
 {
   [super viewDidLoad];
-  self.contentView = self.view;
-  self.view.backgroundColor = [UIColor lightGrayColor];
+  [self updateUIControls];
+}
 
+- (UIView*)colorComponentViewWithTitle:(NSString*)title tag:(NSUInteger)tag
+{
   CGFloat width = CGRectGetWidth(self.view.bounds);
-
-  _colorSample = [[UIView alloc] initWithFrame:CGRectMake(10, 80, width - 20, 30)];
-  _colorSample.layer.borderColor = [UIColor blackColor].CGColor;
-  _colorSample.layer.borderWidth = .5f;
-  _colorSample.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin;
-  [self.contentView addSubview:_colorSample];
-
-  UILabel* redLabel = [[UILabel alloc] initWithFrame:CGRectMake(10.0f, CGRectGetMaxY(_colorSample.frame) + 20, 0.0f, 0.0f)];
-  redLabel.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleRightMargin;
-  [redLabel setText:@"Red"];
-  [redLabel sizeToFit];
-  [self.contentView addSubview:redLabel];
-
-  _redSlider = [[FBSliderView alloc] initWithFrame:CGRectMake(60, CGRectGetMaxY(_colorSample.frame) + 20, width - 60 - 50, 0.0f)];
-  [_redSlider addTarget:self action:@selector(onSliderValueChanged:) forControlEvents:UIControlEventValueChanged];
-  _redSlider.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
-  _redSlider.value = 1.0f;
-  _redSlider.tag = 0;
-  [self.contentView addSubview:_redSlider];
-
-  _redTextField = [[UITextField alloc] initWithFrame:CGRectMake(width - 40, CGRectGetMaxY(_colorSample.frame) + 20, 0.0f, 0.0f)];
-  _redTextField.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin;
-  _redTextField.tag = 0;
-  [_redTextField setText:@"255"];
-  [_redTextField setKeyboardType:UIKeyboardTypeNumbersAndPunctuation];
-  [_redTextField sizeToFit];
-  [_redTextField setDelegate:self];
-  [self.contentView addSubview:_redTextField];
-
-  UILabel* greenLabel = [[UILabel alloc] initWithFrame:CGRectMake(10.0f, CGRectGetMaxY(_redSlider.frame) + 20, 0.0f, 0.0f)];
-  greenLabel.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleRightMargin;
-  [greenLabel setText:@"Green"];
-  [greenLabel sizeToFit];
-  [self.contentView addSubview:greenLabel];
-
-  _greenSlider = [[FBSliderView alloc] initWithFrame:CGRectMake(60, CGRectGetMaxY(_redSlider.frame) + 20, width - 60 - 50, 0.0f)];
-  [_greenSlider addTarget:self action:@selector(onSliderValueChanged:) forControlEvents:UIControlEventValueChanged];
-  _greenSlider.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
-  _greenSlider.value = 1.0f;
-  _greenSlider.tag = 1;
-  [self.contentView addSubview:_greenSlider];
-
-  _greenTextField = [[UITextField alloc] initWithFrame:CGRectMake(width - 40, CGRectGetMaxY(_redSlider.frame) + 20, 0.0f, 0.0f)];
-  _greenTextField.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin;
-  _greenTextField.tag = 1;
-  [_greenTextField setText:@"255"];
-  [_greenTextField setKeyboardType:UIKeyboardTypeNumbersAndPunctuation];
-  [_greenTextField sizeToFit];
-  [_greenTextField setDelegate:self];
-  [self.contentView addSubview:_greenTextField];
-
-  UILabel* blueLabel = [[UILabel alloc] initWithFrame:CGRectMake(10.0f, CGRectGetMaxY(_greenSlider.frame) + 20, 0.0f, 0.0f)];
-  blueLabel.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleRightMargin;
-  [blueLabel setText:@"Blue"];
-  [blueLabel sizeToFit];
-  [self.contentView addSubview:blueLabel];
-
-  _blueSlider = [[FBSliderView alloc] initWithFrame:CGRectMake(60, CGRectGetMaxY(_greenSlider.frame) + 20, width - 60 - 50, 0.0f)];
-  [_blueSlider addTarget:self action:@selector(onSliderValueChanged:) forControlEvents:UIControlEventValueChanged];
-  _blueSlider.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
-  _blueSlider.value = 1.0f;
-  _blueSlider.tag = 2;
-  [self.contentView addSubview:_blueSlider];
-
-  _blueTextField = [[UITextField alloc] initWithFrame:CGRectMake(width - 40, CGRectGetMaxY(_greenSlider.frame) + 20, 0.0f, 0.0f)];
-  _blueTextField.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin;
-  _blueTextField.tag = 2;
-  [_blueTextField setText:@"255"];
-  [_blueTextField setKeyboardType:UIKeyboardTypeNumbersAndPunctuation];
-  [_blueTextField sizeToFit];
-  [_blueTextField setDelegate:self];
-  [self.contentView addSubview:_blueTextField];
-
-  UILabel* alphaLabel = [[UILabel alloc] initWithFrame:CGRectMake(10.0f, CGRectGetMaxY(_blueSlider.frame) + 20, 0.0f, 0.0f)];
-  alphaLabel.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleRightMargin;
-  [alphaLabel setText:@"Alpha"];
-  [alphaLabel sizeToFit];
-  [self.contentView addSubview:alphaLabel];
-
-  _alphaSlider = [[FBSliderView alloc] initWithFrame:CGRectMake(60, CGRectGetMaxY(_blueSlider.frame) + 20, width - 60 - 50, 0.0f)];
-  [_alphaSlider addTarget:self action:@selector(onSliderValueChanged:) forControlEvents:UIControlEventValueChanged];
-  _alphaSlider.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
-  _alphaSlider.value = 1.0f;
-  _alphaSlider.tag = 3;
-  [self.contentView addSubview:_alphaSlider];
-
-  _alphaTextField = [[UITextField alloc] initWithFrame:CGRectMake(width - 40, CGRectGetMaxY(_blueSlider.frame) + 20, 0.0f, 0.0f)];
-  _alphaTextField.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin;
-  _alphaTextField.tag = 3;
-  [_alphaTextField setText:@"255"];
-  [_alphaTextField setKeyboardType:UIKeyboardTypeNumbersAndPunctuation];
-  [_alphaTextField sizeToFit];
-  [_alphaTextField setDelegate:self];
-  [self.contentView addSubview:_alphaTextField];
-
-  [self setColor:[UIColor whiteColor]];
+  FBColorComponentView* colorComponentView = [[FBColorComponentView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, width, 30.0f)];
+  [colorComponentView.slider addTarget:self action:@selector(onSliderValueChanged:) forControlEvents:UIControlEventValueChanged];
+  colorComponentView.label.text = title;
+  [colorComponentView.label sizeToFit];
+  colorComponentView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
+  colorComponentView.textField.delegate = self;
+  colorComponentView.tag  = tag;
+  return colorComponentView;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -193,16 +129,15 @@
     _colorComponents[2] = components[2];
     _colorComponents[3] = components[3];
   }
-  [self updateSliders];
-  [self.colorSample setBackgroundColor:[self selectedColor]];
-  [self updateTextFields];
+  if ([self isViewLoaded]) {
+    [self updateUIControls];
+  }
 }
 
 - (IBAction)onSliderValueChanged:(FBSliderView*)slider
 {
-  [self updateColorComponentAtIndex:slider.tag withValue:slider.value];
-  [self.colorSample setBackgroundColor:[self selectedColor]];
-  [self updateTextFields];
+  _colorComponents[slider.tag] = slider.value;
+  [self updateUIControls];
   if (self.colorValueDidChangeCallback) {
     self.colorValueDidChangeCallback([self selectedColor]);
   }
@@ -236,10 +171,9 @@
 
   BOOL isValid = [newString floatValue] <= 255.0f;
   if (isValid) {
-    FBSliderView* slider = [self sliderWithTag:textField.tag];
-    [slider setValue:[newString floatValue] / 255.0f];
-    [self updateColorComponentAtIndex:textField.tag withValue:slider.value];
+    _colorComponents[textField.tag] = [newString floatValue] / 255.0f;
     [self.colorSample setBackgroundColor:[self selectedColor]];
+    [self updateSliders];
     if (self.colorValueDidChangeCallback) {
       self.colorValueDidChangeCallback([self selectedColor]);
     }
@@ -260,7 +194,8 @@
   // Your app might not need or want this behavior.
   CGRect aRect = self.view.frame;
   aRect.size.height -= kbSize.height;
-  if (!CGRectContainsPoint(aRect, self.activeField.frame.origin) ) {
+  CGRect activeFieldFrame = [self.activeField convertRect:self.activeField.bounds fromView:self.view];
+  if (!CGRectContainsPoint(aRect, activeFieldFrame.origin) ) {
     [self.view scrollRectToVisible:self.activeField.frame animated:YES];
   }
 }
@@ -272,54 +207,45 @@
   self.view.scrollIndicatorInsets = contentInsets;
 }
 
-#pragma mark - Private
-
-- (FBSliderView*)sliderWithTag:(NSUInteger)tag
-{
-  switch (tag) {
-    case 0:
-      return self.redSlider;
-      break;
-    case 1:
-      return self.greenSlider;
-      break;
-    case 2:
-      return self.blueSlider;
-      break;
-    default:
-      return self.alphaSlider;
-      break;
-  }
-}
+#pragma mark - Private methods
 
 - (UIColor*)selectedColor
 {
   return [UIColor colorWithRed:_colorComponents[0] green:_colorComponents[1] blue:_colorComponents[2] alpha:_colorComponents[3]];
 }
 
-- (void)updateColorComponentAtIndex:(NSUInteger)index withValue:(CGFloat)value
+- (void)updateUIControls
 {
-  _colorComponents[index] = value;
+  [self.colorSample setBackgroundColor:[self selectedColor]];
   [self updateSliders];
+  [self updateTextFields];
 }
 
 - (void)updateSliders
 {
-  [self updateSlider:self.redSlider colorIndex:0];
-  [self updateSlider:self.greenSlider colorIndex:1];
-  [self updateSlider:self.blueSlider colorIndex:2];
+  [self.colorComponentViews enumerateObjectsUsingBlock:^(FBColorComponentView* colorComponentView, NSUInteger idx, BOOL *stop) {
+    FBSliderView* slider = colorComponentView.slider;
+    if (idx < 3) {
+      [self updateSlider:slider];
+    }
+    [slider setValue:_colorComponents[slider.tag]];
+  }];
 }
 
 - (void)updateTextFields
 {
-  self.redTextField.text = [NSString stringWithFormat:@"%d", (NSInteger)(_colorComponents[0] * 255)];
-  self.greenTextField.text = [NSString stringWithFormat:@"%d", (NSInteger)(_colorComponents[1] * 255)];
-  self.blueTextField.text = [NSString stringWithFormat:@"%d", (NSInteger)(_colorComponents[2] * 255)];
-  self.alphaTextField.text = [NSString stringWithFormat:@"%d", (NSInteger)(_colorComponents[3] * 100)];
+  [self.colorComponentViews enumerateObjectsUsingBlock:^(FBColorComponentView* colorComponentView, NSUInteger idx, BOOL *stop) {
+    if (idx < 3) {
+      colorComponentView.textField.text = [NSString stringWithFormat:@"%d", (NSInteger)(_colorComponents[idx] * 255)];
+    } else {
+      colorComponentView.textField.text = [NSString stringWithFormat:@"%d", (NSInteger)(_colorComponents[idx] * 100)];
+    }
+  }];
 }
 
-- (void)updateSlider:(FBSliderView*)slider colorIndex:(NSInteger)colorIndex
+- (void)updateSlider:(FBSliderView*)slider
 {
+  NSUInteger colorIndex = slider.tag;
   float currentColorValue = _colorComponents[colorIndex];
   float colors[12];
   for (int i = 0; i < 4 ; i++)
@@ -335,6 +261,14 @@
   UIColor* middle = [UIColor colorWithRed:colors[4] green:colors[5] blue:colors[6] alpha:1.0f];
   UIColor* end = [UIColor colorWithRed:colors[8] green:colors[9] blue:colors[10] alpha:1.0f];
   [slider setColors:@[(id)start.CGColor, (id)middle.CGColor, (id)end.CGColor]];
+}
+
+- (void)dealloc
+{
+  [self.colorComponentViews enumerateObjectsUsingBlock:^(FBColorComponentView* colorComponentView, NSUInteger idx, BOOL *stop) {
+    colorComponentView.textField.delegate = nil;
+    [colorComponentView.slider removeTarget:self action:@selector(onSliderValueChanged:) forControlEvents:UIControlEventValueChanged];
+  }];
 }
 
 @end
