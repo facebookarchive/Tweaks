@@ -15,12 +15,18 @@
 @property(nonatomic, strong) UILabel* label;
 @property(nonatomic, strong) FBSliderView* slider;
 @property(nonatomic, strong) UITextField* textField;
+@property(nonatomic, assign) BOOL didSetupConstraints;
 
 @end
 
 @implementation FBColorComponentView
 
-- (id)initWithFrame:(CGRect)frame
++ (BOOL)requiresConstraintBasedLayout
+{
+  return YES;
+}
+
+- (instancetype)initWithFrame:(CGRect)frame
 {
   self = [super initWithFrame:frame];
   if (self) {
@@ -40,22 +46,19 @@
 
 - (void)baseInit
 {
-  CGFloat width = CGRectGetWidth(self.frame);
-
-  self.label = [[UILabel alloc] initWithFrame:CGRectZero];
-  self.label.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleRightMargin;
+  self.label = [[UILabel alloc] init];
+  self.label.translatesAutoresizingMaskIntoConstraints = NO;
   [self addSubview:self.label];
 
-  self.slider = [[FBSliderView alloc] initWithFrame:CGRectMake(50, 0.0f, width - 60 - 50, 0.0f)];
-  self.slider.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
+  self.slider = [[FBSliderView alloc] init];
   self.slider.value = 1.0f;
+  self.slider.translatesAutoresizingMaskIntoConstraints = NO;
   [self addSubview:self.slider];
 
-  self.textField = [[UITextField alloc] initWithFrame:CGRectMake(width - 40, 0.0f, 0.0f, 0.0f)];
-  self.textField.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin;
-  [self.textField setText:@"255"];
+  self.textField = [[UITextField alloc] init];
+  self.textField.borderStyle = UITextBorderStyleRoundedRect;
+  self.textField.translatesAutoresizingMaskIntoConstraints = NO;
   [self.textField setKeyboardType:UIKeyboardTypeNumbersAndPunctuation];
-  [self.textField sizeToFit];
   [self addSubview:self.textField];
 }
 
@@ -64,6 +67,23 @@
   [super setTag:tag];
   self.textField.tag = tag;
   self.slider.tag = tag;
+}
+
+- (void)updateConstraints
+{
+  if (self.didSetupConstraints == NO){
+    [self setupConstraints];
+    self.didSetupConstraints = YES;
+  }
+  [super updateConstraints];
+}
+
+- (void)setupConstraints
+{
+  NSDictionary *views = @{ @"label" : self.label, @"slider" : self.slider, @"textField" : self.textField };
+  [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[label(50)]-10-[slider]-10-[textField(50)]|" options:NSLayoutFormatAlignAllCenterY metrics:nil views:views]];
+  [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[label]|" options:0 metrics:nil views:views]];
+  [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[textField]|" options:0 metrics:nil views:views]];
 }
 
 @end

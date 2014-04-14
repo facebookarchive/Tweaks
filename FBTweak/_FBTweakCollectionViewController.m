@@ -97,6 +97,7 @@
   [super viewWillAppear:animated];
   
   [_tableView deselectRowAtIndexPath:_tableView.indexPathForSelectedRow animated:animated];
+  [_tableView reloadData];
 }
 
 - (void)_keyboardFrameChanged:(NSNotification *)notification
@@ -162,10 +163,13 @@
     FBTweakValue value = (cell.tweak.currentValue ?: cell.tweak.defaultValue);
     FBRGBViewController *rgbViewController = [[FBRGBViewController alloc] init];
     [rgbViewController setColor:[UIColor colorWithHexString:value]];
-    __weak _FBTweakTableViewCell *weakCell = cell;
+
+    FBTweakCollection *collection = _tweakCategory.tweakCollections[indexPath.section];
+    FBTweak *tweak = collection.tweaks[indexPath.row];
     rgbViewController.colorValueDidChangeCallback = ^(UIColor* color) {
-      weakCell.tweak.currentValue = [color hexString];
+      tweak.currentValue = [color hexString];
     };
+
     [self.navigationController pushViewController:rgbViewController animated:YES];
   }
 }

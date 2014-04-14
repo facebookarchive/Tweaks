@@ -21,46 +21,46 @@ static const CGFloat sBarHeight = 3.0f;
 
 @implementation FBSliderView
 
++ (BOOL)requiresConstraintBasedLayout
+{
+  return YES;
+}
+
 - (instancetype)initWithFrame:(CGRect)frame
 {
-  NSParameterAssert(CGRectGetWidth(frame) > sMargin * 2 );
-  CGSize sliderSize = frame.size;
-  sliderSize.height = sSliderHeight;
-  frame.size = sliderSize;
   self = [super initWithFrame:frame];
   if (self) {
     _minimumValue = 0.0f;
     _maximumValue = 1.0f;
     _value = 0.5f;
 
-    CGFloat height = sSliderHeight;
-    CGFloat width = CGRectGetWidth(self.bounds);
+    self.layer.delegate = self;
+
     _backgroundLayer = [CAGradientLayer layer];
     _backgroundLayer.cornerRadius = sBarHeight / 2.0f;
     _backgroundLayer.startPoint = CGPointMake(0.0f, 0.5f);
     _backgroundLayer.endPoint = CGPointMake(1.0f, 0.5f);
     _backgroundLayer.locations = @[@(0.0f), @(0.5f), @(1.0f)];
-    _backgroundLayer.bounds = CGRectMake(0, 0, width - 2 * sMargin, sBarHeight);
-    _backgroundLayer.position = CGPointMake(width / 2, height / 2);
     [self.layer addSublayer:_backgroundLayer];
 
-    CGFloat dimension = sSliderHeight;
     _indicatorLayer = [CALayer layer];
-    _indicatorLayer.cornerRadius = dimension / 2;
+    _indicatorLayer.cornerRadius = sSliderHeight / 2;
     _indicatorLayer.backgroundColor = [UIColor whiteColor].CGColor;
-    _indicatorLayer.bounds = CGRectMake(0, 0, dimension, dimension);
-    _indicatorLayer.position = CGPointMake(CGRectGetWidth(self.bounds) / 2, sSliderHeight / 2);
     _indicatorLayer.shadowColor = [UIColor blackColor].CGColor;
     _indicatorLayer.shadowOffset = CGSizeZero;
     _indicatorLayer.shadowRadius = 2;
     _indicatorLayer.shadowOpacity = 0.5f;
     [self.layer addSublayer:_indicatorLayer];
 
-    _value = 0.5f;
     __attribute__((objc_precise_lifetime)) id color = (__bridge id)[UIColor blueColor].CGColor;
     [self setColors:@[color, color]];
   }
   return self;
+}
+
+- (CGSize)intrinsicContentSize
+{
+  return CGSizeMake(UIViewNoIntrinsicMetric, sSliderHeight);
 }
 
 - (void)setValue:(CGFloat)value
@@ -129,6 +129,20 @@ static const CGFloat sBarHeight = 3.0f;
   CGFloat value = self.minimumValue + percentage * (self.maximumValue - self.minimumValue);
   [self setValue:value];
   [self sendActionsForControlEvents:UIControlEventValueChanged];
+}
+
+- (void)layoutSublayersOfLayer:(CALayer *)layer
+{
+  if (layer == self.layer) {
+    CGFloat height = sSliderHeight;
+    CGFloat width = CGRectGetWidth(self.bounds) - 2 * sMargin;
+    _backgroundLayer.bounds = CGRectMake(0, 0, width , sBarHeight);
+    _backgroundLayer.position = CGPointMake(CGRectGetWidth(self.bounds) / 2, height / 2);
+    CGFloat dimension = sSliderHeight;
+    CGFloat percentage = (self.value - self.minimumValue) / (self.maximumValue - self.minimumValue);
+    _indicatorLayer.bounds = CGRectMake(0, 0, dimension, dimension);
+    _indicatorLayer.position = CGPointMake(width * percentage + sMargin, sSliderHeight / 2);
+  }
 }
 
 @end

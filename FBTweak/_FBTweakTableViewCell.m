@@ -10,6 +10,27 @@
 #import "FBTweak.h"
 #import "_FBTweakTableViewCell.h"
 
+extern UIColor* _FBColorFromHEXString(NSString* rgb);
+
+@interface UIImage (Utils)
++ (UIImage*)imageWithColor:(UIColor*)color size:(CGSize)size;
+@end
+
+@implementation UIImage (Utils)
+
++ (UIImage*)imageWithColor:(UIColor*)color size:(CGSize)size
+{
+  UIGraphicsBeginImageContext(size);
+  UIBezierPath* rPath = [UIBezierPath bezierPathWithRect:CGRectMake(0., 0., size.width, size.height)];
+  [color setFill];
+  [rPath fill];
+  UIImage* image = UIGraphicsGetImageFromCurrentImageContext();
+  UIGraphicsEndImageContext();
+  return image;
+}
+
+@end
+
 @interface _FBTweakTableViewCell () <UITextFieldDelegate>
 @end
 
@@ -115,11 +136,11 @@
 {
   if (_tweak != tweak) {
     _tweak = tweak;
-    self.textLabel.text = tweak.name;
-    FBTweakValue value = (tweak.currentValue ?: tweak.defaultValue);
-    [self _updateMode:[self mode]];
-    [self _updateValue:value write:NO];
   }
+  self.textLabel.text = tweak.name;
+  FBTweakValue value = (tweak.currentValue ?: tweak.defaultValue);
+  [self _updateMode:[self mode]];
+  [self _updateValue:value write:NO];
 }
 
 - (void)_updateMode:(_FBTweakTableViewCellMode)mode
@@ -176,7 +197,7 @@
     _textField.hidden = YES;
     _stepper.hidden = YES;
   }
-  
+
   [self setNeedsLayout];
   [self layoutIfNeeded];
 }
@@ -217,8 +238,10 @@
   
   if (_mode == _FBTweakTableViewCellModeBoolean) {
     _switch.on = [value boolValue];
-  } else if (_mode == _FBTweakTableViewCellModeString || _mode == _FBTweakTableViewCellModeColor) {
+  } else if (_mode == _FBTweakTableViewCellModeString) {
     _textField.text = value;
+  } else if (_mode == _FBTweakTableViewCellModeColor) {
+    [self.imageView setImage:[UIImage imageWithColor:_FBColorFromHEXString(value) size:CGSizeMake(30, 30)]];
   } else if (_mode == _FBTweakTableViewCellModeInteger) {
     _stepper.value = [value longLongValue];
     _textField.text = [value stringValue];

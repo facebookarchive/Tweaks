@@ -17,8 +17,7 @@
 }
 
 @property(nonatomic, strong) UIView* colorSample;
-@property(nonatomic, strong) UIView* contentView;
-@property(nonatomic, strong) UIScrollView* view;
+@property(nonatomic, strong) UIScrollView* scrollView;
 @property(nonatomic, strong) NSArray* colorComponentViews;
 
 @property(nonatomic, assign) BOOL keyboardIsShown;
@@ -37,53 +36,49 @@
   return self;
 }
 
-- (void)loadView
-{
-  UIScrollView* scrollView = [[UIScrollView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-  scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-  scrollView.contentSize = [[UIScreen mainScreen] bounds].size;
-  self.contentView = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-  self.contentView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-  self.contentView.backgroundColor = [UIColor lightGrayColor];
-  [scrollView addSubview:self.contentView];
-  self.view = scrollView;
-
-  CGFloat width = CGRectGetWidth(self.view.bounds);
-
-  self.colorSample = [[UIView alloc] initWithFrame:CGRectMake(10, 20, width - 20, 30)];
-  self.colorSample.layer.borderColor = [UIColor blackColor].CGColor;
-  self.colorSample.layer.borderWidth = .5f;
-  self.colorSample.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin;
-  [self.contentView addSubview:_colorSample];
-
-  NSMutableArray* tmp = [NSMutableArray array];
-  CGFloat y = CGRectGetMaxY(self.colorSample.frame) + 20;
-  CGFloat x = CGRectGetMidX(self.colorSample.frame);
-  NSArray* titles = @[@"Red", @"Green", @"Blue", @"Alpha"];
-  for(int i = 0; i < 4; ++i) {
-    UIView* colorComponentView = [self colorComponentViewWithTitle:titles[i] tag:i];
-    colorComponentView.center = CGPointMake(x, y);
-    [self.contentView addSubview:colorComponentView];
-    [tmp addObject:colorComponentView];
-    y += CGRectGetHeight(colorComponentView.frame) + 20;
-  }
-  self.colorComponentViews = [tmp copy];
-}
-
 - (void)viewDidLoad
 {
   [super viewDidLoad];
+
+  self.scrollView = [[UIScrollView alloc] init];
+  self.scrollView.translatesAutoresizingMaskIntoConstraints = NO;
+  [self.view addSubview:self.scrollView];
+  NSDictionary *views = @{ @"scrollView" : self.scrollView};
+  [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[scrollView]|" options:0 metrics:nil views:views]];
+  [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[scrollView]|" options:0 metrics:nil views:views]];
+
+  self.colorSample = [[UIView alloc] init];
+  self.colorSample.layer.borderColor = [UIColor blackColor].CGColor;
+  self.colorSample.layer.borderWidth = .5f;
+  self.colorSample.translatesAutoresizingMaskIntoConstraints = NO;
+  [self.scrollView addSubview:self.colorSample];
+  views = @{ @"colorSample" : self.colorSample};
+  [self.scrollView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[colorSample]-10-|" options:0 metrics:nil views:views]];
+  [self.scrollView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[colorSample(30)]" options:0 metrics:nil views:views]];
+
+  NSMutableArray* tmp = [NSMutableArray array];
+  NSArray* titles = @[@"Red", @"Green", @"Blue", @"Alpha"];
+  UIView* previousView = self.colorSample;
+  for(int i = 0; i < 4; ++i) {
+    UIView* colorComponentView = [self colorComponentViewWithTitle:titles[i] tag:i];
+    [self.scrollView addSubview:colorComponentView];
+    [tmp addObject:colorComponentView];
+    views = NSDictionaryOfVariableBindings(previousView, colorComponentView);
+    [self.scrollView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[colorComponentView]-10-|" options:0 metrics:nil views:views]];
+    [self.scrollView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[previousView]-10-[colorComponentView]" options:0 metrics:nil views:views]];
+    previousView = colorComponentView;
+  }
+  self.colorComponentViews = [tmp copy];
+
   [self updateUIControls];
 }
 
 - (UIView*)colorComponentViewWithTitle:(NSString*)title tag:(NSUInteger)tag
 {
-  CGFloat width = CGRectGetWidth(self.view.bounds);
-  FBColorComponentView* colorComponentView = [[FBColorComponentView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, width, 30.0f)];
+  FBColorComponentView* colorComponentView = [[FBColorComponentView alloc] init];
   [colorComponentView.slider addTarget:self action:@selector(onSliderValueChanged:) forControlEvents:UIControlEventValueChanged];
   colorComponentView.label.text = title;
-  [colorComponentView.label sizeToFit];
-  colorComponentView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
+  colorComponentView.translatesAutoresizingMaskIntoConstraints = NO;
   colorComponentView.textField.delegate = self;
   colorComponentView.tag  = tag;
   return colorComponentView;
@@ -172,10 +167,11 @@
   BOOL isValid = [newString floatValue] <= 255.0f;
   if (isValid) {
     _colorComponents[textField.tag] = [newString floatValue] / 255.0f;
-    [self.colorSample setBackgroundColor:[self selectedColor]];
+    UIColor* selectedColor = [self selectedColor];
+    [self.colorSample setBackgroundColor:selectedColor];
     [self updateSliders];
     if (self.colorValueDidChangeCallback) {
-      self.colorValueDidChangeCallback([self selectedColor]);
+      self.colorValueDidChangeCallback(selectedColor);
     }
   }
   return isValid;
@@ -185,26 +181,32 @@
 {
   NSDictionary* info = [aNotification userInfo];
   CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+  CGFloat kbHeight = kbSize.height;
+  if (UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
+    kbHeight = kbSize.width;
+  }
 
-  UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, kbSize.height, 0.0);
-  self.view.contentInset = contentInsets;
-  self.view.scrollIndicatorInsets = contentInsets;
+  UIEdgeInsets contentInsets = self.scrollView.contentInset;
+  contentInsets.bottom = kbHeight;
+  self.scrollView.contentInset = contentInsets;
+  self.scrollView.scrollIndicatorInsets = contentInsets;
 
   // If active text field is hidden by keyboard, scroll it so it's visible
   // Your app might not need or want this behavior.
-  CGRect aRect = self.view.frame;
-  aRect.size.height -= kbSize.height;
-  CGRect activeFieldFrame = [self.activeField convertRect:self.activeField.bounds fromView:self.view];
+  CGRect aRect = self.scrollView.frame;
+  aRect.size.height -= kbHeight;
+  CGRect activeFieldFrame = [self.scrollView convertRect:self.activeField.bounds fromView:self.activeField];
   if (!CGRectContainsPoint(aRect, activeFieldFrame.origin) ) {
-    [self.view scrollRectToVisible:self.activeField.frame animated:YES];
+    [self.scrollView scrollRectToVisible:self.activeField.frame animated:YES];
   }
 }
 
 - (void)keyboardWillBeHidden:(NSNotification*)aNotification
 {
-  UIEdgeInsets contentInsets = UIEdgeInsetsZero;
-  self.view.contentInset = contentInsets;
-  self.view.scrollIndicatorInsets = contentInsets;
+  UIEdgeInsets contentInsets = self.scrollView.contentInset;
+  contentInsets.bottom = 0;
+  self.scrollView.contentInset = contentInsets;
+  self.scrollView.scrollIndicatorInsets = contentInsets;
 }
 
 #pragma mark - Private methods
@@ -235,11 +237,7 @@
 - (void)updateTextFields
 {
   [self.colorComponentViews enumerateObjectsUsingBlock:^(FBColorComponentView* colorComponentView, NSUInteger idx, BOOL *stop) {
-    if (idx < 3) {
       colorComponentView.textField.text = [NSString stringWithFormat:@"%d", (NSInteger)(_colorComponents[idx] * 255)];
-    } else {
-      colorComponentView.textField.text = [NSString stringWithFormat:@"%d", (NSInteger)(_colorComponents[idx] * 100)];
-    }
   }];
 }
 
