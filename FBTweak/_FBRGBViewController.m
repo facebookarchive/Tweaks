@@ -18,6 +18,7 @@
 
 @property(nonatomic, strong) UIView* colorSample;
 @property(nonatomic, strong) UIScrollView* scrollView;
+@property(nonatomic, strong) UIView* contentView;
 @property(nonatomic, strong) NSArray* colorComponentViews;
 
 @property(nonatomic, assign) BOOL keyboardIsShown;
@@ -47,27 +48,52 @@
   [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[scrollView]|" options:0 metrics:nil views:views]];
   [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[scrollView]|" options:0 metrics:nil views:views]];
 
+  self.contentView = [[UIView alloc] init];
+  self.contentView.translatesAutoresizingMaskIntoConstraints = NO;
+  [self.scrollView addSubview:self.contentView];
+  views = @{ @"contentView" : self.contentView};
+  [self.scrollView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[contentView]|" options:0 metrics:nil views:views]];
+  NSLayoutConstraint *leftConstraint = [NSLayoutConstraint constraintWithItem:self.contentView
+                                                                    attribute:NSLayoutAttributeLeading
+                                                                    relatedBy:0
+                                                                       toItem:self.view
+                                                                    attribute:NSLayoutAttributeLeft
+                                                                   multiplier:1.0
+                                                                     constant:0];
+  [self.view addConstraint:leftConstraint];
+
+  NSLayoutConstraint *rightConstraint = [NSLayoutConstraint constraintWithItem:self.contentView
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                     relatedBy:0
+                                                                        toItem:self.view
+                                                                     attribute:NSLayoutAttributeRight
+                                                                    multiplier:1.0
+                                                                      constant:0];
+  [self.view addConstraint:rightConstraint];
+
   self.colorSample = [[UIView alloc] init];
   self.colorSample.layer.borderColor = [UIColor blackColor].CGColor;
   self.colorSample.layer.borderWidth = .5f;
   self.colorSample.translatesAutoresizingMaskIntoConstraints = NO;
-  [self.scrollView addSubview:self.colorSample];
+  [self.contentView addSubview:self.colorSample];
   views = @{ @"colorSample" : self.colorSample};
-  [self.scrollView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[colorSample]-10-|" options:0 metrics:nil views:views]];
-  [self.scrollView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[colorSample(30)]" options:0 metrics:nil views:views]];
+  [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[colorSample]-10-|" options:0 metrics:nil views:views]];
+  [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-20-[colorSample(30)]" options:0 metrics:nil views:views]];
 
   NSMutableArray* tmp = [NSMutableArray array];
   NSArray* titles = @[@"Red", @"Green", @"Blue", @"Alpha"];
   UIView* previousView = self.colorSample;
   for(int i = 0; i < 4; ++i) {
     UIView* colorComponentView = [self colorComponentViewWithTitle:titles[i] tag:i];
-    [self.scrollView addSubview:colorComponentView];
+    [self.contentView addSubview:colorComponentView];
     [tmp addObject:colorComponentView];
     views = NSDictionaryOfVariableBindings(previousView, colorComponentView);
-    [self.scrollView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[colorComponentView]-10-|" options:0 metrics:nil views:views]];
-    [self.scrollView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[previousView]-10-[colorComponentView]" options:0 metrics:nil views:views]];
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[colorComponentView]-10-|" options:0 metrics:nil views:views]];
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[previousView]-20-[colorComponentView]" options:0 metrics:nil views:views]];
     previousView = colorComponentView;
   }
+  views = NSDictionaryOfVariableBindings(previousView);
+  [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[previousView]-10-|" options:0 metrics:nil views:views]];
   self.colorComponentViews = [tmp copy];
 
   [self updateUIControls];
@@ -194,10 +220,11 @@
   // If active text field is hidden by keyboard, scroll it so it's visible
   // Your app might not need or want this behavior.
   CGRect aRect = self.scrollView.frame;
-  aRect.size.height -= kbHeight;
-  CGRect activeFieldFrame = [self.scrollView convertRect:self.activeField.bounds fromView:self.activeField];
+  aRect.size.height = aRect.size.height - contentInsets.top - contentInsets.bottom;
+  CGRect activeFieldFrame = [self.contentView convertRect:self.activeField.frame fromView:self.activeField];
   if (!CGRectContainsPoint(aRect, activeFieldFrame.origin) ) {
-    [self.scrollView scrollRectToVisible:self.activeField.frame animated:YES];
+    CGPoint offset = CGPointMake(0, activeFieldFrame.origin.y - kbHeight);
+    [self.scrollView setContentOffset:offset animated:YES];
   }
 }
 
@@ -207,6 +234,7 @@
   contentInsets.bottom = 0;
   self.scrollView.contentInset = contentInsets;
   self.scrollView.scrollIndicatorInsets = contentInsets;
+  self.scrollView.contentOffset = CGPointMake(0, -contentInsets.top);
 }
 
 #pragma mark - Private methods
