@@ -114,8 +114,8 @@
 {
   // register for keyboard notifications
   [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(keyboardWasShown:)
-                                               name:UIKeyboardDidShowNotification object:nil];
+                                           selector:@selector(keyboardWillBeShown:)
+                                               name:UIKeyboardWillShowNotification object:nil];
 
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(keyboardWillBeHidden:)
@@ -126,7 +126,7 @@
 {
   // unregister for keyboard notifications while not visible.
   [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                  name:UIKeyboardDidShowNotification
+                                                  name:UIKeyboardWillShowNotification
                                                 object:nil];
 
   [[NSNotificationCenter defaultCenter] removeObserver:self
@@ -203,29 +203,34 @@
   return isValid;
 }
 
-- (void)keyboardWasShown:(NSNotification*)aNotification
+- (void)keyboardWillBeShown:(NSNotification*)aNotification
 {
   NSDictionary* info = [aNotification userInfo];
+  NSTimeInterval duration = [info[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+  UIViewAnimationCurve curve = [info[UIKeyboardAnimationCurveUserInfoKey] integerValue];
   CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
   CGFloat kbHeight = kbSize.height;
   if (UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
     kbHeight = kbSize.width;
   }
-
   UIEdgeInsets contentInsets = self.scrollView.contentInset;
   contentInsets.bottom = kbHeight;
-  self.scrollView.contentInset = contentInsets;
-  self.scrollView.scrollIndicatorInsets = contentInsets;
 
-  // If active text field is hidden by keyboard, scroll it so it's visible
-  // Your app might not need or want this behavior.
   CGRect aRect = self.scrollView.frame;
   aRect.size.height = aRect.size.height - contentInsets.top - contentInsets.bottom;
-  CGRect activeFieldFrame = [self.contentView convertRect:self.activeField.frame fromView:self.activeField];
+  CGRect activeFieldFrame = [self.contentView convertRect:self.activeField.frame fromView:self.activeField.superview];
+  CGPoint offset = self.scrollView.contentOffset;
   if (!CGRectContainsPoint(aRect, activeFieldFrame.origin) ) {
-    CGPoint offset = CGPointMake(0, activeFieldFrame.origin.y - kbHeight);
-    [self.scrollView setContentOffset:offset animated:YES];
+    offset = CGPointMake(0, CGRectGetMaxY(activeFieldFrame) - contentInsets.bottom);
   }
+  __weak typeof(self) weakself = self;
+  void (^animations)() = ^{
+    weakself.scrollView.contentInset = contentInsets;
+    weakself.scrollView.scrollIndicatorInsets = contentInsets;
+    weakself.scrollView.contentOffset = offset;
+  };
+  UIViewAnimationOptions options = (curve << 16) | UIViewAnimationOptionBeginFromCurrentState;
+  [UIView animateWithDuration:duration delay:0 options:options animations:animations completion:NULL];
 }
 
 - (void)keyboardWillBeHidden:(NSNotification*)aNotification
