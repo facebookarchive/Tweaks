@@ -10,12 +10,17 @@
 #import "_FBColorComponentView.h"
 #import "_FBSliderView.h"
 
-@interface FBColorComponentView ()
+static CGFloat const _FBColorComponentViewSpacing = 10.0f;
+static CGFloat const _FBColorComponentLabelWidth = 50.0f;
+static CGFloat const _FBColorComponentTextFieldWidth = 50.0f;
 
-@property(nonatomic, strong) UILabel* label;
-@property(nonatomic, strong) FBSliderView* slider;
-@property(nonatomic, strong) UITextField* textField;
-@property(nonatomic, assign) BOOL didSetupConstraints;
+@interface FBColorComponentView () {
+  BOOL _didSetupConstraints;
+}
+
+@property(nonatomic, strong, readwrite) UILabel* label;
+@property(nonatomic, strong, readwrite) FBSliderView* slider;
+@property(nonatomic, strong, readwrite) UITextField* textField;
 
 @end
 
@@ -30,7 +35,7 @@
 {
   self = [super initWithFrame:frame];
   if (self) {
-    [self baseInit];
+    [self _baseInit];
   }
   return self;
 }
@@ -39,49 +44,55 @@
 {
   self = [super initWithCoder:aDecoder];
   if (self) {
-    [self baseInit];
+    [self _baseInit];
   }
   return self;
-}
-
-- (void)baseInit
-{
-  self.label = [[UILabel alloc] init];
-  self.label.translatesAutoresizingMaskIntoConstraints = NO;
-  [self addSubview:self.label];
-
-  self.slider = [[FBSliderView alloc] init];
-  self.slider.value = 1.0f;
-  self.slider.translatesAutoresizingMaskIntoConstraints = NO;
-  [self addSubview:self.slider];
-
-  self.textField = [[UITextField alloc] init];
-  self.textField.borderStyle = UITextBorderStyleRoundedRect;
-  self.textField.translatesAutoresizingMaskIntoConstraints = NO;
-  [self.textField setKeyboardType:UIKeyboardTypeNumbersAndPunctuation];
-  [self addSubview:self.textField];
 }
 
 - (void)setTag:(NSInteger)tag
 {
   [super setTag:tag];
-  self.textField.tag = tag;
-  self.slider.tag = tag;
+  _textField.tag = tag;
+  _slider.tag = tag;
 }
 
 - (void)updateConstraints
 {
-  if (self.didSetupConstraints == NO){
-    [self setupConstraints];
-    self.didSetupConstraints = YES;
+  if (_didSetupConstraints == NO){
+    [self _setupConstraints];
+    _didSetupConstraints = YES;
   }
   [super updateConstraints];
 }
 
-- (void)setupConstraints
+#pragma mark - Private methods
+
+- (void)_baseInit
 {
-  NSDictionary *views = @{ @"label" : self.label, @"slider" : self.slider, @"textField" : self.textField };
-  [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[label(50)]-10-[slider]-10-[textField(50)]|" options:NSLayoutFormatAlignAllCenterY metrics:nil views:views]];
+  _label = [[UILabel alloc] init];
+  _label.translatesAutoresizingMaskIntoConstraints = NO;
+  [self addSubview:_label];
+
+  _slider = [[FBSliderView alloc] init];
+  _slider.value = 1.0f;
+  _slider.translatesAutoresizingMaskIntoConstraints = NO;
+  [self addSubview:_slider];
+
+  _textField = [[UITextField alloc] init];
+  _textField.borderStyle = UITextBorderStyleRoundedRect;
+  _textField.translatesAutoresizingMaskIntoConstraints = NO;
+  [_textField setKeyboardType:UIKeyboardTypeNumbersAndPunctuation];
+  [self addSubview:_textField];
+}
+
+- (void)_setupConstraints
+{
+  NSDictionary *views = @{ @"label" : _label, @"slider" : _slider, @"textField" : _textField };
+  NSDictionary* metrics = @{ @"margin" : @(_FBColorComponentViewSpacing),
+                             @"label_width" : @(_FBColorComponentLabelWidth),
+                             @"textfield_width" : @(_FBColorComponentTextFieldWidth) };
+  [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[label(label_width)]-margin-[slider]-margin-[textField(textfield_width)]|"
+                                                               options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
   [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[label]|" options:0 metrics:nil views:views]];
   [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[textField]|" options:0 metrics:nil views:views]];
 }

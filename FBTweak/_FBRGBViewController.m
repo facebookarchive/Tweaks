@@ -14,15 +14,14 @@
 @interface FBRGBViewController () <UITextFieldDelegate>
 {
   CGFloat _colorComponents[4];
+  UIView* _colorSample;
+  UIScrollView* _scrollView;
+  UIView* _contentView;
+  NSArray* _colorComponentViews;
+
+  BOOL _keyboardIsShown;
+  UITextField* __weak _activeField;
 }
-
-@property(nonatomic, strong) UIView* colorSample;
-@property(nonatomic, strong) UIScrollView* scrollView;
-@property(nonatomic, strong) UIView* contentView;
-@property(nonatomic, strong) NSArray* colorComponentViews;
-
-@property(nonatomic, assign) BOOL keyboardIsShown;
-@property(nonatomic, weak) UITextField* activeField;
 
 @end
 
@@ -41,19 +40,19 @@
 {
   [super viewDidLoad];
 
-  self.scrollView = [[UIScrollView alloc] init];
-  self.scrollView.translatesAutoresizingMaskIntoConstraints = NO;
-  [self.view addSubview:self.scrollView];
-  NSDictionary *views = @{ @"scrollView" : self.scrollView};
+  _scrollView = [[UIScrollView alloc] init];
+  _scrollView.translatesAutoresizingMaskIntoConstraints = NO;
+  [self.view addSubview:_scrollView];
+  NSDictionary *views = @{ @"scrollView" : _scrollView};
   [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[scrollView]|" options:0 metrics:nil views:views]];
   [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[scrollView]|" options:0 metrics:nil views:views]];
 
-  self.contentView = [[UIView alloc] init];
-  self.contentView.translatesAutoresizingMaskIntoConstraints = NO;
-  [self.scrollView addSubview:self.contentView];
-  views = @{ @"contentView" : self.contentView};
-  [self.scrollView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[contentView]|" options:0 metrics:nil views:views]];
-  NSLayoutConstraint *leftConstraint = [NSLayoutConstraint constraintWithItem:self.contentView
+  _contentView = [[UIView alloc] init];
+  _contentView.translatesAutoresizingMaskIntoConstraints = NO;
+  [_scrollView addSubview:_contentView];
+  views = @{ @"contentView" : _contentView};
+  [_scrollView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[contentView]|" options:0 metrics:nil views:views]];
+  NSLayoutConstraint *leftConstraint = [NSLayoutConstraint constraintWithItem:_contentView
                                                                     attribute:NSLayoutAttributeLeading
                                                                     relatedBy:0
                                                                        toItem:self.view
@@ -62,7 +61,7 @@
                                                                      constant:0];
   [self.view addConstraint:leftConstraint];
 
-  NSLayoutConstraint *rightConstraint = [NSLayoutConstraint constraintWithItem:self.contentView
+  NSLayoutConstraint *rightConstraint = [NSLayoutConstraint constraintWithItem:_contentView
                                                                      attribute:NSLayoutAttributeTrailing
                                                                      relatedBy:0
                                                                         toItem:self.view
@@ -71,54 +70,43 @@
                                                                       constant:0];
   [self.view addConstraint:rightConstraint];
 
-  self.colorSample = [[UIView alloc] init];
-  self.colorSample.layer.borderColor = [UIColor blackColor].CGColor;
-  self.colorSample.layer.borderWidth = .5f;
-  self.colorSample.translatesAutoresizingMaskIntoConstraints = NO;
-  [self.contentView addSubview:self.colorSample];
-  views = @{ @"colorSample" : self.colorSample};
-  [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[colorSample]-10-|" options:0 metrics:nil views:views]];
-  [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-20-[colorSample(30)]" options:0 metrics:nil views:views]];
+  _colorSample = [[UIView alloc] init];
+  _colorSample.layer.borderColor = [UIColor blackColor].CGColor;
+  _colorSample.layer.borderWidth = .5f;
+  _colorSample.translatesAutoresizingMaskIntoConstraints = NO;
+  [_contentView addSubview:_colorSample];
+  views = @{ @"colorSample" : _colorSample};
+  [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[colorSample]-10-|" options:0 metrics:nil views:views]];
+  [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-20-[colorSample(30)]" options:0 metrics:nil views:views]];
 
   NSMutableArray* tmp = [NSMutableArray array];
   NSArray* titles = @[@"Red", @"Green", @"Blue", @"Alpha"];
-  UIView* previousView = self.colorSample;
+  UIView* previousView = _colorSample;
   for(int i = 0; i < 4; ++i) {
-    UIView* colorComponentView = [self colorComponentViewWithTitle:titles[i] tag:i];
-    [self.contentView addSubview:colorComponentView];
+    UIView* colorComponentView = [self _colorComponentViewWithTitle:titles[i] tag:i];
+    [_contentView addSubview:colorComponentView];
     [tmp addObject:colorComponentView];
     views = NSDictionaryOfVariableBindings(previousView, colorComponentView);
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[colorComponentView]-10-|" options:0 metrics:nil views:views]];
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[previousView]-20-[colorComponentView]" options:0 metrics:nil views:views]];
+    [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[colorComponentView]-10-|" options:0 metrics:nil views:views]];
+    [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[previousView]-20-[colorComponentView]" options:0 metrics:nil views:views]];
     previousView = colorComponentView;
   }
   views = NSDictionaryOfVariableBindings(previousView);
-  [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[previousView]-10-|" options:0 metrics:nil views:views]];
-  self.colorComponentViews = [tmp copy];
+  [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[previousView]-10-|" options:0 metrics:nil views:views]];
+  _colorComponentViews = [tmp copy];
 
-  [self updateUIControls];
-}
-
-- (UIView*)colorComponentViewWithTitle:(NSString*)title tag:(NSUInteger)tag
-{
-  FBColorComponentView* colorComponentView = [[FBColorComponentView alloc] init];
-  [colorComponentView.slider addTarget:self action:@selector(onSliderValueChanged:) forControlEvents:UIControlEventValueChanged];
-  colorComponentView.label.text = title;
-  colorComponentView.translatesAutoresizingMaskIntoConstraints = NO;
-  colorComponentView.textField.delegate = self;
-  colorComponentView.tag  = tag;
-  return colorComponentView;
+  [self _updateUIControls];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
   // register for keyboard notifications
   [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(keyboardWillBeShown:)
+                                           selector:@selector(_keyboardWillBeShown:)
                                                name:UIKeyboardWillShowNotification object:nil];
 
   [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(keyboardWillBeHidden:)
+                                           selector:@selector(_keyboardWillBeHidden:)
                                                name:UIKeyboardWillHideNotification object:nil];
 }
 
@@ -151,27 +139,37 @@
     _colorComponents[3] = components[3];
   }
   if ([self isViewLoaded]) {
-    [self updateUIControls];
+    [self _updateUIControls];
   }
 }
 
 - (IBAction)onSliderValueChanged:(FBSliderView*)slider
 {
   _colorComponents[slider.tag] = slider.value;
-  [self updateUIControls];
-  if (self.colorValueDidChangeCallback) {
-    self.colorValueDidChangeCallback([self selectedColor]);
+  [self _updateUIControls];
+  if (_colorValueDidChangeCallback) {
+    _colorValueDidChangeCallback([self _selectedColor]);
   }
 }
 
+- (void)dealloc
+{
+  [_colorComponentViews enumerateObjectsUsingBlock:^(FBColorComponentView* colorComponentView, NSUInteger idx, BOOL *stop) {
+    colorComponentView.textField.delegate = nil;
+    [colorComponentView.slider removeTarget:self action:@selector(onSliderValueChanged:) forControlEvents:UIControlEventValueChanged];
+  }];
+}
+
+#pragma mark - UITextFieldDelegate methods
+
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
-  self.activeField = textField;
+  _activeField = textField;
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
-  self.activeField = nil;
+  _activeField = nil;
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
@@ -193,17 +191,19 @@
   BOOL isValid = [newString floatValue] <= 255.0f;
   if (isValid) {
     _colorComponents[textField.tag] = [newString floatValue] / 255.0f;
-    UIColor* selectedColor = [self selectedColor];
-    [self.colorSample setBackgroundColor:selectedColor];
-    [self updateSliders];
-    if (self.colorValueDidChangeCallback) {
-      self.colorValueDidChangeCallback(selectedColor);
+    UIColor* _selectedColor = [self _selectedColor];
+    [_colorSample setBackgroundColor:_selectedColor];
+    [self _updateSliders];
+    if (_colorValueDidChangeCallback) {
+      _colorValueDidChangeCallback(_selectedColor);
     }
   }
   return isValid;
 }
 
-- (void)keyboardWillBeShown:(NSNotification*)aNotification
+#pragma mark - Private methods
+
+- (void)_keyboardWillBeShown:(NSNotification*)aNotification
 {
   NSDictionary* info = [aNotification userInfo];
   NSTimeInterval duration = [info[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
@@ -213,68 +213,77 @@
   if (UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
     kbHeight = kbSize.width;
   }
-  UIEdgeInsets contentInsets = self.scrollView.contentInset;
+  UIEdgeInsets contentInsets = _scrollView.contentInset;
   contentInsets.bottom = kbHeight;
 
-  CGRect aRect = self.scrollView.frame;
+  CGRect aRect = _scrollView.frame;
   aRect.size.height = aRect.size.height - contentInsets.top - contentInsets.bottom;
-  CGRect activeFieldFrame = [self.contentView convertRect:self.activeField.frame fromView:self.activeField.superview];
-  CGPoint offset = self.scrollView.contentOffset;
+  CGRect activeFieldFrame = [_contentView convertRect:_activeField.frame fromView:_activeField.superview];
+  CGPoint offset = _scrollView.contentOffset;
   if (!CGRectContainsPoint(aRect, activeFieldFrame.origin) ) {
     offset = CGPointMake(0, CGRectGetMaxY(activeFieldFrame) - contentInsets.bottom);
   }
-  __weak typeof(self) weakself = self;
+  __weak typeof(_scrollView) weakScrollView = _scrollView;
   void (^animations)() = ^{
-    weakself.scrollView.contentInset = contentInsets;
-    weakself.scrollView.scrollIndicatorInsets = contentInsets;
-    weakself.scrollView.contentOffset = offset;
+    weakScrollView.contentInset = contentInsets;
+    weakScrollView.scrollIndicatorInsets = contentInsets;
+    weakScrollView.contentOffset = offset;
   };
   UIViewAnimationOptions options = (curve << 16) | UIViewAnimationOptionBeginFromCurrentState;
   [UIView animateWithDuration:duration delay:0 options:options animations:animations completion:NULL];
 }
 
-- (void)keyboardWillBeHidden:(NSNotification*)aNotification
+- (void)_keyboardWillBeHidden:(NSNotification*)aNotification
 {
-  UIEdgeInsets contentInsets = self.scrollView.contentInset;
+  UIEdgeInsets contentInsets = _scrollView.contentInset;
   contentInsets.bottom = 0;
-  self.scrollView.contentInset = contentInsets;
-  self.scrollView.scrollIndicatorInsets = contentInsets;
-  self.scrollView.contentOffset = CGPointMake(0, -contentInsets.top);
+  _scrollView.contentInset = contentInsets;
+  _scrollView.scrollIndicatorInsets = contentInsets;
+  _scrollView.contentOffset = CGPointMake(0, -contentInsets.top);
 }
 
-#pragma mark - Private methods
+- (UIView*)_colorComponentViewWithTitle:(NSString*)title tag:(NSUInteger)tag
+{
+  FBColorComponentView* colorComponentView = [[FBColorComponentView alloc] init];
+  [colorComponentView.slider addTarget:self action:@selector(onSliderValueChanged:) forControlEvents:UIControlEventValueChanged];
+  colorComponentView.label.text = title;
+  colorComponentView.translatesAutoresizingMaskIntoConstraints = NO;
+  colorComponentView.textField.delegate = self;
+  colorComponentView.tag  = tag;
+  return colorComponentView;
+}
 
-- (UIColor*)selectedColor
+- (UIColor*)_selectedColor
 {
   return [UIColor colorWithRed:_colorComponents[0] green:_colorComponents[1] blue:_colorComponents[2] alpha:_colorComponents[3]];
 }
 
-- (void)updateUIControls
+- (void)_updateUIControls
 {
-  [self.colorSample setBackgroundColor:[self selectedColor]];
-  [self updateSliders];
-  [self updateTextFields];
+  [_colorSample setBackgroundColor:[self _selectedColor]];
+  [self _updateSliders];
+  [self _updateTextFields];
 }
 
-- (void)updateSliders
+- (void)_updateSliders
 {
-  [self.colorComponentViews enumerateObjectsUsingBlock:^(FBColorComponentView* colorComponentView, NSUInteger idx, BOOL *stop) {
+  [_colorComponentViews enumerateObjectsUsingBlock:^(FBColorComponentView* colorComponentView, NSUInteger idx, BOOL *stop) {
     FBSliderView* slider = colorComponentView.slider;
     if (idx < 3) {
-      [self updateSlider:slider];
+      [self _updateSlider:slider];
     }
     [slider setValue:_colorComponents[slider.tag]];
   }];
 }
 
-- (void)updateTextFields
+- (void)_updateTextFields
 {
-  [self.colorComponentViews enumerateObjectsUsingBlock:^(FBColorComponentView* colorComponentView, NSUInteger idx, BOOL *stop) {
+  [_colorComponentViews enumerateObjectsUsingBlock:^(FBColorComponentView* colorComponentView, NSUInteger idx, BOOL *stop) {
       colorComponentView.textField.text = [NSString stringWithFormat:@"%d", (NSInteger)(_colorComponents[idx] * 255)];
   }];
 }
 
-- (void)updateSlider:(FBSliderView*)slider
+- (void)_updateSlider:(FBSliderView*)slider
 {
   NSUInteger colorIndex = slider.tag;
   float currentColorValue = _colorComponents[colorIndex];
@@ -292,14 +301,6 @@
   UIColor* middle = [UIColor colorWithRed:colors[4] green:colors[5] blue:colors[6] alpha:1.0f];
   UIColor* end = [UIColor colorWithRed:colors[8] green:colors[9] blue:colors[10] alpha:1.0f];
   [slider setColors:@[(id)start.CGColor, (id)middle.CGColor, (id)end.CGColor]];
-}
-
-- (void)dealloc
-{
-  [self.colorComponentViews enumerateObjectsUsingBlock:^(FBColorComponentView* colorComponentView, NSUInteger idx, BOOL *stop) {
-    colorComponentView.textField.delegate = nil;
-    [colorComponentView.slider removeTarget:self action:@selector(onSliderValueChanged:) forControlEvents:UIControlEventValueChanged];
-  }];
 }
 
 @end

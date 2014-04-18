@@ -9,9 +9,11 @@
 
 #import <UIKit/UIKit.h>
 
-@class SliderView;
 @class FBSliderView;
 
+/**
+ @abstract A view to edit a color component.
+ */
 @interface FBColorComponentView : UIView
 
 @property(nonatomic, strong, readonly) UILabel* label;

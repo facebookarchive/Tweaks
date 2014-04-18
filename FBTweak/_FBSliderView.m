@@ -8,14 +8,14 @@
 
 #import "_FBSliderView.h"
 
-static const CGFloat sSliderHeight = 28.0f;
-static const CGFloat sMargin = sSliderHeight / 2.0f;
-static const CGFloat sBarHeight = 3.0f;
+static const CGFloat _FBSliderViewHeight = 28.0f;
+static const CGFloat _FBSliderViewMargin = _FBSliderViewHeight / 2.0f;
+static const CGFloat _FBSliderViewHeightTrackHeight = 3.0f;
 
-@interface FBSliderView ()
-
-@property(nonatomic, strong) CALayer* indicatorLayer;
-@property(nonatomic, strong) CAGradientLayer* backgroundLayer;
+@interface FBSliderView () {
+  CALayer* _indicatorLayer;
+  CAGradientLayer* _backgroundLayer;
+}
 
 @end
 
@@ -37,14 +37,13 @@ static const CGFloat sBarHeight = 3.0f;
     self.layer.delegate = self;
 
     _backgroundLayer = [CAGradientLayer layer];
-    _backgroundLayer.cornerRadius = sBarHeight / 2.0f;
+    _backgroundLayer.cornerRadius = _FBSliderViewHeightTrackHeight / 2.0f;
     _backgroundLayer.startPoint = CGPointMake(0.0f, 0.5f);
     _backgroundLayer.endPoint = CGPointMake(1.0f, 0.5f);
-    _backgroundLayer.locations = @[@(0.0f), @(0.5f), @(1.0f)];
     [self.layer addSublayer:_backgroundLayer];
 
     _indicatorLayer = [CALayer layer];
-    _indicatorLayer.cornerRadius = sSliderHeight / 2;
+    _indicatorLayer.cornerRadius = _FBSliderViewHeight / 2;
     _indicatorLayer.backgroundColor = [UIColor whiteColor].CGColor;
     _indicatorLayer.shadowColor = [UIColor blackColor].CGColor;
     _indicatorLayer.shadowOffset = CGSizeZero;
@@ -60,32 +59,86 @@ static const CGFloat sBarHeight = 3.0f;
 
 - (CGSize)intrinsicContentSize
 {
-  return CGSizeMake(UIViewNoIntrinsicMetric, sSliderHeight);
+  return CGSizeMake(UIViewNoIntrinsicMetric, _FBSliderViewHeight);
 }
 
 - (void)setValue:(CGFloat)value
 {
-  if (value < self.minimumValue) {
-    _value = self.minimumValue;
-  } else if (value > self.maximumValue) {
-    _value = self.maximumValue;
+  if (value < _minimumValue) {
+    _value = _minimumValue;
+  } else if (value > _maximumValue) {
+    _value = _maximumValue;
   } else {
     _value = value;
   }
-  CGFloat width = CGRectGetWidth(self.bounds) - 2 * sMargin;
-  CGFloat percentage = (self.value - self.minimumValue) / (self.maximumValue - self.minimumValue);
+  CGFloat width = CGRectGetWidth(self.bounds) - 2 * _FBSliderViewMargin;
+  CGFloat percentage = (_value - _minimumValue) / (_maximumValue - _minimumValue);
   [CATransaction begin];
   [CATransaction setValue:(id)kCFBooleanTrue
                    forKey:kCATransactionDisableActions];
-  self.indicatorLayer.position = CGPointMake(width * percentage + sMargin, sSliderHeight / 2);
+  _indicatorLayer.position = CGPointMake(width * percentage + _FBSliderViewMargin, _FBSliderViewHeight / 2);
   [CATransaction commit];
 }
 
 - (void)setColors:(NSArray*)colors
 {
-  self.backgroundLayer.colors = colors;
-  NSUInteger size = [colors count];
-  if (size == [self.backgroundLayer.locations count]) {
+  _backgroundLayer.colors = colors;
+  [self _updateLocations];
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+  CGPoint position = [[touches anyObject] locationInView:self];
+  [self _setValueWithPosition:position.x];
+}
+
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
+{
+  CGPoint position = [[touches anyObject] locationInView:self];
+  [self _setValueWithPosition:position.x];
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
+  CGPoint position = [[touches anyObject] locationInView:self];
+  [self _setValueWithPosition:position.x];
+}
+
+- (void)layoutSublayersOfLayer:(CALayer *)layer
+{
+  if (layer == self.layer) {
+    CGFloat height = _FBSliderViewHeight;
+    CGFloat width = CGRectGetWidth(self.bounds) - 2 * _FBSliderViewMargin;
+    _backgroundLayer.bounds = CGRectMake(0, 0, width , _FBSliderViewHeightTrackHeight);
+    _backgroundLayer.position = CGPointMake(CGRectGetWidth(self.bounds) / 2, height / 2);
+    CGFloat dimension = _FBSliderViewHeight;
+    CGFloat percentage = (_value - _minimumValue) / (_maximumValue - _minimumValue);
+    _indicatorLayer.bounds = CGRectMake(0, 0, dimension, dimension);
+    _indicatorLayer.position = CGPointMake(width * percentage + _FBSliderViewMargin, _FBSliderViewHeight / 2);
+  }
+}
+
+#pragma mark - Private methods
+
+- (void)_setValueWithPosition:(CGFloat)position
+{
+  CGFloat width = CGRectGetWidth(self.bounds) - 2 * _FBSliderViewMargin;
+  position -= _FBSliderViewMargin;
+  if (position < 0) {
+    position = 0;
+  } else if (position > width) {
+    position = width;
+  }
+  CGFloat percentage = position / width;
+  CGFloat value = _minimumValue + percentage * (_maximumValue - _minimumValue);
+  [self setValue:value];
+  [self sendActionsForControlEvents:UIControlEventValueChanged];
+}
+
+- (void)_updateLocations
+{
+  NSUInteger size = [_backgroundLayer.colors count];
+  if (size == [_backgroundLayer.locations count]) {
     return;
   }
   CGFloat step = 1.0f / (size - 1);
@@ -95,54 +148,7 @@ static const CGFloat sBarHeight = 3.0f;
     [locations addObject:@(i * step)];
   }
   [locations addObject:@(1.0f)];
-  self.backgroundLayer.locations = [locations copy];
-}
-
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
-{
-  CGPoint position = [[touches anyObject] locationInView:self];
-  [self setValueWithPosition:position.x];
-}
-
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
-{
-  CGPoint position = [[touches anyObject] locationInView:self];
-  [self setValueWithPosition:position.x];
-}
-
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
-{
-  CGPoint position = [[touches anyObject] locationInView:self];
-  [self setValueWithPosition:position.x];
-}
-
-- (void)setValueWithPosition:(CGFloat)position
-{
-  CGFloat width = CGRectGetWidth(self.bounds) - 2 * sMargin;
-  position -= sMargin;
-  if (position < 0) {
-    position = 0;
-  } else if (position > width) {
-    position = width;
-  }
-  CGFloat percentage = position / width;
-  CGFloat value = self.minimumValue + percentage * (self.maximumValue - self.minimumValue);
-  [self setValue:value];
-  [self sendActionsForControlEvents:UIControlEventValueChanged];
-}
-
-- (void)layoutSublayersOfLayer:(CALayer *)layer
-{
-  if (layer == self.layer) {
-    CGFloat height = sSliderHeight;
-    CGFloat width = CGRectGetWidth(self.bounds) - 2 * sMargin;
-    _backgroundLayer.bounds = CGRectMake(0, 0, width , sBarHeight);
-    _backgroundLayer.position = CGPointMake(CGRectGetWidth(self.bounds) / 2, height / 2);
-    CGFloat dimension = sSliderHeight;
-    CGFloat percentage = (self.value - self.minimumValue) / (self.maximumValue - self.minimumValue);
-    _indicatorLayer.bounds = CGRectMake(0, 0, dimension, dimension);
-    _indicatorLayer.position = CGPointMake(width * percentage + sMargin, sSliderHeight / 2);
-  }
+  _backgroundLayer.locations = [locations copy];
 }
 
 @end

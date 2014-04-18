@@ -151,6 +151,7 @@ extern UIColor* _FBColorFromHEXString(NSString* rgb);
     _switch.hidden = NO;
     _textField.hidden = YES;
     _stepper.hidden = YES;
+    self.imageView.hidden = YES;
   } else if (_mode == _FBTweakTableViewCellModeInteger) {
     _switch.hidden = YES;
     _textField.hidden = NO;
@@ -159,6 +160,7 @@ extern UIColor* _FBColorFromHEXString(NSString* rgb);
     _stepper.stepValue = 1.0;
     _stepper.minimumValue = [_tweak.minimumValue longLongValue];
     _stepper.maximumValue = [_tweak.maximumValue longLongValue];
+    self.imageView.hidden = YES;
   } else if (_mode == _FBTweakTableViewCellModeReal) {
     _switch.hidden = YES;
     _textField.hidden = NO;
@@ -179,22 +181,25 @@ extern UIColor* _FBColorFromHEXString(NSString* rgb);
     }
 
     _stepper.stepValue = (_stepper.maximumValue - _stepper.minimumValue) / 100.0;
+    self.imageView.hidden = YES;
   } else if (_mode == _FBTweakTableViewCellModeString) {
     _switch.hidden = YES;
     _textField.hidden = NO;
     _textField.keyboardType = UIKeyboardTypeDefault;
     _stepper.hidden = YES;
+    self.imageView.hidden = YES;
   } else if (_mode == _FBTweakTableViewCellModeColor) {
     _switch.hidden = YES;
     _textField.hidden = YES;
-    //    _textField.keyboardType = UIKeyboardTypeDefault;
     _stepper.hidden = YES;
     self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     self.accessoryView = nil;
+    self.imageView.hidden = NO;
   } else {
     _switch.hidden = YES;
     _textField.hidden = YES;
     _stepper.hidden = YES;
+    self.imageView.hidden = YES;
   }
 
   [self setNeedsLayout];

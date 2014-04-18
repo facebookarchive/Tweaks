@@ -9,10 +9,21 @@
 
 #import <UIKit/UIKit.h>
 
+/**
+ *  @abstract Displays a view to edit RGBA color components.
+ */
 @interface FBRGBViewController : UIViewController
 
+/**
+ *  The callback, that is called when the color value is changed.
+ */
 @property(nonatomic, copy) void(^colorValueDidChangeCallback)(UIColor* color);
 
+/**
+ *  Sets the current color value.
+ *
+ *  @param color The current color value.
+ */
 - (void)setColor:(UIColor*)color;
 
 @end
