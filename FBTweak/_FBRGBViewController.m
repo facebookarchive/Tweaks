@@ -11,9 +11,13 @@
 #import "_FBSliderView.h"
 #import "_FBColorComponentView.h"
 
+static CGFloat const _FBColorComponentMaxValue = 255.0f;
+static CGFloat const _FBColorComponentViewSpacing = 5.0f;
+static NSUInteger const _FBColorComponentsNumber = 4;
+
 @interface FBRGBViewController () <UITextFieldDelegate>
 {
-  CGFloat _colorComponents[4];
+  CGFloat _colorComponents[_FBColorComponentsNumber];
   UIView* _colorSample;
   UIScrollView* _scrollView;
   UIView* _contentView;
@@ -36,65 +40,15 @@
   return self;
 }
 
+- (void)loadView
+{
+  self.view = [self _createRGBView];
+  [self _setupAutolayoutConstraints];
+}
+
 - (void)viewDidLoad
 {
   [super viewDidLoad];
-
-  _scrollView = [[UIScrollView alloc] init];
-  _scrollView.translatesAutoresizingMaskIntoConstraints = NO;
-  [self.view addSubview:_scrollView];
-  NSDictionary *views = @{ @"scrollView" : _scrollView};
-  [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[scrollView]|" options:0 metrics:nil views:views]];
-  [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[scrollView]|" options:0 metrics:nil views:views]];
-
-  _contentView = [[UIView alloc] init];
-  _contentView.translatesAutoresizingMaskIntoConstraints = NO;
-  [_scrollView addSubview:_contentView];
-  views = @{ @"contentView" : _contentView};
-  [_scrollView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[contentView]|" options:0 metrics:nil views:views]];
-  NSLayoutConstraint *leftConstraint = [NSLayoutConstraint constraintWithItem:_contentView
-                                                                    attribute:NSLayoutAttributeLeading
-                                                                    relatedBy:0
-                                                                       toItem:self.view
-                                                                    attribute:NSLayoutAttributeLeft
-                                                                   multiplier:1.0
-                                                                     constant:0];
-  [self.view addConstraint:leftConstraint];
-
-  NSLayoutConstraint *rightConstraint = [NSLayoutConstraint constraintWithItem:_contentView
-                                                                     attribute:NSLayoutAttributeTrailing
-                                                                     relatedBy:0
-                                                                        toItem:self.view
-                                                                     attribute:NSLayoutAttributeRight
-                                                                    multiplier:1.0
-                                                                      constant:0];
-  [self.view addConstraint:rightConstraint];
-
-  _colorSample = [[UIView alloc] init];
-  _colorSample.layer.borderColor = [UIColor blackColor].CGColor;
-  _colorSample.layer.borderWidth = .5f;
-  _colorSample.translatesAutoresizingMaskIntoConstraints = NO;
-  [_contentView addSubview:_colorSample];
-  views = @{ @"colorSample" : _colorSample};
-  [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[colorSample]-10-|" options:0 metrics:nil views:views]];
-  [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-20-[colorSample(30)]" options:0 metrics:nil views:views]];
-
-  NSMutableArray* tmp = [NSMutableArray array];
-  NSArray* titles = @[@"Red", @"Green", @"Blue", @"Alpha"];
-  UIView* previousView = _colorSample;
-  for(int i = 0; i < 4; ++i) {
-    UIView* colorComponentView = [self _colorComponentViewWithTitle:titles[i] tag:i];
-    [_contentView addSubview:colorComponentView];
-    [tmp addObject:colorComponentView];
-    views = NSDictionaryOfVariableBindings(previousView, colorComponentView);
-    [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[colorComponentView]-10-|" options:0 metrics:nil views:views]];
-    [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[previousView]-20-[colorComponentView]" options:0 metrics:nil views:views]];
-    previousView = colorComponentView;
-  }
-  views = NSDictionaryOfVariableBindings(previousView);
-  [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[previousView]-10-|" options:0 metrics:nil views:views]];
-  _colorComponentViews = [tmp copy];
-
   [self _updateUIControls];
 }
 
@@ -188,9 +142,9 @@
     return NO;
   }
 
-  BOOL isValid = [newString floatValue] <= 255.0f;
+  BOOL isValid = [newString floatValue] <= _FBColorComponentMaxValue;
   if (isValid) {
-    _colorComponents[textField.tag] = [newString floatValue] / 255.0f;
+    _colorComponents[textField.tag] = [newString floatValue] / _FBColorComponentMaxValue;
     UIColor* _selectedColor = [self _selectedColor];
     [_colorSample setBackgroundColor:_selectedColor];
     [self _updateSliders];
@@ -242,6 +196,76 @@
   _scrollView.contentOffset = CGPointMake(0, -contentInsets.top);
 }
 
+- (UIView*)_createRGBView
+{
+  UIView* view = [[UIView alloc] init];
+  _scrollView = [[UIScrollView alloc] init];
+  _scrollView.translatesAutoresizingMaskIntoConstraints = NO;
+  [view addSubview:_scrollView];
+
+  _contentView = [[UIView alloc] init];
+  _contentView.translatesAutoresizingMaskIntoConstraints = NO;
+  [_scrollView addSubview:_contentView];
+
+  _colorSample = [[UIView alloc] init];
+  _colorSample.layer.borderColor = [UIColor blackColor].CGColor;
+  _colorSample.layer.borderWidth = .5f;
+  _colorSample.translatesAutoresizingMaskIntoConstraints = NO;
+  [_contentView addSubview:_colorSample];
+
+  NSMutableArray* tmp = [NSMutableArray array];
+  NSArray* titles = @[@"Red", @"Green", @"Blue", @"Alpha"];
+  for(int i = 0; i < _FBColorComponentsNumber; ++i) {
+    UIView* colorComponentView = [self _colorComponentViewWithTitle:titles[i] tag:i];
+    [_contentView addSubview:colorComponentView];
+    [tmp addObject:colorComponentView];
+  }
+  _colorComponentViews = [tmp copy];
+  return view;
+}
+
+- (void)_setupAutolayoutConstraints
+{
+  __block NSDictionary *views = NSDictionaryOfVariableBindings(_scrollView);
+  [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_scrollView]|" options:0 metrics:nil views:views]];
+  [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_scrollView]|" options:0 metrics:nil views:views]];
+
+  views = NSDictionaryOfVariableBindings(_contentView);
+  [_scrollView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_contentView]|" options:0 metrics:nil views:views]];
+  NSLayoutConstraint *leftConstraint = [NSLayoutConstraint constraintWithItem:_contentView
+                                                                    attribute:NSLayoutAttributeLeading
+                                                                    relatedBy:0
+                                                                       toItem:self.view
+                                                                    attribute:NSLayoutAttributeLeft
+                                                                   multiplier:1.0
+                                                                     constant:0];
+  [self.view addConstraint:leftConstraint];
+
+  NSLayoutConstraint *rightConstraint = [NSLayoutConstraint constraintWithItem:_contentView
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                     relatedBy:0
+                                                                        toItem:self.view
+                                                                     attribute:NSLayoutAttributeRight
+                                                                    multiplier:1.0
+                                                                      constant:0];
+  [self.view addConstraint:rightConstraint];
+
+  views = NSDictionaryOfVariableBindings(_colorSample);
+  [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[_colorSample]-10-|" options:0 metrics:nil views:views]];
+  [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-20-[_colorSample(30)]" options:0 metrics:nil views:views]];
+
+  __block UIView* previousView = _colorSample;
+  [_colorComponentViews enumerateObjectsUsingBlock:^(UIView* colorComponentView, NSUInteger idx, BOOL *stop) {
+    views = NSDictionaryOfVariableBindings(previousView, colorComponentView);
+    [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[colorComponentView]-10-|" options:0 metrics:nil views:views]];
+    [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[previousView]-20-[colorComponentView]" options:0 metrics:nil views:views]];
+    previousView = colorComponentView;
+  }];
+  views = NSDictionaryOfVariableBindings(previousView);
+  [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[previousView]-10-|" options:0 metrics:nil views:views]];
+}
+
+
 - (UIView*)_colorComponentViewWithTitle:(NSString*)title tag:(NSUInteger)tag
 {
   FBColorComponentView* colorComponentView = [[FBColorComponentView alloc] init];
@@ -279,7 +303,7 @@
 - (void)_updateTextFields
 {
   [_colorComponentViews enumerateObjectsUsingBlock:^(FBColorComponentView* colorComponentView, NSUInteger idx, BOOL *stop) {
-      colorComponentView.textField.text = [NSString stringWithFormat:@"%d", (NSInteger)(_colorComponents[idx] * 255)];
+      colorComponentView.textField.text = [NSString stringWithFormat:@"%d", (NSInteger)(_colorComponents[idx] * _FBColorComponentMaxValue)];
   }];
 }
 

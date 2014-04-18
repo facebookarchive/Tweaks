@@ -27,26 +27,6 @@ extern NSString *_FBTweakIdentifier(fb_tweak_entry *entry)
   return [NSString stringWithFormat:@"FBTweak:%@-%@-%@", *entry->category, *entry->collection, *entry->name];
 }
 
-extern UIColor* _FBColorFromHEXString(NSString* hexColor)
-{
-  if (![hexColor hasPrefix:@"#"]) {
-    return nil;
-  }
-
-  NSScanner *scanner = [NSScanner scannerWithString:hexColor];
-  [scanner setCharactersToBeSkipped:[NSCharacterSet characterSetWithCharactersInString:@"#"]];
-
-  unsigned hexNum;
-  if (![scanner scanHexInt: &hexNum]) return nil;
-
-  int r = (hexNum >> 24) & 0xFF;
-  int g = (hexNum >> 16) & 0xFF;
-  int b = (hexNum >> 8) & 0xFF;
-  int a = (hexNum) & 0xFF;
-
-  return [UIColor colorWithRed:r / 255.0f green:g / 255.0f blue:b / 255.0f alpha:a / 255.0f];
-}
-
 static FBTweak *_FBTweakCreateWithEntry(NSString *identifier, fb_tweak_entry *entry)
 {
   FBTweak *tweak = [[FBTweak alloc] initWithIdentifier:identifier];

@@ -10,9 +10,9 @@
 #import "_FBColorComponentView.h"
 #import "_FBSliderView.h"
 
-static CGFloat const _FBColorComponentViewSpacing = 10.0f;
-static CGFloat const _FBColorComponentLabelWidth = 50.0f;
-static CGFloat const _FBColorComponentTextFieldWidth = 50.0f;
+static CGFloat const _FBColorComponentViewSpacing = 5.0f;
+static CGFloat const _FBColorComponentLabelWidth = 60.0f;
+static CGFloat const _FBColorComponentTextFieldWidth = 45.0f;
 
 @interface FBColorComponentView () {
   BOOL _didSetupConstraints;
@@ -71,6 +71,7 @@ static CGFloat const _FBColorComponentTextFieldWidth = 50.0f;
 {
   _label = [[UILabel alloc] init];
   _label.translatesAutoresizingMaskIntoConstraints = NO;
+  _label.adjustsFontSizeToFitWidth = YES;
   [self addSubview:_label];
 
   _slider = [[FBSliderView alloc] init];

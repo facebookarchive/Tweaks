@@ -13,47 +13,7 @@
 #import "_FBTweakCollectionViewController.h"
 #import "_FBTweakTableViewCell.h"
 #import "_FBRGBViewController.h"
-
-@interface UIColor (Utils)
-
-- (NSString *)hexString;
-
-@end
-
-@implementation UIColor (Utils)
-
-- (NSString *)hexString
-{
-  const CGFloat *components = CGColorGetComponents(self.CGColor);
-  CGFloat r = components[0];
-  CGFloat g = components[1];
-  CGFloat b = components[2];
-  CGFloat a = components[3];
-  NSString *hexColorString = [NSString stringWithFormat:@"#%02X%02X%02X%02X", (int)(r * 255), (int)(g * 255), (int)(b * 255), (int)(a * 255)];
-  return hexColorString;
-}
-
-+ (UIColor*)colorWithHexString:(NSString*)hexColor
-{
-  if (![hexColor hasPrefix:@"#"]) {
-    return nil;
-  }
-
-  NSScanner *scanner = [NSScanner scannerWithString:hexColor];
-  [scanner setCharactersToBeSkipped:[NSCharacterSet characterSetWithCharactersInString:@"#"]];
-
-  unsigned hexNum;
-  if (![scanner scanHexInt: &hexNum]) return nil;
-
-  int r = (hexNum >> 24) & 0xFF;
-  int g = (hexNum >> 16) & 0xFF;
-  int b = (hexNum >> 8) & 0xFF;
-  int a = (hexNum) & 0xFF;
-
-  return [UIColor colorWithRed:r / 255.0f green:g / 255.0f blue:b / 255.0f alpha:a / 255.0f];
-}
-
-@end
+#import "UIColor+HEX.h"
 
 @interface _FBTweakCollectionViewController () <UITableViewDelegate, UITableViewDataSource>
 @end

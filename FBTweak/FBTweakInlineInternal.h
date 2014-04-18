@@ -13,8 +13,7 @@
 #import "FBTweakCategory.h"
 #import "FBTweakCollection.h"
 #import "_FBTweakBindObserver.h"
-
-@class UIColor;
+#import "UIColor+HEX.h"
 
 #if !FB_TWEAK_ENABLED
 
@@ -45,8 +44,6 @@ typedef struct {
 } fb_tweak_entry;
 
 extern NSString *_FBTweakIdentifier(fb_tweak_entry *entry);
-
-extern UIColor* _FBColorFromHEXString(NSString* rgb);
 
 #if __has_feature(objc_arc)
 #define _FBTweakRelease(x)
@@ -108,7 +105,7 @@ extern UIColor* _FBColorFromHEXString(NSString* rgb);
     long long: [currentValue longLongValue], \
     unsigned long long: [currentValue unsignedLongLongValue], \
     BOOL: [currentValue boolValue], \
-    id: ([currentValue isKindOfClass:NSString.class] && _FBColorFromHEXString(currentValue) != nil ? _FBColorFromHEXString(currentValue) : currentValue), \
+    id: (([currentValue isKindOfClass:NSString.class] && [UIColor colorWithHexString:currentValue] != nil) ? [UIColor colorWithHexString:currentValue] : currentValue), \
     /* assume char * as the default. */ \
     /* constant strings are typed as char[N] */ \
     /* and we can't enumerate all of those. */ \
