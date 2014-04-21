@@ -19,7 +19,7 @@
 typedef id FBTweakValue;
 
 /**
-  @abstract Represents a unqie, named tweak.
+  @abstract Represents a unique, named tweak.
   @discussion A tweak contains a persistent, editable value.
  */
 @interface FBTweak : NSObject
