@@ -89,10 +89,10 @@ static CGFloat const _FBColorComponentTextFieldWidth = 45.0f;
 - (void)_setupConstraints
 {
   NSDictionary *views = @{ @"label" : _label, @"slider" : _slider, @"textField" : _textField };
-  NSDictionary* metrics = @{ @"margin" : @(_FBColorComponentViewSpacing),
+  NSDictionary* metrics = @{ @"spacing" : @(_FBColorComponentViewSpacing),
                              @"label_width" : @(_FBColorComponentLabelWidth),
                              @"textfield_width" : @(_FBColorComponentTextFieldWidth) };
-  [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[label(label_width)]-margin-[slider]-margin-[textField(textfield_width)]|"
+  [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[label(label_width)]-spacing-[slider]-spacing-[textField(textfield_width)]|"
                                                                options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
   [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[label]|" options:0 metrics:nil views:views]];
   [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[textField]|" options:0 metrics:nil views:views]];

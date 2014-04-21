@@ -12,7 +12,9 @@
 #import "_FBColorComponentView.h"
 
 static CGFloat const _FBColorComponentMaxValue = 255.0f;
-static CGFloat const _FBColorComponentViewSpacing = 5.0f;
+static CGFloat const _FBColorSampleViewHeight = 30.0f;
+static CGFloat const _FBRGBViewSpacing = 20.0f;
+static CGFloat const _FBRGBContentViewMargin = 10.0f;
 static NSUInteger const _FBColorComponentsNumber = 4;
 
 @interface FBRGBViewController () <UITextFieldDelegate>
@@ -49,7 +51,7 @@ static NSUInteger const _FBColorComponentsNumber = 4;
 - (void)viewDidLoad
 {
   [super viewDidLoad];
-  [self _updateUIControls];
+  [self _updateUIControls:YES];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -92,18 +94,14 @@ static NSUInteger const _FBColorComponentsNumber = 4;
     _colorComponents[2] = components[2];
     _colorComponents[3] = components[3];
   }
-  if ([self isViewLoaded]) {
-    [self _updateUIControls];
-  }
+  [self _updateUIControls:YES];
 }
 
 - (IBAction)onSliderValueChanged:(FBSliderView*)slider
 {
   _colorComponents[slider.tag] = slider.value;
-  [self _updateUIControls];
-  if (_colorValueDidChangeCallback) {
-    _colorValueDidChangeCallback([self _selectedColor]);
-  }
+  [self _updateUIControls:YES];
+  [self _sendCallback];
 }
 
 - (void)dealloc
@@ -145,12 +143,8 @@ static NSUInteger const _FBColorComponentsNumber = 4;
   BOOL isValid = [newString floatValue] <= _FBColorComponentMaxValue;
   if (isValid) {
     _colorComponents[textField.tag] = [newString floatValue] / _FBColorComponentMaxValue;
-    UIColor* _selectedColor = [self _selectedColor];
-    [_colorSample setBackgroundColor:_selectedColor];
-    [self _updateSliders];
-    if (_colorValueDidChangeCallback) {
-      _colorValueDidChangeCallback(_selectedColor);
-    }
+    [self _updateUIControls:NO];
+    [self _sendCallback];
   }
   return isValid;
 }
@@ -250,19 +244,23 @@ static NSUInteger const _FBColorComponentsNumber = 4;
                                                                       constant:0];
   [self.view addConstraint:rightConstraint];
 
+  NSDictionary* metrics = @{ @"spacing" : @(_FBRGBViewSpacing),
+                             @"margin" : @(_FBRGBContentViewMargin),
+                             @"height" : @(_FBColorSampleViewHeight) };
+
   views = NSDictionaryOfVariableBindings(_colorSample);
-  [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[_colorSample]-10-|" options:0 metrics:nil views:views]];
-  [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-20-[_colorSample(30)]" options:0 metrics:nil views:views]];
+  [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-margin-[_colorSample]-margin-|" options:0 metrics:metrics views:views]];
+  [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-spacing-[_colorSample(height)]" options:0 metrics:metrics views:views]];
 
   __block UIView* previousView = _colorSample;
   [_colorComponentViews enumerateObjectsUsingBlock:^(UIView* colorComponentView, NSUInteger idx, BOOL *stop) {
     views = NSDictionaryOfVariableBindings(previousView, colorComponentView);
-    [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[colorComponentView]-10-|" options:0 metrics:nil views:views]];
-    [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[previousView]-20-[colorComponentView]" options:0 metrics:nil views:views]];
+    [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-margin-[colorComponentView]-margin-|" options:0 metrics:metrics views:views]];
+    [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[previousView]-spacing-[colorComponentView]" options:0 metrics:metrics views:views]];
     previousView = colorComponentView;
   }];
   views = NSDictionaryOfVariableBindings(previousView);
-  [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[previousView]-10-|" options:0 metrics:nil views:views]];
+  [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[previousView]-spacing-|" options:0 metrics:metrics views:views]];
 }
 
 
@@ -282,18 +280,30 @@ static NSUInteger const _FBColorComponentsNumber = 4;
   return [UIColor colorWithRed:_colorComponents[0] green:_colorComponents[1] blue:_colorComponents[2] alpha:_colorComponents[3]];
 }
 
-- (void)_updateUIControls
+- (void)_sendCallback
 {
+  if (_colorValueDidChangeCallback) {
+    _colorValueDidChangeCallback([self _selectedColor]);
+  }
+}
+
+- (void)_updateUIControls:(BOOL)shouldUpdateTextfields
+{
+  if (![self isViewLoaded]) {
+    return;
+  }
   [_colorSample setBackgroundColor:[self _selectedColor]];
   [self _updateSliders];
-  [self _updateTextFields];
+  if (shouldUpdateTextfields) {
+    [self _updateTextFields];
+  }
 }
 
 - (void)_updateSliders
 {
   [_colorComponentViews enumerateObjectsUsingBlock:^(FBColorComponentView* colorComponentView, NSUInteger idx, BOOL *stop) {
     FBSliderView* slider = colorComponentView.slider;
-    if (idx < 3) {
+    if (idx < _FBColorComponentsNumber - 1) {
       [self _updateSlider:slider];
     }
     [slider setValue:_colorComponents[slider.tag]];
@@ -312,7 +322,7 @@ static NSUInteger const _FBColorComponentsNumber = 4;
   NSUInteger colorIndex = slider.tag;
   float currentColorValue = _colorComponents[colorIndex];
   float colors[12];
-  for (int i = 0; i < 4 ; i++)
+  for (int i = 0; i < _FBColorComponentsNumber ; i++)
   {
     colors[i] = _colorComponents[i];
     colors[i + 4] = _colorComponents[i];
