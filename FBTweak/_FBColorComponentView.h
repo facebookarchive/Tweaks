@@ -16,8 +16,13 @@
  */
 @interface FBColorComponentView : UIView
 
+//! @abstract The label for color component title.
 @property(nonatomic, strong, readonly) UILabel* label;
+
+//! @abstract The color slider to edit color component.
 @property(nonatomic, strong, readonly) FBSliderView* slider;
+
+//! @abstract The text field to edit color component.
 @property(nonatomic, strong, readonly) UITextField* textField;
 
 @end

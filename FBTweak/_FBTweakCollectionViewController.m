@@ -13,7 +13,6 @@
 #import "_FBTweakCollectionViewController.h"
 #import "_FBTweakTableViewCell.h"
 #import "_FBRGBViewController.h"
-#import "UIColor+HEX.h"
 
 @interface _FBTweakCollectionViewController () <UITableViewDelegate, UITableViewDataSource>
 @end
@@ -120,16 +119,9 @@
 {
   _FBTweakTableViewCell *cell = (_FBTweakTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
   if ([cell mode] == _FBTweakTableViewCellModeColor) {
-    FBTweakValue value = (cell.tweak.currentValue ?: cell.tweak.defaultValue);
-    FBRGBViewController *rgbViewController = [[FBRGBViewController alloc] init];
-    [rgbViewController setColor:[UIColor colorWithHexString:value]];
-
     FBTweakCollection *collection = _tweakCategory.tweakCollections[indexPath.section];
     FBTweak *tweak = collection.tweaks[indexPath.row];
-    rgbViewController.colorValueDidChangeCallback = ^(UIColor* color) {
-      tweak.currentValue = [color hexString];
-    };
-
+    FBRGBViewController *rgbViewController = [[FBRGBViewController alloc] initWithTweak:tweak];
     [self.navigationController pushViewController:rgbViewController animated:YES];
   }
 }

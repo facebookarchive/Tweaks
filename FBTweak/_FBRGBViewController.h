@@ -9,21 +9,21 @@
 
 #import <UIKit/UIKit.h>
 
+@class FBTweak;
+
 /**
- *  @abstract Displays a view to edit RGBA color components.
+ *  @abstract Displays a view to edit a tweak with color value.
  */
 @interface FBRGBViewController : UIViewController
 
 /**
- *  The callback, that is called when the color value is changed.
+ @abstract Create a RGB view controller.
+ @param tweak The tweak with color value to edit.
+ @discussion This is the designated initializer.
  */
-@property(nonatomic, copy) void(^colorValueDidChangeCallback)(UIColor* color);
+- (instancetype)initWithTweak:(FBTweak *)tweak;
 
-/**
- *  Sets the current color value.
- *
- *  @param color The current color value.
- */
-- (void)setColor:(UIColor*)color;
+//! @abstract The tweak to edit.
+@property (nonatomic, strong, readonly) FBTweak *tweak;
 
 @end

@@ -41,6 +41,8 @@
 		18EFE536189F38D500DA6A5D /* FBTweakEnabled.h in Headers */ = {isa = PBXBuildFile; fileRef = 18EFE535189F38D500DA6A5D /* FBTweakEnabled.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5E1708C91905B89800402135 /* _FBSliderView.h in Headers */ = {isa = PBXBuildFile; fileRef = 5E1708C31905B89800402135 /* _FBSliderView.h */; };
 		5E1708CA1905B89800402135 /* _FBSliderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E1708C41905B89800402135 /* _FBSliderView.m */; };
+		5E1708CD1905CBF800402135 /* _FBRGBView.h in Headers */ = {isa = PBXBuildFile; fileRef = 5E1708CB1905CBF800402135 /* _FBRGBView.h */; };
+		5E1708CE1905CBF800402135 /* _FBRGBView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E1708CC1905CBF800402135 /* _FBRGBView.m */; };
 		5E1F48EB1901E4D500D7C4A2 /* UIColor+HEX.h in Headers */ = {isa = PBXBuildFile; fileRef = 5E1F48E91901E4D500D7C4A2 /* UIColor+HEX.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5E1F48EC1901E4D500D7C4A2 /* UIColor+HEX.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E1F48EA1901E4D500D7C4A2 /* UIColor+HEX.m */; };
 		5E1F48ED1901E80800D7C4A2 /* UIColor+HEX.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E1F48EA1901E4D500D7C4A2 /* UIColor+HEX.m */; };
@@ -98,6 +100,8 @@
 		18EFE535189F38D500DA6A5D /* FBTweakEnabled.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBTweakEnabled.h; sourceTree = "<group>"; };
 		5E1708C31905B89800402135 /* _FBSliderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _FBSliderView.h; sourceTree = "<group>"; };
 		5E1708C41905B89800402135 /* _FBSliderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _FBSliderView.m; sourceTree = "<group>"; };
+		5E1708CB1905CBF800402135 /* _FBRGBView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _FBRGBView.h; sourceTree = "<group>"; };
+		5E1708CC1905CBF800402135 /* _FBRGBView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _FBRGBView.m; sourceTree = "<group>"; };
 		5E1F48E91901E4D500D7C4A2 /* UIColor+HEX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+HEX.h"; sourceTree = "<group>"; };
 		5E1F48EA1901E4D500D7C4A2 /* UIColor+HEX.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+HEX.m"; sourceTree = "<group>"; };
 		5EADAADE18FB3C2D00D06EAB /* _FBColorComponentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _FBColorComponentView.h; sourceTree = "<group>"; };
@@ -236,6 +240,8 @@
 				18EFE4DC189EF75800DA6A5D /* _FBTweakTableViewCell.m */,
 				5EADAADE18FB3C2D00D06EAB /* _FBColorComponentView.h */,
 				5EADAADF18FB3C2D00D06EAB /* _FBColorComponentView.m */,
+				5E1708CB1905CBF800402135 /* _FBRGBView.h */,
+				5E1708CC1905CBF800402135 /* _FBRGBView.m */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -266,6 +272,7 @@
 				18EFE4C1189EBEAD00DA6A5D /* FBTweakStore.h in Headers */,
 				18EFE4B2189EBAC200DA6A5D /* FBTweakInline.h in Headers */,
 				18EFE4B3189EBAC200DA6A5D /* FBTweakShakeWindow.h in Headers */,
+				5E1708CD1905CBF800402135 /* _FBRGBView.h in Headers */,
 				5E1F48EB1901E4D500D7C4A2 /* UIColor+HEX.h in Headers */,
 				18EFE536189F38D500DA6A5D /* FBTweakEnabled.h in Headers */,
 				18EFE4D0189EC70300DA6A5D /* FBTweakInlineInternal.h in Headers */,
@@ -364,6 +371,7 @@
 				18EFE4A7189EBA9E00DA6A5D /* FBTweakViewController.m in Sources */,
 				18EFE4BD189EBC4B00DA6A5D /* FBTweakCollection.m in Sources */,
 				18EFE4C2189EBEAD00DA6A5D /* FBTweakStore.m in Sources */,
+				5E1708CE1905CBF800402135 /* _FBRGBView.m in Sources */,
 				18EFE4AB189EBAAD00DA6A5D /* FBTweakInline.m in Sources */,
 				18EFE4B8189EBC3100DA6A5D /* FBTweak.m in Sources */,
 				5EADAAE118FB3C2D00D06EAB /* _FBColorComponentView.m in Sources */,
