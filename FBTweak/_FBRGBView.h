@@ -10,7 +10,7 @@
 #import <UIKit/UIKit.h>
 
 /**
- *  These options define UI elements to reload.  
+ *  These options define UI elements to reload.
  */
 typedef NS_OPTIONS(NSUInteger, FBRGBViewReloadOption)
 {

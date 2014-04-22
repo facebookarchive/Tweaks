@@ -9,15 +9,10 @@
 
 #import <UIKit/UIKit.h>
 
-typedef struct { CGFloat red, green, blue; } RGB;
-typedef struct { CGFloat hue, saturation, brightness; } HSB;
+@class FBTweak;
 
-extern void RGB2HSB(RGB rgb, HSB* outHSB);
-extern void HSB2RGB(HSB hsb, RGB* outRGB);
+@interface FBHSBViewController : UIViewController
 
-@interface UIColor (HEX)
-
-- (NSString*)hexString;
-+ (UIColor*)colorWithHexString:(NSString*)hexColor;
+- (instancetype)initWithTweak:(FBTweak *)tweak;
 
 @end

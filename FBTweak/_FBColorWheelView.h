@@ -8,13 +8,11 @@
  */
 
 #import <UIKit/UIKit.h>
-#import <CoreGraphics/CoreGraphics.h>
+
+#import "UIColor+HEX.h"
 
 @interface FBColorWheelView : UIControl
 
-@property(nonatomic, readonly, assign) CGFloat luminance;
-@property(nonatomic, readonly, assign) CGFloat hue;
-@property(nonatomic, readonly, assign) CGFloat saturation;
-@property(nonatomic, readonly, strong) CALayer* indicatorLayer;
+@property(nonatomic, readonly, assign) HSB hsb;
 
 @end
