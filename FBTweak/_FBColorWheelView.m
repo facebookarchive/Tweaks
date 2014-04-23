@@ -14,7 +14,8 @@
   @private
 
   CALayer* _indicatorLayer;
-  HSB _hsb;
+  CGFloat _hue;
+  CGFloat _saturation;
 }
 
 @end
@@ -30,9 +31,8 @@
 {
   self = [super initWithFrame:frame];
   if (self) {
-    _hsb.hue = 0.0f;
-    _hsb.saturation = 0.0f;
-    _hsb.brightness = 1.0f;
+    _hue = 0.0f;
+    _saturation = 0.0f;
 
     self.layer.delegate = self;
     [self.layer addSublayer:[self indicatorLayer]];
@@ -85,6 +85,7 @@
   CGFloat dist = sqrtf((radius - point.x) * (radius - point.x) + (radius - point.y) * (radius - point.y));
 
   if (dist <= radius) {
+    [self colorWheelValueWithPosition:point hue:&_hue saturation:&_saturation];
     [self setSelectedPoint:point];
     [self sendActionsForControlEvents:UIControlEventValueChanged];
   }
@@ -92,14 +93,27 @@
 
 - (void)setSelectedPoint:(CGPoint)point
 {
-  _hsb = [self colorWheelValueWithPosition:point];
-  UIColor* selectedColor = [UIColor colorWithHue:_hsb.hue saturation:_hsb.saturation brightness:_hsb.brightness alpha:1.0f];
+  UIColor* selectedColor = [UIColor colorWithHue:_hue saturation:_saturation brightness:1.0f alpha:1.0f];
   [CATransaction begin];
   [CATransaction setValue:(id)kCFBooleanTrue
                    forKey:kCATransactionDisableActions];
   self.indicatorLayer.position = point;
   self.indicatorLayer.backgroundColor = selectedColor.CGColor;
   [CATransaction commit];
+}
+
+- (void)setHue:(CGFloat)hue
+{
+  _hue = hue;
+  [self setSelectedPoint:[self _selectedPoint]];
+  [self setNeedsDisplay];
+}
+
+- (void)setSaturation:(CGFloat)saturation
+{
+  _saturation = saturation;
+  [self setSelectedPoint:[self _selectedPoint]];
+  [self setNeedsDisplay];
 }
 
 #pragma mark - CALayerDelegate methods
@@ -118,29 +132,34 @@
 - (void)layoutSublayersOfLayer:(CALayer *)layer
 {
   if (layer == self.layer) {
-    CGFloat dimension = MIN(CGRectGetWidth(self.frame), CGRectGetHeight(self.frame));
-    CGFloat radius = _hsb.saturation * dimension / 2;
-    CGFloat x = dimension / 2 + radius * cos(_hsb.hue);
-    CGFloat y = dimension / 2 + radius * sin(_hsb.hue);
-    [self setSelectedPoint:CGPointMake(x, y)];
+    [self setSelectedPoint:[self _selectedPoint]];
     [self.layer setNeedsDisplay];
   }
 }
 
 #pragma mark - Private methods
 
+- (CGPoint)_selectedPoint
+{
+  CGFloat dimension = MIN(CGRectGetWidth(self.frame), CGRectGetHeight(self.frame));
+  CGFloat radius = _saturation * dimension / 2;
+  CGFloat x = dimension / 2 + radius * cosf(_hue * M_PI * 2.0f);
+  CGFloat y = dimension / 2 + radius * sinf(_hue * M_PI * 2.0f);
+  return CGPointMake(x, y);
+}
+
 - (void)colorWheelBitmap:(out UInt8 *)bitmap withSize:(CGSize)size
 {
   for (int y = 0; y < size.width; y++) {
     for (int x = 0; x < size.height; x++) {
-      float a = 0.0f;
-      HSB hsb = [self colorWheelValueWithPosition:CGPointMake(x, y)];
-      RGB rgb = {0.0f, 0.0f, 0.0f};
-      if (hsb.saturation < 1.0) {
+      float hue, saturation, a = 0.0f;
+      [self colorWheelValueWithPosition:CGPointMake(x, y) hue:&hue saturation:&saturation];
+      RGB rgb = {0.0f, 0.0f, 0.0f, 0.0f};
+      if (saturation < 1.0) {
         // Antialias the edge of the circle.
-        if (hsb.saturation > 0.99) a = (1.0 - hsb.saturation) * 100;
+        if (saturation > 0.99) a = (1.0 - saturation) * 100;
         else a = 1.0;
-
+        HSB hsb = {hue, saturation, 1.0f, a};
         HSB2RGB(hsb, &rgb);
       }
 
@@ -148,27 +167,24 @@
       bitmap[i] = rgb.red * 0xff;
       bitmap[i+1] = rgb.green * 0xff;
       bitmap[i+2] = rgb.blue * 0xff;
-      bitmap[i+3] = a * 0xff;
+      bitmap[i+3] = rgb.alpha * 0xff;
     }
   }
 }
 
-- (HSB)colorWheelValueWithPosition:(CGPoint)position
+- (void)colorWheelValueWithPosition:(CGPoint)position hue:(out CGFloat*)hue saturation:(out CGFloat*)saturation
 {
-  CGFloat hue, saturation;
   int c = CGRectGetWidth(self.bounds) / 2;
   float dx = (float)(position.x - c) / c;
   float dy = (float)(position.y - c) / c;
   float d = sqrtf((float)(dx*dx + dy*dy));
-  saturation = d;
+  *saturation = d;
   if (d == 0) {
-    hue = 0;
+    *hue = 0;
   } else {
-    hue = acosf((float)dx / d) / M_PI / 2.0f;
-    if (dy < 0) hue = 1.0 - hue;
+    *hue = acosf((float)dx / d) / M_PI / 2.0f;
+    if (dy < 0) *hue = 1.0 - *hue;
   }
-  HSB hsb = {hue, saturation, _hsb.brightness};
-  return hsb;
 }
 
 - (id)imageWithRGBAData:(CFDataRef)data width:(NSUInteger)width  height:(NSUInteger)height

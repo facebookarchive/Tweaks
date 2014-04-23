@@ -58,7 +58,7 @@ static CGFloat const _FBColorComponentMaxValue = 255.0f;
 - (void)viewDidLoad
 {
   [super viewDidLoad];
-  [self.view reloadDataWithOptions:FBRGBViewReloadOptionAll];
+  [self.view reloadData];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -88,7 +88,7 @@ static CGFloat const _FBColorComponentMaxValue = 255.0f;
 - (IBAction)onSliderValueChanged:(FBSliderView*)slider
 {
   _colorComponents[slider.tag] = slider.value;
-  [self.view reloadDataWithOptions:FBRGBViewReloadOptionAll];
+  [self.view reloadData];
   _tweak.currentValue = [self _hexColorString];
 }
 
@@ -117,6 +117,9 @@ static CGFloat const _FBColorComponentMaxValue = 255.0f;
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
   _activeField = nil;
+  _colorComponents[textField.tag] = [textField.text floatValue] / _FBColorComponentMaxValue;
+  _tweak.currentValue = [self _hexColorString];
+  [self.view reloadData];
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
@@ -135,13 +138,7 @@ static CGFloat const _FBColorComponentMaxValue = 255.0f;
     return NO;
   }
 
-  BOOL isValid = [newString floatValue] <= _FBColorComponentMaxValue;
-  if (isValid) {
-    _colorComponents[textField.tag] = [newString floatValue] / _FBColorComponentMaxValue;
-    [self.view reloadDataWithOptions:FBRGBViewReloadOptionAll & ~FBRGBViewReloadOptionTextFields];
-    _tweak.currentValue = [self _hexColorString];
-  }
-  return isValid;
+  return [newString floatValue] <= _FBColorComponentMaxValue;
 }
 
 #pragma mark - Private methods

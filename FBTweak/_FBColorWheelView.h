@@ -13,6 +13,7 @@
 
 @interface FBColorWheelView : UIControl
 
-@property(nonatomic, readonly, assign) HSB hsb;
+@property(nonatomic, assign) CGFloat hue;
+@property(nonatomic, assign) CGFloat saturation;
 
 @end

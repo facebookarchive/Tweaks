@@ -9,19 +9,11 @@
 
 #import "UIColor+HEX.h"
 
-/**
- * Converts an RGB color value to HSV.
- * Assumes r, g, and b are contained in the set [0, 255] and
- * returns h, s, and v in the set [0, 1].
- *
- *  @param rgb   The rgb color values
- *  @param outHSB The hsb color values
- */
 extern void RGB2HSB(RGB rgb, HSB* outHSB)
 {
-  double rd = (double) rgb.red / 255;
-  double gd = (double) rgb.green / 255;
-  double bd = (double) rgb.blue / 255;
+  double rd = (double) rgb.red;
+  double gd = (double) rgb.green;
+  double bd = (double) rgb.blue;
   double max = fmax(rd, fmax(gd, bd));
   double min = fmin(rd, fmin(gd, bd));
   double h, s, b = max;
@@ -45,16 +37,9 @@ extern void RGB2HSB(RGB rgb, HSB* outHSB)
   outHSB->hue = h;
   outHSB->saturation = s;
   outHSB->brightness = b;
+  outHSB->alpha = rgb.alpha;
 }
 
-/**
- * Converts an HSB color value to RGB.
- * Assumes h, s, and v are contained in the set [0, 1] and
- * returns r, g, and b in the set [0, 255].
- *
- *  @param outRGB   The rgb color values
- *  @param hsb The hsb color values
- */
 extern void HSB2RGB(HSB hsb, RGB* outRGB)
 {
   double r, g, b;
@@ -77,6 +62,27 @@ extern void HSB2RGB(HSB hsb, RGB* outRGB)
   outRGB->red = r;
   outRGB->green = g;
   outRGB->blue = b;
+  outRGB->alpha = hsb.alpha;
+}
+
+extern RGB RGBColorComponents(UIColor* color)
+{
+  RGB result;
+  CGColorSpaceModel colorSpaceModel = CGColorSpaceGetModel(CGColorGetColorSpace(color.CGColor));
+  if (colorSpaceModel != kCGColorSpaceModelRGB && colorSpaceModel != kCGColorSpaceModelMonochrome) {
+    return result;
+  }
+  const CGFloat *components = CGColorGetComponents(color.CGColor);
+  if (colorSpaceModel == kCGColorSpaceModelMonochrome) {
+    result.red = result.green = result.blue = components[0];
+    result.alpha = components[1];
+  } else {
+    result.red = components[0];
+    result.green = components[1];
+    result.blue = components[2];
+    result.alpha = components[3];
+  }
+  return result;
 }
 
 @implementation UIColor (HEX)

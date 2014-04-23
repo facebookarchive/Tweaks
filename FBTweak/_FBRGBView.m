@@ -61,10 +61,10 @@ NSUInteger const _FBRGBAColorComponentsSize = 4;
   [super updateConstraints];
 }
 
-- (void)reloadDataWithOptions:(FBRGBViewReloadOption)options
+- (void)reloadData
 {
   CGFloat* colorComponents = [self.dataSource colorComponents];
-  [self _reloadDataWithOptions:options colorComponents:colorComponents];
+  [self _reloadDataWithColorComponents:colorComponents];
 }
 
 #pragma mark - Private methods
@@ -149,16 +149,12 @@ NSUInteger const _FBRGBAColorComponentsSize = 4;
   [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[previousView]-spacing-|" options:0 metrics:metrics views:views]];
 }
 
-- (void)_reloadDataWithOptions:(FBRGBViewReloadOption)options colorComponents:(CGFloat[_FBRGBAColorComponentsSize])colorComponents
+- (void)_reloadDataWithColorComponents:(CGFloat[_FBRGBAColorComponentsSize])colorComponents
 {
   UIColor* selectedColor = [UIColor colorWithRed:colorComponents[0] green:colorComponents[1] blue:colorComponents[2] alpha:colorComponents[3]];
   [_colorSample setBackgroundColor:selectedColor];
-  if (options & FBRGBViewReloadOptionSliders) {
-    [self _updateSlidersWithColorComponents:colorComponents];
-  }
-  if (options & FBRGBViewReloadOptionTextFields) {
-    [self _updateTextFieldsWithColorComponents:colorComponents];
-  }
+  [self _updateSlidersWithColorComponents:colorComponents];
+  [self _updateTextFieldsWithColorComponents:colorComponents];
 }
 
 - (void)_updateSlidersWithColorComponents:(CGFloat[_FBRGBAColorComponentsSize])colorComponents

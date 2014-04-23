@@ -8,14 +8,16 @@
  */
 
 #import <UIKit/UIKit.h>
+#import "UIColor+HEX.h"
 
-extern NSUInteger const _FBRGBAColorComponentsSize;
+@class FBColorWheelView;
+@class FBColorComponentView;
 
 /**
  *  This interface declares the color components data source object with the information to construct and modify
  *  a color components view.
  */
-@protocol FBRGBViewDataSource <NSObject>
+@protocol FBHSBViewDataSource <NSObject>
 
 @required
 
@@ -24,22 +26,27 @@ extern NSUInteger const _FBRGBAColorComponentsSize;
  *
  *  @return The color components.
  */
-- (CGFloat*)colorComponents;
+- (HSB)colorComponents;
 
 @end
 
-/**
- @abstract A view to edit RGBA color components.
- */
-@interface FBRGBView : UIView
 
-@property(nonatomic, strong, readonly) UIView* colorSample;
+/**
+ @abstract A view to edit HSB color components.
+ */
+@interface FBHSBView : UIView
+
+@property(nonatomic, strong, readonly) FBColorWheelView* colorWheel;
+@property(nonatomic, strong, readonly) FBColorComponentView* brightnessView;
+@property(nonatomic, strong, readonly) FBColorComponentView* alphaView;
+@property(nonatomic, strong, readonly) UITextField* hueTextField;
+@property(nonatomic, strong, readonly) UILabel* saturationLabel;
+@property(nonatomic, strong, readonly) UITextField* saturationTextField;
 @property(nonatomic, strong, readonly) UIScrollView* scrollView;
 @property(nonatomic, strong, readonly) UIView* contentView;
-@property(nonatomic, strong, readonly) NSArray* colorComponentViews;
 
 //! @abstract The data source that provides current color components values
-@property(nonatomic, weak) id<FBRGBViewDataSource> dataSource;
+@property(nonatomic, weak) id<FBHSBViewDataSource> dataSource;
 
 /**
  *  Reloads the content of the receiver.
