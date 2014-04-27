@@ -11,7 +11,7 @@
 #import "FBTweakCategory.h"
 #import "_FBTweakCategoryViewController.h"
 
-@interface _FBTweakCategoryViewController () <UITableViewDataSource, UITableViewDelegate>
+@interface _FBTweakCategoryViewController () <UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate>
 @end
 
 @implementation _FBTweakCategoryViewController {
@@ -56,7 +56,12 @@
 
 - (void)_reset
 {
-  [_store reset];
+  UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Are you sure?"
+                                                   message:@"Are you sure you want to reset your tweaks? This cannot be undone."
+                                                  delegate:self
+                                         cancelButtonTitle:@"Cancel"
+                                         otherButtonTitles:@"Reset", nil];
+  [alert show];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -96,6 +101,13 @@
 {
   FBTweakCategory *category = _store.tweakCategories[indexPath.row];
   [_delegate tweakCategoryViewController:self selectedCategory:category];
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+  if (buttonIndex != alertView.cancelButtonIndex) {
+    [_store reset];
+  }
 }
 
 @end
