@@ -74,6 +74,18 @@
   XCTAssertEqual([mixedIntTweak.maximumValue floatValue], (int)1, @"Mixed Int Maximum %@", mixedIntTweak.maximumValue);
 }
 
+// Actions use variables so they can work in the global scope, test for name conflicts.
+- (void)testMultipleActions
+{
+  FBTweakAction(@"Action", @"Action", @"One", ^{
+    NSLog(@"Action One");
+  });
+
+  FBTweakAction(@"Action", @"Action", @"Two", ^{
+    NSLog(@"Action Two");
+  });
+}
+
 - (void)testBind
 {
   NSMutableURLRequest *v = [[NSMutableURLRequest alloc] init];

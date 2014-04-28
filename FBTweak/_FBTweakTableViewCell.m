@@ -16,6 +16,7 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
   _FBTweakTableViewCellModeInteger,
   _FBTweakTableViewCellModeReal,
   _FBTweakTableViewCellModeString,
+  _FBTweakTableViewCellModeAction,
 };
 
 @interface _FBTweakTableViewCell () <UITextFieldDelegate>
@@ -33,11 +34,8 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
 - (instancetype)initWithReuseIdentifier:(NSString *)reuseIdentifier;
 {
   if ((self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier])) {
-    self.selectionStyle = UITableViewCellSelectionStyleNone;
-    
     _accessoryView = [[UIView alloc] init];
-    self.accessoryView = _accessoryView;
-    
+
     _switch = [[UISwitch alloc] init];
     [_switch addTarget:self action:@selector(_switchChanged:) forControlEvents:UIControlEventValueChanged];
     [_accessoryView addSubview:_switch];
@@ -85,6 +83,8 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
     CGRect textBounds = CGRectMake(0, 0, self.bounds.size.width / 3, self.bounds.size.height);
     _textField.frame = CGRectIntegral(textBounds);
     _accessoryView.bounds = CGRectIntegral(textBounds);
+  } else if (_mode == _FBTweakTableViewCellModeAction) {
+    _accessoryView.bounds = CGRectZero;
   }
 
   // This positions the accessory view, so call it after updating its bounds.
@@ -117,6 +117,8 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
       } else {
         mode = _FBTweakTableViewCellModeReal;
       }
+    } else if ([_tweak isAction]) {
+      mode = _FBTweakTableViewCellModeAction;
     }
     
     [self _updateMode:mode];
@@ -127,7 +129,11 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
 - (void)_updateMode:(_FBTweakTableViewCellMode)mode
 {
   _mode = mode;
-  
+
+  self.accessoryView = _accessoryView;
+  self.accessoryType = UITableViewCellAccessoryNone;
+  self.selectionStyle = UITableViewCellSelectionStyleNone;
+
   if (_mode == _FBTweakTableViewCellModeBoolean) {
     _switch.hidden = NO;
     _textField.hidden = YES;
@@ -178,6 +184,14 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
     _textField.hidden = NO;
     _textField.keyboardType = UIKeyboardTypeDefault;
     _stepper.hidden = YES;
+  } else if (_mode == _FBTweakTableViewCellModeAction) {
+    _switch.hidden = YES;
+    _textField.hidden = YES;
+    _stepper.hidden = YES;
+
+    self.accessoryView = nil;
+    self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    self.selectionStyle = UITableViewCellSelectionStyleBlue;
   } else {
     _switch.hidden = YES;
     _textField.hidden = YES;
@@ -189,6 +203,22 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
 }
 
 #pragma mark - Actions
+
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated
+{
+  [super setSelected:selected animated:animated];
+
+  if (_mode == _FBTweakTableViewCellModeAction) {
+    if (selected) {
+      [self setSelected:NO animated:YES];
+
+      dispatch_block_t block = _tweak.defaultValue;
+      if (block != NULL) {
+        block();
+      }
+    }
+  }
+}
 
 - (void)_switchChanged:(UISwitch *)switch_
 {

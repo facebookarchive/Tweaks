@@ -25,12 +25,22 @@
   FBTweak *_flipTweak;
 }
 
+FBTweakAction(@"Actions", @"Global", @"Hello", ^{
+  UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Hello" message:@"Global alert test." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Done", nil];
+  [alert show];
+});
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  FBTweakAction(@"Actions", @"Scoped", @"One", ^{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Hello" message:@"Scoped alert test #1." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Done", nil];
+    [alert show];
+  });
+
   _window = [[FBTweakShakeWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
   _window.backgroundColor = [UIColor whiteColor];
   [_window makeKeyAndVisible];
-  
+
   _rootViewController = [[UIViewController alloc] init];
   _rootViewController.view.backgroundColor = [UIColor colorWithRed:FBTweakValue(@"Window", @"Color", @"Red", 0.9, 0.0, 1.0)
                                                         green:FBTweakValue(@"Window", @"Color", @"Green", 0.9, 0.0, 1.0)
@@ -63,6 +73,11 @@
   [tweaksButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
   [tweaksButton addTarget:self action:@selector(buttonTapped) forControlEvents:UIControlEventTouchUpInside];
   [_rootViewController.view addSubview:tweaksButton];
+
+  FBTweakAction(@"Actions", @"Scoped", @"Two", ^{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Hello" message:@"Scoped alert test #2." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Done", nil];
+    [alert show];
+  });
   
   return YES;
 }

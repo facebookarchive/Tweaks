@@ -23,8 +23,22 @@
   return self;
 }
 
+- (BOOL)isAction
+{
+  // NSBlock isn't a public class, walk the hierarchy for it.
+  Class blockClass = [^{} class];
+
+  while (blockClass != [NSObject class]) {
+    blockClass = [blockClass superclass];
+  }
+
+  return [_defaultValue isKindOfClass:blockClass];
+}
+
 - (void)setCurrentValue:(FBTweakValue)currentValue
 {
+  NSAssert(!self.isAction, @"actions cannot have non-default values");
+
   if (_minimumValue != nil && currentValue != nil && [_minimumValue compare:currentValue] == NSOrderedDescending) {
     currentValue = _minimumValue;
   }

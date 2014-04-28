@@ -13,7 +13,8 @@
 
 /**
   @abstract Represents a possible value of a tweak.
-  @discussion Should be able to be persisted in user defaults.
+  @discussion Should be able to be persisted in user defaults,
+    except actions (represented as blocks without a currentValue).
     For minimum and maximum values, should implement -compare:.
  */
 typedef id FBTweakValue;
@@ -43,26 +44,37 @@ typedef id FBTweakValue;
 @property (nonatomic, copy, readwrite) NSString *name;
 
 /**
- @abstract The default value of the tweak.
- @discussion Use this when the current value is unset.
+  @abstract If this tweak is an action, with a block value.
+  @param If YES, {@ref currentValue} should not be set and
+    {@ref defaultValue} is a block rather than a value object.
+ */
+@property (nonatomic, readonly, assign, getter = isAction) BOOL action;
+
+/**
+  @abstract The default value of the tweak.
+  @discussion Use this when the current value is unset.
+    For actions, set this property to a block instead.
  */
 @property (nonatomic, strong, readwrite) FBTweakValue defaultValue;
 
 /**
   @abstract The current value of the tweak. Can be nil.
-  @discussion Changes to this property will be propagated to disk.
+  @discussion Changes will be propagated to disk. Enforces minimum
+    and maximum values when changed. Must not be set on actions.
  */
 @property (nonatomic, strong, readwrite) FBTweakValue currentValue;
 
 /**
   @abstract The minimum value of the tweak.
   @discussion Optional. If nil, there is no minimum.
+    Should not be set on tweaks representing actions.
  */
 @property (nonatomic, strong, readwrite) FBTweakValue minimumValue;
 
 /**
   @abstract The maximum value of the tweak.
   @discussion Optional. If nil, there is no maximum.
+    Should not be set on tweaks representing actions.
  */
 @property (nonatomic, strong, readwrite) FBTweakValue maximumValue;
 

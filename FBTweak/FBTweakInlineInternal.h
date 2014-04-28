@@ -20,6 +20,7 @@
 #define _FBTweakInline(category_, collection_, name_, ...) nil
 #define _FBTweakValue(category_, collection_, name_, ...) (__FBTweakDefault(__VA_ARGS__, _))
 #define _FBTweakBind(object_, property_, category_, collection_, name_, ...) (object_.property_ = __FBTweakDefault(__VA_ARGS__, _))
+#define _FBTweakAction(category_, collection_, name_, ...)
 
 #else
 
@@ -29,6 +30,8 @@ extern "C" {
 
 #define FBTweakSegmentName "__DATA"
 #define FBTweakSectionName "FBTweak"
+
+#define FBTweakEncodingAction "__ACTION__"
 
 typedef __unsafe_unretained NSString *FBTweakLiteralString;
   
@@ -84,8 +87,8 @@ extern NSString *_FBTweakIdentifier(fb_tweak_entry *entry);
 \
   /* find the registered tweak with the given identifier. */ \
   FBTweakStore *store = [FBTweakStore sharedInstance]; \
-  FBTweakCategory *category = [store tweakCategoryWithName:*entry.category]; \
-  FBTweakCollection *collection = [category tweakCollectionWithName:*entry.collection]; \
+  FBTweakCategory *category = [store tweakCategoryWithName:category__]; \
+  FBTweakCollection *collection = [category tweakCollectionWithName:collection__]; \
 \
   NSString *identifier = _FBTweakIdentifier(&entry); \
   FBTweak *__inline_tweak = [collection tweakWithIdentifier:identifier]; \
@@ -149,7 +152,25 @@ extern NSString *_FBTweakIdentifier(fb_tweak_entry *entry);
   [observer__ attachToObject:object_]; \
 })())
 #define _FBTweakBind(object_, property_, category_, collection_, name_, ...) _FBTweakHasRange(_FBTweakBindWithoutRange, _FBTweakBindWithRange, __VA_ARGS__)(object_, property_, category_, collection_, name_, __VA_ARGS__)
-  
+
+#define _FBTweakAction(category_, collection_, name_, ...) \
+  _FBTweakActionInternal(category_, collection_, name_, __COUNTER__, __VA_ARGS__)
+#define _FBTweakActionInternal(category_, collection_, name_, suffix_, ...) \
+  /* store the tweak data in the binary at compile time. */ \
+  __attribute__((used)) static FBTweakLiteralString __FBTweakConcat(__fb_tweak_action_category_, suffix_) = category_; \
+  __attribute__((used)) static FBTweakLiteralString __FBTweakConcat(__fb_tweak_action_collection_, suffix_) = collection_; \
+  __attribute__((used)) static FBTweakLiteralString __FBTweakConcat(__fb_tweak_action_name_, suffix_) = name_; \
+  __attribute__((used)) static dispatch_block_t __FBTweakConcat(__fb_tweak_action_block_, suffix_) = __VA_ARGS__; \
+  __attribute__((used)) static char *__FBTweakConcat(__fb_tweak_action_encoding_, suffix_) = (char *)FBTweakEncodingAction; \
+  __attribute__((used)) __attribute__((section (FBTweakSegmentName "," FBTweakSectionName))) static fb_tweak_entry __FBTweakConcat(__fb_tweak_action_entry_, suffix_) = { \
+    &__FBTweakConcat(__fb_tweak_action_category_, suffix_), \
+    &__FBTweakConcat(__fb_tweak_action_collection_, suffix_), \
+    &__FBTweakConcat(__fb_tweak_action_name_, suffix_), \
+    &__FBTweakConcat(__fb_tweak_action_block_, suffix_), \
+    NULL, NULL, \
+    &__FBTweakConcat(__fb_tweak_action_encoding_, suffix_), \
+  }; \
+
 #ifdef __cplusplus
 }
 #endif
