@@ -28,7 +28,7 @@
   // NSBlock isn't a public class, walk the hierarchy for it.
   Class blockClass = [^{} class];
 
-  while (blockClass != [NSObject class]) {
+  while ([blockClass superclass] != [NSObject class]) {
     blockClass = [blockClass superclass];
   }
 
