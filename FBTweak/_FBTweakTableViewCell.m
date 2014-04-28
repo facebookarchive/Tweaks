@@ -120,7 +120,7 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
     }
     
     [self _updateMode:mode];
-    [self _updateValue:value write:NO];
+    [self _updateValue:value primary:YES write:NO];
   }
 }
 
@@ -155,7 +155,6 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
     _textField.hidden = NO;
     _textField.keyboardType = UIKeyboardTypeDecimalPad;
     _stepper.hidden = NO;
-    _stepper.stepValue = 1.0;
     
     if (_tweak.minimumValue != nil) {
       _stepper.minimumValue = [_tweak.minimumValue doubleValue];
@@ -173,7 +172,7 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
       _stepper.maximumValue = [_tweak.defaultValue doubleValue] * 10.0;
     }
     
-    _stepper.stepValue = (_stepper.maximumValue - _stepper.minimumValue) / 100.0;
+    _stepper.stepValue = fminf(1.0, (_stepper.maximumValue - _stepper.minimumValue) / 100.0);
   } else if (_mode == _FBTweakTableViewCellModeString) {
     _switch.hidden = YES;
     _textField.hidden = NO;
@@ -193,7 +192,7 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
 
 - (void)_switchChanged:(UISwitch *)switch_
 {
-  [self _updateValue:@(_switch.on) write:YES];
+  [self _updateValue:@(_switch.on) primary:NO write:YES];
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
@@ -205,36 +204,44 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
   if (_mode == _FBTweakTableViewCellModeString) {
-    [self _updateValue:_textField.text write:YES];
+    [self _updateValue:_textField.text primary:NO write:YES];
   } else {
     NSNumber *number = @([_textField.text doubleValue]);
-    [self _updateValue:number write:YES];
+    [self _updateValue:number primary:NO write:YES];
   }
 }
 
 - (void)_stepperChanged:(UIStepper *)stepper
 {
-  [self _updateValue:@(stepper.value) write:YES];
+  [self _updateValue:@(stepper.value) primary:NO write:YES];
 }
 
-- (void)_updateValue:(FBTweakValue)value write:(BOOL)write
+- (void)_updateValue:(FBTweakValue)value primary:(BOOL)primary write:(BOOL)write
 {
   if (write) {
     _tweak.currentValue = value;
   }
   
   if (_mode == _FBTweakTableViewCellModeBoolean) {
-    _switch.on = [value boolValue];
+    if (primary) {
+      _switch.on = [value boolValue];
+    }
   } else if (_mode == _FBTweakTableViewCellModeString) {
-    _textField.text = value;
+    if (primary) {
+      _textField.text = value;
+    }
   } else if (_mode == _FBTweakTableViewCellModeInteger) {
-    _stepper.value = [value longLongValue];
+    if (primary) {
+      _stepper.value = [value longLongValue];
+    }
     _textField.text = [value stringValue];
   } else if (_mode == _FBTweakTableViewCellModeReal) {
-    _stepper.value = [value doubleValue];
+    if (primary) {
+      _stepper.value = [value doubleValue];
+    }
     
     double exp = log10(_stepper.stepValue);
-    long precision = exp < 0 ? fabs(exp) : 0;
+    long precision = exp < 0 ? ceilf(fabs(exp)) : 0;
     
     NSString *format = [NSString stringWithFormat:@"%%.%ldf", precision];
     _textField.text = [NSString stringWithFormat:format, [value doubleValue]];
