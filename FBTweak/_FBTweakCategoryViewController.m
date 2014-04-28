@@ -56,11 +56,11 @@
 
 - (void)_reset
 {
-  UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Are you sure?"
-                                                   message:@"Are you sure you want to reset your tweaks? This cannot be undone."
-                                                  delegate:self
-                                         cancelButtonTitle:@"Cancel"
-                                         otherButtonTitles:@"Reset", nil];
+  UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Are you sure?"
+                                                  message:@"Are you sure you want to reset your tweaks? This cannot be undone."
+                                                 delegate:self
+                                        cancelButtonTitle:@"Cancel"
+                                        otherButtonTitles:@"Reset", nil];
   [alert show];
 }
 
