@@ -17,14 +17,18 @@
 
 @implementation _FBTweakCollectionViewController {
   UITableView *_tableView;
+  NSArray *_sortedCollections;
 }
 
 - (instancetype)initWithTweakCategory:(FBTweakCategory *)category
 {
   if ((self = [super init])) {
     _tweakCategory = category;
-    
     self.title = _tweakCategory.name;
+
+    _sortedCollections = [_tweakCategory.tweakCollections sortedArrayUsingComparator:^(FBTweakCollection *a, FBTweakCollection *b) {
+      return [a.name localizedStandardCompare:b.name];
+    }];
   }
   
   return self;
@@ -82,18 +86,18 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-  return _tweakCategory.tweakCollections.count;
+  return _sortedCollections.count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-  FBTweakCollection *collection = _tweakCategory.tweakCollections[section];
+  FBTweakCollection *collection = _sortedCollections[section];
   return collection.tweaks.count;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-  FBTweakCollection *collection = _tweakCategory.tweakCollections[section];
+  FBTweakCollection *collection = _sortedCollections[section];
   return collection.name;
 }
 
@@ -105,7 +109,7 @@
     cell = [[_FBTweakTableViewCell alloc] initWithReuseIdentifier:_FBTweakCollectionViewControllerCellIdentifier];
   }
   
-  FBTweakCollection *collection = _tweakCategory.tweakCollections[indexPath.section];
+  FBTweakCollection *collection = _sortedCollections[indexPath.section];
   FBTweak *tweak = collection.tweaks[indexPath.row];
   cell.tweak = tweak;
   

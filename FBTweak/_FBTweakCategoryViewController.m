@@ -16,6 +16,7 @@
 
 @implementation _FBTweakCategoryViewController {
   UITableView *_tableView;
+  NSArray *_sortedCategories;
 }
 
 - (instancetype)initWithStore:(FBTweakStore *)store
@@ -24,6 +25,9 @@
     self.title = @"Tweaks";
     
     _store = store;
+    _sortedCategories = [_store.tweakCategories sortedArrayUsingComparator:^(FBTweakCategory *a, FBTweakCategory *b) {
+      return [a.name localizedStandardCompare:b.name];
+    }];
   }
 
   return self;
@@ -78,7 +82,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-  return _store.tweakCategories.count;
+  return _sortedCategories.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -91,7 +95,7 @@
   
   cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 
-  FBTweakCategory *category = _store.tweakCategories[indexPath.row];
+  FBTweakCategory *category = _sortedCategories[indexPath.row];
   cell.textLabel.text = category.name;
   
   return cell;
@@ -99,7 +103,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-  FBTweakCategory *category = _store.tweakCategories[indexPath.row];
+  FBTweakCategory *category = _sortedCategories[indexPath.row];
   [_delegate tweakCategoryViewController:self selectedCategory:category];
 }
 
