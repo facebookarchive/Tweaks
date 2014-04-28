@@ -62,21 +62,25 @@ extern NSString *_FBTweakIdentifier(fb_tweak_entry *entry);
 #define _FBTweakHasRange(__withoutRange, __withRange, ...) __FBTweakConcat(__FBTweakHasRange, __FBTweakIndexCount(__VA_ARGS__))(__withoutRange, __withRange)
   
 #define _FBTweakInlineWithoutRange(category_, collection_, name_, default_) \
-  _FBTweakInlineWithRangeInternal(category_, collection_, name_, default_, NO, NULL, NO, NULL)
+((^{ \
+  return _FBTweakInlineWithRangeInternal(category_, collection_, name_, default_, NULL, NULL); \
+})())
 #define _FBTweakInlineWithRange(category_, collection_, name_, default_, min_, max_) \
-  _FBTweakInlineWithRangeInternal(category_, collection_, name_, default_, YES, min_, YES, max_)
-#define _FBTweakInlineWithRangeInternal(category_, collection_, name_, default_, hasmin_, min_, hasmax_, max_) \
+((^{ \
+  __attribute__((used)) static __typeof__(default_) min__ = (__typeof__(default_))min_; \
+  __attribute__((used)) static __typeof__(default_) max__ = (__typeof__(default_))max_; \
+  return _FBTweakInlineWithRangeInternal(category_, collection_, name_, default_, &min__, &max__); \
+})())
+#define _FBTweakInlineWithRangeInternal(category_, collection_, name_, default_, min__, max__) \
 ((^{ \
   /* store the tweak data in the binary at compile time. */ \
   __attribute__((used)) static FBTweakLiteralString category__ = category_; \
   __attribute__((used)) static FBTweakLiteralString collection__ = collection_; \
   __attribute__((used)) static FBTweakLiteralString name__ = name_; \
   __attribute__((used)) static __typeof__(default_) default__ = default_; \
-  __attribute__((used)) static __typeof__(min_) min__ = min_; \
-  __attribute__((used)) static __typeof__(max_) max__ = max_; \
   __attribute__((used)) static char *encoding__ = (char *)@encode(__typeof__(default_)); \
   __attribute__((used)) __attribute__((section (FBTweakSegmentName "," FBTweakSectionName))) static fb_tweak_entry entry = \
-    { &category__, &collection__, &name__, &default__, hasmin_ ? &min__ : NULL, hasmax_ ? &max__ : NULL, &encoding__ }; \
+    { &category__, &collection__, &name__, &default__, min__, max__, &encoding__ }; \
 \
   /* find the registered tweak with the given identifier. */ \
   FBTweakStore *store = [FBTweakStore sharedInstance]; \
@@ -90,7 +94,7 @@ extern NSString *_FBTweakIdentifier(fb_tweak_entry *entry);
 })())
 #define _FBTweakInline(category_, collection_, name_, ...) _FBTweakHasRange(_FBTweakInlineWithoutRange, _FBTweakInlineWithRange, __VA_ARGS__)(category_, collection_, name_, __VA_ARGS__)
   
-#define _FBTweakValueInternal(tweak_, category_, collection_, name_, default_, hasmin_, min_, hasmax_, max_) \
+#define _FBTweakValueInternal(tweak_, category_, collection_, name_, default_) \
 ((^{ \
   /* returns a correctly typed version of the current tweak value */ \
   FBTweakValue currentValue = tweak_.currentValue ?: tweak_.defaultValue; \
@@ -113,27 +117,34 @@ extern NSString *_FBTweakIdentifier(fb_tweak_entry *entry);
   ); \
 })())
 
-#define _FBTweakValueWithoutRange(category_, collection_, name_, default_) _FBTweakValueWithRangeInternal(category_, collection_, name_, default_, NO, NULL, NO, NULL)
-#define _FBTweakValueWithRange(category_, collection_, name_, default_, min_, max_) _FBTweakValueWithRangeInternal(category_, collection_, name_, default_, YES, min_, YES, max_)
-#define _FBTweakValueWithRangeInternal(category_, collection_, name_, default_, hasmin_, min_, hasmax_, max_) \
+#define _FBTweakValueWithoutRange(category_, collection_, name_, default_) \
 ((^{ \
-  FBTweak *__value_tweak = _FBTweakInlineWithRangeInternal(category_, collection_, name_, default_, hasmin_, min_, hasmax_, max_); \
-  return _FBTweakValueInternal(__value_tweak, category_, collection_, name_, default_, hasmin_, min_, hasmax_, max_); \
+    FBTweak *__value_tweak = _FBTweakInlineWithoutRange(category_, collection_, name_, default_); \
+    return _FBTweakValueInternal(__value_tweak, category_, collection_, name_, default_); \
+})())
+#define _FBTweakValueWithRange(category_, collection_, name_, default_, min_, max_) \
+((^{ \
+  FBTweak *__value_tweak = _FBTweakInlineWithRange(category_, collection_, name_, default_, min_, max_); \
+  return _FBTweakValueInternal(__value_tweak, category_, collection_, name_, default_); \
 })())
 #define _FBTweakValue(category_, collection_, name_, ...) _FBTweakHasRange(_FBTweakValueWithoutRange, _FBTweakValueWithRange, __VA_ARGS__)(category_, collection_, name_, __VA_ARGS__)
 
 #define _FBTweakBindWithoutRange(object_, property_, category_, collection_, name_, default_) \
-  _FBTweakBindWithRangeInternal(object_, property_, category_, collection_, name_, default_, NO, NULL, NO, NULL)
-#define _FBTweakBindWithRange(object_, property_, category_, collection_, name_, default_, min_, max_) \
-  _FBTweakBindWithRangeInternal(object_, property_, category_, collection_, name_, default_, YES, min_, YES, max_)
-#define _FBTweakBindWithRangeInternal(object_, property_, category_, collection_, name_, default_, hasmin_, min_, hasmax_, max_) \
 ((^{ \
-  FBTweak *__bind_tweak = _FBTweakInlineWithRangeInternal(category_, collection_, name_, default_, hasmin_, min_, hasmax_, max_); \
-  object_.property_ = _FBTweakValueInternal(__bind_tweak, category_, collection_, name_, default_, hasmin_, min_, hasmax_, max_); \
-\
-  _FBTweakBindObserver *observer__ = [[_FBTweakBindObserver alloc] initWithTweak:__bind_tweak block:^(id object__) { \
+  FBTweak *__bind_tweak = _FBTweakInlineWithoutRange(category_, collection_, name_, default_); \
+  _FBTweakBindWithRangeInternal(object_, property_, category_, collection_, name_, default_, __bind_tweak); \
+})())
+#define _FBTweakBindWithRange(object_, property_, category_, collection_, name_, default_, min_, max_) \
+((^{ \
+  FBTweak *__bind_tweak = _FBTweakInlineWithRange(category_, collection_, name_, default_, min_, max_); \
+  _FBTweakBindWithRangeInternal(object_, property_, category_, collection_, name_, default_, __bind_tweak); \
+})())
+#define _FBTweakBindWithRangeInternal(object_, property_, category_, collection_, name_, default_, tweak_) \
+((^{ \
+  object_.property_ = _FBTweakValueInternal(tweak_, category_, collection_, name_, default_); \
+  _FBTweakBindObserver *observer__ = [[_FBTweakBindObserver alloc] initWithTweak:tweak_ block:^(id object__) { \
     __typeof__(object_) object___ = object__; \
-    object___.property_ = _FBTweakValueInternal(__bind_tweak, category_, collection_, name_, default_, hasmin_, min_, hasmax_, max_); \
+    object___.property_ = _FBTweakValueInternal(tweak_, category_, collection_, name_, default_); \
   }]; \
   [observer__ attachToObject:object_]; \
 })())

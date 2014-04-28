@@ -54,6 +54,27 @@
   XCTAssertEqualObjects(testNSString, @"one", @"NSString %@", testNSString);
 }
 
+
+// All values should be converted to the same type as the default.
+- (void)testMixedRangeTypes
+{
+  FBTweak *mixedFloatTweak = FBTweakInline(@"Mixed Float", @"Mixed Float", @"Mixed Float", (float)1.0, (double)1.0, (long)1.0);
+  XCTAssertEqualObjects([NSString stringWithUTF8String:[mixedFloatTweak.defaultValue objCType]], @"f", @"Mixed Float Default %s", [mixedFloatTweak.defaultValue objCType]);
+  XCTAssertEqual([mixedFloatTweak.defaultValue floatValue], (float)1.0, @"Mixed Float Default %@", mixedFloatTweak.defaultValue);
+  XCTAssertEqualObjects([NSString stringWithUTF8String:[mixedFloatTweak.minimumValue objCType]], @"f", @"Mixed Float Minimum %s", [mixedFloatTweak.minimumValue objCType]);
+  XCTAssertEqual([mixedFloatTweak.minimumValue floatValue], (float)1.0, @"Mixed Float Minimum %@", mixedFloatTweak.minimumValue);
+  XCTAssertEqualObjects([NSString stringWithUTF8String:[mixedFloatTweak.maximumValue objCType]], @"f", @"Mixed Float Maximum %s", [mixedFloatTweak.maximumValue objCType]);
+  XCTAssertEqual([mixedFloatTweak.maximumValue floatValue], (float)1.0, @"Mixed Float Maximum %@", mixedFloatTweak.maximumValue);
+
+  FBTweak *mixedIntTweak = FBTweakInline(@"Mixed Int", @"Mixed Int", @"Mixed Int", (int)1, (char)1, (double)1);
+  XCTAssertEqualObjects([NSString stringWithUTF8String:[mixedIntTweak.defaultValue objCType]], @"i", @"Mixed Int Default %@", mixedIntTweak.defaultValue);
+  XCTAssertEqual([mixedIntTweak.defaultValue floatValue], (int)1, @"Mixed Int Default %@", mixedIntTweak.defaultValue);
+  XCTAssertEqualObjects([NSString stringWithUTF8String:[mixedIntTweak.minimumValue objCType]], @"i", @"Mixed Int Minimum %@", mixedIntTweak.minimumValue);
+  XCTAssertEqual([mixedIntTweak.minimumValue floatValue], (int)1, @"Mixed Int Minimum %@", mixedIntTweak.minimumValue);
+  XCTAssertEqualObjects([NSString stringWithUTF8String:[mixedIntTweak.maximumValue objCType]], @"i", @"Mixed Int Maximum %@", mixedIntTweak.maximumValue);
+  XCTAssertEqual([mixedIntTweak.maximumValue floatValue], (int)1, @"Mixed Int Maximum %@", mixedIntTweak.maximumValue);
+}
+
 - (void)testBind
 {
   NSMutableURLRequest *v = [[NSMutableURLRequest alloc] init];
