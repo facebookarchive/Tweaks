@@ -10,16 +10,28 @@
 #import "FBTweakStore.h"
 #import "FBTweakShakeWindow.h"
 #import "FBTweakViewController.h"
+#import "_FBKeyboardManager.h"
 
 // Minimum shake time required to present tweaks on device.
 static CFTimeInterval _FBTweakShakeWindowMinTimeInterval = 0.4;
 
 @implementation FBTweakShakeWindow {
   BOOL _shaking;
+  FBKeyboardManager* _keyboardManager;
+}
+
+- (id)initWithFrame:(CGRect)frame
+{
+  self = [super initWithFrame:frame];
+  if (self) {
+    _keyboardManager = [[FBKeyboardManager alloc] init];
+  }
+  return self;
 }
 
 - (void)tweakViewControllerPressedDone:(FBTweakViewController *)tweakViewController
 {
+  [_keyboardManager disable];
   [tweakViewController dismissViewControllerAnimated:YES completion:NULL];
 }
 
@@ -29,6 +41,7 @@ static CFTimeInterval _FBTweakShakeWindowMinTimeInterval = 0.4;
   
   // Prevent double-presenting the tweaks view controller.
   if (![rootViewController.presentedViewController isKindOfClass:[FBTweakViewController class]]) {
+    [_keyboardManager enable];
     FBTweakStore *store = [FBTweakStore sharedInstance];
     FBTweakViewController *viewController = [[FBTweakViewController alloc] initWithStore:store];
     viewController.tweaksDelegate = self;

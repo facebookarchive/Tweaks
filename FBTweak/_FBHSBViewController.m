@@ -12,7 +12,6 @@
 #import "_FBColorComponentView.h"
 #import "_FBSliderView.h"
 #import "_FBHSBView.h"
-#import "_FBKeyboardManager.h"
 #import "FBTweak.h"
 #import "UIColor+HEX.h"
 
@@ -21,8 +20,6 @@ static CGFloat const _FBAlphaMaxValue = 100.0f;
 
 @interface FBHSBViewController () <UITextFieldDelegate, FBHSBViewDataSource>
 {
-  FBKeyboardManager* _keyboardManager;
-
   FBTweak* _tweak;
   HSB _colorComponents;
 }
@@ -43,7 +40,6 @@ static CGFloat const _FBAlphaMaxValue = 100.0f;
 
     FBTweakValue value = (_tweak.currentValue ?: _tweak.defaultValue);
     RGB2HSB(RGBColorComponents([UIColor colorWithHexString:value]), &_colorComponents);
-    _keyboardManager = [[FBKeyboardManager alloc] init];
   }
   return self;
 }
@@ -66,16 +62,6 @@ static CGFloat const _FBAlphaMaxValue = 100.0f;
 {
   [super viewDidLoad];
   [self.view reloadData];
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-  [_keyboardManager enable];
-}
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-  [_keyboardManager disable];
 }
 
 - (IBAction)onColorChanged:(FBColorWheelView*)sender

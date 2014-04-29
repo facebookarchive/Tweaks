@@ -37,8 +37,6 @@
 {
   [super viewDidLoad];
   
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_keyboardFrameChanged:) name:UIKeyboardWillChangeFrameNotification object:nil];
-  
   _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
   _tableView.delegate = self;
   _tableView.dataSource = self;
@@ -58,30 +56,6 @@
   
   [_tableView deselectRowAtIndexPath:_tableView.indexPathForSelectedRow animated:animated];
   [_tableView reloadData];
-}
-
-- (void)_keyboardFrameChanged:(NSNotification *)notification
-{
-  CGRect endFrame = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
-  endFrame = [self.view.window convertRect:endFrame fromWindow:nil];
-  endFrame = [self.view convertRect:endFrame fromView:self.view.window];
-  
-  NSTimeInterval duration = [notification.userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
-  UIViewAnimationCurve curve = [notification.userInfo[UIKeyboardAnimationCurveUserInfoKey] integerValue];
-  
-  void (^animations)() = ^{
-    UIEdgeInsets contentInset = _tableView.contentInset;
-    contentInset.bottom = (self.view.bounds.size.height - CGRectGetMinY(endFrame));
-    _tableView.contentInset = contentInset;
-    
-    UIEdgeInsets scrollIndicatorInsets = _tableView.scrollIndicatorInsets;
-    scrollIndicatorInsets.bottom = (self.view.bounds.size.height - CGRectGetMinY(endFrame));
-    _tableView.scrollIndicatorInsets = scrollIndicatorInsets;
-  };
-  
-  UIViewAnimationOptions options = (curve << 16) | UIViewAnimationOptionBeginFromCurrentState;
-  
-  [UIView animateWithDuration:duration delay:0 options:options animations:animations completion:NULL];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView

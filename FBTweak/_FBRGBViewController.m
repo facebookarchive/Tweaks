@@ -11,7 +11,6 @@
 #import "_FBSliderView.h"
 #import "_FBColorComponentView.h"
 #import "_FBRGBView.h"
-#import "_FBKeyboardManager.h"
 #import "FBTweak.h"
 #import "UIColor+HEX.h"
 
@@ -20,8 +19,6 @@ static CGFloat const _FBColorComponentMaxValue = 255.0f;
 @interface FBRGBViewController () <UITextFieldDelegate, FBRGBViewDataSource>
 {
   CGFloat _colorComponents[4];
-
-  FBKeyboardManager* _keyboardManager;
   FBTweak* _tweak;
 }
 
@@ -41,7 +38,6 @@ static CGFloat const _FBColorComponentMaxValue = 255.0f;
 
     FBTweakValue value = (_tweak.currentValue ?: _tweak.defaultValue);
     [self _setColorComponents:[UIColor colorWithHexString:value]];
-    _keyboardManager = [[FBKeyboardManager alloc] init];
   }
   return self;
 }
@@ -60,16 +56,6 @@ static CGFloat const _FBColorComponentMaxValue = 255.0f;
 {
   [super viewDidLoad];
   [self.view reloadData];
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-  [_keyboardManager enable];
-}
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-  [_keyboardManager disable];
 }
 
 - (IBAction)onSliderValueChanged:(FBSliderView*)slider
