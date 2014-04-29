@@ -42,8 +42,6 @@
 @property(nonatomic, strong, readonly) UITextField* hueTextField;
 @property(nonatomic, strong, readonly) UILabel* saturationLabel;
 @property(nonatomic, strong, readonly) UITextField* saturationTextField;
-@property(nonatomic, strong, readonly) UIScrollView* scrollView;
-@property(nonatomic, strong, readonly) UIView* contentView;
 
 //! @abstract The data source that provides current color components values
 @property(nonatomic, weak) id<FBHSBViewDataSource> dataSource;

@@ -11,6 +11,7 @@
 #import "_FBSliderView.h"
 #import "_FBColorComponentView.h"
 #import "_FBRGBView.h"
+#import "_FBKeyboardManager.h"
 #import "FBTweak.h"
 #import "UIColor+HEX.h"
 
@@ -20,8 +21,7 @@ static CGFloat const _FBColorComponentMaxValue = 255.0f;
 {
   CGFloat _colorComponents[4];
 
-  BOOL _keyboardIsShown;
-  UITextField* __weak _activeField;
+  FBKeyboardManager* _keyboardManager;
   FBTweak* _tweak;
 }
 
@@ -41,6 +41,7 @@ static CGFloat const _FBColorComponentMaxValue = 255.0f;
 
     FBTweakValue value = (_tweak.currentValue ?: _tweak.defaultValue);
     [self _setColorComponents:[UIColor colorWithHexString:value]];
+    _keyboardManager = [[FBKeyboardManager alloc] init];
   }
   return self;
 }
@@ -63,26 +64,12 @@ static CGFloat const _FBColorComponentMaxValue = 255.0f;
 
 - (void)viewWillAppear:(BOOL)animated
 {
-  // register for keyboard notifications
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(_keyboardWillBeShown:)
-                                               name:UIKeyboardWillShowNotification object:nil];
-
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(_keyboardWillBeHidden:)
-                                               name:UIKeyboardWillHideNotification object:nil];
+  [_keyboardManager enable];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-  // unregister for keyboard notifications while not visible.
-  [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                  name:UIKeyboardWillShowNotification
-                                                object:nil];
-
-  [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                  name:UIKeyboardWillHideNotification
-                                                object:nil];
+  [_keyboardManager disable];
 }
 
 - (IBAction)onSliderValueChanged:(FBSliderView*)slider
@@ -109,14 +96,8 @@ static CGFloat const _FBColorComponentMaxValue = 255.0f;
 
 #pragma mark - UITextFieldDelegate methods
 
-- (void)textFieldDidBeginEditing:(UITextField *)textField
-{
-  _activeField = textField;
-}
-
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
-  _activeField = nil;
   _colorComponents[textField.tag] = [textField.text floatValue] / _FBColorComponentMaxValue;
   _tweak.currentValue = [self _hexColorString];
   [self.view reloadData];
@@ -142,47 +123,6 @@ static CGFloat const _FBColorComponentMaxValue = 255.0f;
 }
 
 #pragma mark - Private methods
-
-- (void)_keyboardWillBeShown:(NSNotification*)aNotification
-{
-  UIScrollView* scrollView = self.view.scrollView;
-  NSDictionary* info = [aNotification userInfo];
-  NSTimeInterval duration = [info[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
-  UIViewAnimationCurve curve = [info[UIKeyboardAnimationCurveUserInfoKey] integerValue];
-  CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
-  CGFloat kbHeight = kbSize.height;
-  if (UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
-    kbHeight = kbSize.width;
-  }
-  UIEdgeInsets contentInsets = scrollView.contentInset;
-  contentInsets.bottom = kbHeight;
-
-  CGRect aRect = scrollView.frame;
-  aRect.size.height = aRect.size.height - contentInsets.top - contentInsets.bottom;
-  CGRect activeFieldFrame = [self.view.contentView convertRect:_activeField.frame fromView:_activeField.superview];
-  CGPoint offset = scrollView.contentOffset;
-  if (!CGRectContainsPoint(aRect, activeFieldFrame.origin) ) {
-    offset = CGPointMake(0, CGRectGetMaxY(activeFieldFrame) - contentInsets.bottom);
-  }
-  __weak typeof(scrollView) weakScrollView = scrollView;
-  void (^animations)() = ^{
-    weakScrollView.contentInset = contentInsets;
-    weakScrollView.scrollIndicatorInsets = contentInsets;
-    weakScrollView.contentOffset = offset;
-  };
-  UIViewAnimationOptions options = (curve << 16) | UIViewAnimationOptionBeginFromCurrentState;
-  [UIView animateWithDuration:duration delay:0 options:options animations:animations completion:NULL];
-}
-
-- (void)_keyboardWillBeHidden:(NSNotification*)aNotification
-{
-  UIScrollView* scrollView = self.view.scrollView;
-  UIEdgeInsets contentInsets = scrollView.contentInset;
-  contentInsets.bottom = 0;
-  scrollView.contentInset = contentInsets;
-  scrollView.scrollIndicatorInsets = contentInsets;
-  scrollView.contentOffset = CGPointMake(0, -contentInsets.top);
-}
 
 - (void)_setColorComponents:(UIColor *)color
 {

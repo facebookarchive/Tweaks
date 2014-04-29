@@ -34,8 +34,6 @@ extern NSUInteger const _FBRGBAColorComponentsSize;
 @interface FBRGBView : UIView
 
 @property(nonatomic, strong, readonly) UIView* colorSample;
-@property(nonatomic, strong, readonly) UIScrollView* scrollView;
-@property(nonatomic, strong, readonly) UIView* contentView;
 @property(nonatomic, strong, readonly) NSArray* colorComponentViews;
 
 //! @abstract The data source that provides current color components values
