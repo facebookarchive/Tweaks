@@ -83,7 +83,7 @@ extern NSString *_FBTweakIdentifier(fb_tweak_entry *entry);
   __attribute__((used)) static __typeof__(default_) default__ = default_; \
   __attribute__((used)) static char *encoding__ = (char *)@encode(__typeof__(default_)); \
   __attribute__((used)) __attribute__((section (FBTweakSegmentName "," FBTweakSectionName))) static fb_tweak_entry entry = \
-    { &category__, &collection__, &name__, &default__, min__, max__, &encoding__ }; \
+    { &category__, &collection__, &name__, (void *)&default__, (void *)min__, (void *)max__, &encoding__ }; \
 \
   /* find the registered tweak with the given identifier. */ \
   FBTweakStore *store = [FBTweakStore sharedInstance]; \
@@ -103,15 +103,25 @@ extern NSString *_FBTweakIdentifier(fb_tweak_entry *entry);
   FBTweakValue currentValue = tweak_.currentValue ?: tweak_.defaultValue; \
   return _Generic(default_, \
     float: [currentValue floatValue], \
+    const float: [currentValue floatValue], \
     double: [currentValue doubleValue], \
+    const double: [currentValue doubleValue], \
     short: [currentValue shortValue], \
+    const short: [currentValue shortValue], \
     unsigned short: [currentValue unsignedShortValue], \
+    const unsigned short: [currentValue unsignedShortValue], \
     int: [currentValue intValue], \
+    const int: [currentValue intValue], \
     unsigned int: [currentValue unsignedIntValue], \
+    const unsigned int: [currentValue unsignedIntValue], \
     long long: [currentValue longLongValue], \
+    const long long: [currentValue longLongValue], \
     unsigned long long: [currentValue unsignedLongLongValue], \
+    const unsigned long long: [currentValue unsignedLongLongValue], \
     BOOL: [currentValue boolValue], \
+    const BOOL: [currentValue boolValue], \
     id: currentValue, \
+    const id: currentValue, \
     /* assume char * as the default. */ \
     /* constant strings are typed as char[N] */ \
     /* and we can't enumerate all of those. */ \

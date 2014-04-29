@@ -54,6 +54,16 @@
   XCTAssertEqualObjects(testNSString, @"one", @"NSString %@", testNSString);
 }
 
+- (void)testConstantValues
+{
+  const double constInput = 1.0;
+  double constValue = FBTweakValue(@"Const", @"Const", @"Const", constInput);
+  XCTAssertEqual(constValue, constInput, @"Const %f %f", constInput, constValue);
+  
+  static const double staticConstInput = 1.0;
+  double staticConstValue = FBTweakValue(@"Static", @"Static", @"Static", staticConstInput);
+  XCTAssertEqual(staticConstValue, staticConstInput, @"Static %f %f", staticInput, staticConstValue);
+}
 
 // All values should be converted to the same type as the default.
 - (void)testMixedRangeTypes
