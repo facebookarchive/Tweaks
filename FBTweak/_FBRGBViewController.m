@@ -14,12 +14,11 @@
 #import "FBTweak.h"
 #import "UIColor+HEX.h"
 
-static CGFloat const _FBColorComponentMaxValue = 255.0f;
-
 @interface FBRGBViewController () <UITextFieldDelegate, FBRGBViewDataSource>
 {
-  CGFloat _colorComponents[4];
+  RGB _colorComponents;
   FBTweak* _tweak;
+  NSArray* _colorComponentMaxValues;
 }
 
 @property(nonatomic, strong) FBRGBView* view;
@@ -33,11 +32,13 @@ static CGFloat const _FBColorComponentMaxValue = 255.0f;
   self = [super init];
   if (self) {
     _tweak = tweak;
+    _colorComponentMaxValues = @[@(255.0f), @(255.0f), @(255.0f),
+                                 @(100.0f)];
 
     self.title = _tweak.name;
 
     FBTweakValue value = (_tweak.currentValue ?: _tweak.defaultValue);
-    [self _setColorComponents:[UIColor colorWithHexString:value]];
+    _colorComponents = RGBColorComponents([UIColor colorWithHexString:value]);
   }
   return self;
 }
@@ -60,7 +61,7 @@ static CGFloat const _FBColorComponentMaxValue = 255.0f;
 
 - (IBAction)onSliderValueChanged:(FBSliderView*)slider
 {
-  _colorComponents[slider.tag] = slider.value;
+  [self _setColorComponentValue:slider.value atIndex:slider.tag];
   [self.view reloadData];
   _tweak.currentValue = [self _hexColorString];
 }
@@ -75,7 +76,7 @@ static CGFloat const _FBColorComponentMaxValue = 255.0f;
 
 #pragma mark - FBRGBViewDataSource methods
 
-- (CGFloat*)colorComponents
+- (RGB)colorComponents
 {
   return _colorComponents;
 }
@@ -84,7 +85,8 @@ static CGFloat const _FBColorComponentMaxValue = 255.0f;
 
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
-  _colorComponents[textField.tag] = [textField.text floatValue] / _FBColorComponentMaxValue;
+  CGFloat maxValue = [_colorComponentMaxValues[textField.tag] floatValue];
+  [self _setColorComponentValue:[textField.text floatValue] / maxValue atIndex:textField.tag];
   _tweak.currentValue = [self _hexColorString];
   [self.view reloadData];
 }
@@ -97,6 +99,7 @@ static CGFloat const _FBColorComponentMaxValue = 255.0f;
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
+  CGFloat maxValue = [_colorComponentMaxValues[textField.tag] floatValue];
   NSString *newString = [textField.text stringByReplacingCharactersInRange:range withString:string];
 
   //first, check if the new string is numeric only. If not, return NO;
@@ -105,33 +108,33 @@ static CGFloat const _FBColorComponentMaxValue = 255.0f;
     return NO;
   }
 
-  return [newString floatValue] <= _FBColorComponentMaxValue;
+  return [newString floatValue] <= maxValue;
 }
 
 #pragma mark - Private methods
 
-- (void)_setColorComponents:(UIColor *)color
-{
-  CGColorSpaceModel colorSpaceModel = CGColorSpaceGetModel(CGColorGetColorSpace(color.CGColor));
-  if (colorSpaceModel != kCGColorSpaceModelRGB && colorSpaceModel != kCGColorSpaceModelMonochrome) {
-    return;
-  }
-  const CGFloat *components = CGColorGetComponents(color.CGColor);
-  if (colorSpaceModel == kCGColorSpaceModelMonochrome) {
-    _colorComponents[0] = _colorComponents[1] = _colorComponents[2] = components[0];
-    _colorComponents[3] = components[1];
-  } else {
-    _colorComponents[0] = components[0];
-    _colorComponents[1] = components[1];
-    _colorComponents[2] = components[2];
-    _colorComponents[3] = components[3];
-  }
-}
-
 - (NSString*)_hexColorString
 {
-  UIColor* selectedColor = [UIColor colorWithRed:_colorComponents[0] green:_colorComponents[1] blue:_colorComponents[2] alpha:_colorComponents[3]];
+  UIColor* selectedColor = [UIColor colorWithRed:_colorComponents.red green:_colorComponents.green blue:_colorComponents.green alpha:_colorComponents.alpha];
   return [selectedColor hexString];
+}
+
+- (void)_setColorComponentValue:(CGFloat)value atIndex:(NSUInteger)index
+{
+  switch (index) {
+    case 0:
+      _colorComponents.red = value;
+      break;
+    case 1:
+      _colorComponents.green = value;
+      break;
+    case 2:
+      _colorComponents.blue = value;
+      break;
+    default:
+      _colorComponents.alpha = value;
+      break;
+  }
 }
 
 @end

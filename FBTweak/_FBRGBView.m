@@ -12,23 +12,22 @@
 #import "_FBSliderView.h"
 
 static CGFloat const _FBColorComponentMaxValue = 255.0f;
+static CGFloat const _FBAlphaComponentMaxValue = 100.0f;
 static CGFloat const _FBColorSampleViewHeight = 30.0f;
 static CGFloat const _FBRGBViewSpacing = 20.0f;
 static CGFloat const _FBRGBContentViewMargin = 10.0f;
-
-NSUInteger const _FBRGBAColorComponentsSize = 4;
+static NSUInteger const _FBRGBAColorComponentsSize = 4;
 
 @interface FBRGBView () {
 
   @private
-
+  NSArray* _colorComponentMaxValues;
   BOOL _didSetupConstraints;
+  UIView* _colorSample;
+  UIScrollView* _scrollView;
+  UIView* _contentView;
+  NSArray* _colorComponentViews;
 }
-
-@property(nonatomic, strong, readwrite) UIView* colorSample;
-@property(nonatomic, strong, readwrite) UIScrollView* scrollView;
-@property(nonatomic, strong, readwrite) UIView* contentView;
-@property(nonatomic, strong, readwrite) NSArray* colorComponentViews;
 
 @end
 
@@ -63,7 +62,7 @@ NSUInteger const _FBRGBAColorComponentsSize = 4;
 
 - (void)reloadData
 {
-  CGFloat* colorComponents = [self.dataSource colorComponents];
+  RGB colorComponents = [self.dataSource colorComponents];
   [self _reloadDataWithColorComponents:colorComponents];
 }
 
@@ -71,6 +70,8 @@ NSUInteger const _FBRGBAColorComponentsSize = 4;
 
 - (void)_baseInit
 {
+  _colorComponentMaxValues = @[@(_FBColorComponentMaxValue), @(_FBColorComponentMaxValue), @(_FBColorComponentMaxValue),
+                               @(_FBAlphaComponentMaxValue)];
   _scrollView = [[UIScrollView alloc] init];
   _scrollView.translatesAutoresizingMaskIntoConstraints = NO;
   [self addSubview:_scrollView];
@@ -149,42 +150,52 @@ NSUInteger const _FBRGBAColorComponentsSize = 4;
   [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[previousView]-spacing-|" options:0 metrics:metrics views:views]];
 }
 
-- (void)_reloadDataWithColorComponents:(CGFloat[_FBRGBAColorComponentsSize])colorComponents
+- (void)_reloadDataWithColorComponents:(RGB)colorComponents
 {
-  UIColor* selectedColor = [UIColor colorWithRed:colorComponents[0] green:colorComponents[1] blue:colorComponents[2] alpha:colorComponents[3]];
+  UIColor* selectedColor = [UIColor colorWithRed:colorComponents.red green:colorComponents.green blue:colorComponents.blue alpha:colorComponents.alpha];
   [_colorSample setBackgroundColor:selectedColor];
-  [self _updateSlidersWithColorComponents:colorComponents];
-  [self _updateTextFieldsWithColorComponents:colorComponents];
+  NSArray* components = [self _colorComponentsWithRGB:colorComponents];
+  [self _updateSlidersWithColorComponents:components];
+  [self _updateTextFieldsWithColorComponents:components];
 }
 
-- (void)_updateSlidersWithColorComponents:(CGFloat[_FBRGBAColorComponentsSize])colorComponents
+- (NSArray*)_colorComponentsWithRGB:(RGB)rgb
+{
+  return @[@(rgb.red), @(rgb.green), @(rgb.blue), @(rgb.alpha)];
+}
+
+- (void)_updateSlidersWithColorComponents:(NSArray*)colorComponents
 {
   [_colorComponentViews enumerateObjectsUsingBlock:^(FBColorComponentView* colorComponentView, NSUInteger idx, BOOL *stop) {
     FBSliderView* slider = colorComponentView.slider;
     if (idx < _FBRGBAColorComponentsSize - 1) {
       [self _updateSlider:slider withColorComponents:colorComponents];
     }
-    [slider setValue:colorComponents[slider.tag]];
+    CGFloat value = [colorComponents[slider.tag] floatValue];
+    [slider setValue:value];
   }];
 }
 
-- (void)_updateTextFieldsWithColorComponents:(CGFloat[_FBRGBAColorComponentsSize])colorComponents
+- (void)_updateTextFieldsWithColorComponents:(NSArray*)colorComponents
 {
-  [_colorComponentViews enumerateObjectsUsingBlock:^(FBColorComponentView* colorComponentView, NSUInteger idx, BOOL *stop) {
-    colorComponentView.textField.text = [NSString stringWithFormat:@"%d", (NSInteger)(colorComponents[idx] * _FBColorComponentMaxValue)];
-  }];
+  for (NSUInteger i = 0; i < _FBRGBAColorComponentsSize; ++i) {
+    FBColorComponentView* colorComponentView = _colorComponentViews[i];
+    CGFloat value = [colorComponents[i] floatValue];
+    CGFloat maxValue = [_colorComponentMaxValues[i] floatValue];
+    colorComponentView.textField.text = [NSString stringWithFormat:@"%d", (NSInteger)(value * maxValue)];
+  }
 }
 
-- (void)_updateSlider:(FBSliderView*)slider withColorComponents:(CGFloat[_FBRGBAColorComponentsSize])colorComponents
+- (void)_updateSlider:(FBSliderView*)slider withColorComponents:(NSArray*)colorComponents
 {
   NSUInteger colorIndex = slider.tag;
-  float currentColorValue = colorComponents[colorIndex];
-  float colors[12];
-  for (int i = 0; i < _FBRGBAColorComponentsSize; i++)
+  CGFloat currentColorValue = [colorComponents[colorIndex] floatValue];
+  CGFloat colors[12];
+  for (NSUInteger i = 0; i < _FBRGBAColorComponentsSize; i++)
   {
-    colors[i] = colorComponents[i];
-    colors[i + 4] = colorComponents[i];
-    colors[i + 8] = colorComponents[i];
+    colors[i] = [colorComponents[i] floatValue];
+    colors[i + 4] = [colorComponents[i] floatValue];
+    colors[i + 8] = [colorComponents[i] floatValue];
   }
   colors[colorIndex] = 0;
   colors[colorIndex + 4] = currentColorValue;

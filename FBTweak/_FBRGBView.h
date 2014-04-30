@@ -8,8 +8,7 @@
  */
 
 #import <UIKit/UIKit.h>
-
-extern NSUInteger const _FBRGBAColorComponentsSize;
+#import "UIColor+HEX.h"
 
 /**
  *  This interface declares the color components data source object with the information to construct and modify
@@ -24,7 +23,7 @@ extern NSUInteger const _FBRGBAColorComponentsSize;
  *
  *  @return The color components.
  */
-- (CGFloat*)colorComponents;
+- (RGB)colorComponents;
 
 @end
 
