@@ -11,10 +11,13 @@
 #import "_FBColorWheelView.h"
 #import "_FBColorComponentView.h"
 #import "_FBSliderView.h"
+#import "UIColor+HEX.h"
 
-static CGFloat const _FBAlphaMaxValue = 100.0f;
+extern CGFloat const _FBAlphaComponentMaxValue;
+extern CGFloat const _FBHSBColorComponentMaxValue;
 
-@interface FBHSBView () {
+@interface FBHSBView () <UITextFieldDelegate>
+{
 
 @private
 
@@ -31,11 +34,15 @@ static CGFloat const _FBAlphaMaxValue = 100.0f;
   UITextField* _saturationTextField;
 
   BOOL _didSetupConstraints;
+
+  HSB _colorComponents;
 }
 
 @end
 
 @implementation FBHSBView
+
+@synthesize delegate = _delegate;
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
@@ -66,8 +73,51 @@ static CGFloat const _FBAlphaMaxValue = 100.0f;
 
 - (void)reloadData
 {
-  HSB colorComponents = [self.dataSource colorComponents];
-  [self _reloadDataWithColorComponents:colorComponents];
+  [_colorSample setBackgroundColor:self.value];
+  [self _reloadViewsWithColorComponents:_colorComponents];
+}
+
+- (void)setValue:(UIColor *)value
+{
+  RGB2HSB(RGBColorComponents(value), &_colorComponents);
+  [self reloadData];
+}
+
+- (UIColor*)value
+{
+  return[UIColor colorWithHue:_colorComponents.hue saturation:_colorComponents.saturation brightness:_colorComponents.brightness alpha:_colorComponents.alpha];
+}
+
+#pragma mark - UITextFieldDelegate methods
+
+- (void)textFieldDidEndEditing:(UITextField *)textField
+{
+  if (textField == _hueTextField) {
+    _colorComponents.hue = [textField.text floatValue];
+  } else if (textField == _saturationTextField) {
+    _colorComponents.saturation = [textField.text floatValue];
+  }
+  [self.delegate colorView:self didChangeValue:[self value]];
+  [self reloadData];
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+  [textField resignFirstResponder];
+  return YES;
+}
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+  NSString *newString = [textField.text stringByReplacingCharactersInRange:range withString:string];
+
+  //first, check if the new string is numeric only. If not, return NO;
+  NSCharacterSet *characterSet = [[NSCharacterSet characterSetWithCharactersInString:@"0123456789,."] invertedSet];
+  if ([newString rangeOfCharacterFromSet:characterSet].location != NSNotFound) {
+    return NO;
+  }
+
+  return [newString floatValue] <= _FBHSBColorComponentMaxValue;
 }
 
 #pragma mark - Private methods
@@ -123,16 +173,24 @@ static CGFloat const _FBAlphaMaxValue = 100.0f;
 
 
   _brightnessView = [[FBColorComponentView alloc] init];
-  _brightnessView.label.text = @"Brightness";
+  _brightnessView.title = @"Brightness";
+  _brightnessView.maximumValue = _FBHSBColorComponentMaxValue;
+  _brightnessView.format = @"%.2f";
   _brightnessView.translatesAutoresizingMaskIntoConstraints = NO;
   [_contentView addSubview:_brightnessView];
 
 
   _alphaView = [[FBColorComponentView alloc] init];
-  _alphaView.label.text = @"Alpha";
+  _alphaView.title = @"Alpha";
   _alphaView.translatesAutoresizingMaskIntoConstraints = NO;
-  _alphaView.slider.maximumValue = _FBAlphaMaxValue;
+  _alphaView.maximumValue = _FBAlphaComponentMaxValue;
   [_contentView addSubview:_alphaView];
+
+  [_colorWheel addTarget:self action:@selector(_colorDidChangeValue:) forControlEvents:UIControlEventValueChanged];
+  [_brightnessView addTarget:self action:@selector(_brightnessDidChangeValue:) forControlEvents:UIControlEventValueChanged];
+  [_alphaView addTarget:self action:@selector(_alphaDidChangeValue:) forControlEvents:UIControlEventValueChanged];
+  _hueTextField.delegate = self;
+  _saturationTextField.delegate = self;
 }
 
 - (void)_setupConstraints
@@ -185,10 +243,8 @@ static CGFloat const _FBAlphaMaxValue = 100.0f;
   [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[_brightnessView]-20-[_alphaView]-|" options:0 metrics:nil views:views]];
 }
 
-- (void)_reloadDataWithColorComponents:(HSB)colorComponents
+- (void)_reloadViewsWithColorComponents:(HSB)colorComponents
 {
-  UIColor* selectedColor = [UIColor colorWithHue:colorComponents.hue saturation:colorComponents.saturation brightness:colorComponents.brightness alpha:colorComponents.alpha];
-  [_colorSample setBackgroundColor:selectedColor];
   _colorWheel.hue = colorComponents.hue;
   _colorWheel.saturation = colorComponents.saturation;
   [self _updateSlidersWithColorComponents:colorComponents];
@@ -197,18 +253,38 @@ static CGFloat const _FBAlphaMaxValue = 100.0f;
 
 - (void)_updateSlidersWithColorComponents:(HSB)colorComponents
 {
-  [_alphaView.slider setValue:colorComponents.alpha * _FBAlphaMaxValue];
+  [_alphaView setValue:colorComponents.alpha * _FBAlphaComponentMaxValue];
+  [_brightnessView setValue:colorComponents.brightness];
   UIColor* tmp = [UIColor colorWithHue:colorComponents.hue saturation:colorComponents.saturation brightness:1.0f alpha:1.0f];
   [_brightnessView.slider setColors:@[(id)[UIColor blackColor].CGColor, (id)tmp.CGColor]];
-  [_brightnessView.slider setValue:colorComponents.brightness];
 }
 
 - (void)_updateTextFieldsWithColorComponents:(HSB)colorComponents
 {
   _hueTextField.text = [NSString stringWithFormat:@"%.2f", colorComponents.hue];
   _saturationTextField.text = [NSString stringWithFormat:@"%.2f", colorComponents.saturation];
-  _brightnessView.textField.text = [NSString stringWithFormat:@"%.2f", colorComponents.brightness];
-  _alphaView.textField.text = [NSString stringWithFormat:@"%d", (NSUInteger)(colorComponents.alpha * _FBAlphaMaxValue)];
+}
+
+- (void)_colorDidChangeValue:(FBColorWheelView*)sender
+{
+  _colorComponents.hue = sender.hue;
+  _colorComponents.saturation = sender.saturation;
+  [self.delegate colorView:self didChangeValue:[self value]];
+  [self reloadData];
+}
+
+- (void)_brightnessDidChangeValue:(FBColorComponentView*)sender
+{
+  _colorComponents.brightness = sender.value;
+  [self.delegate colorView:self didChangeValue:[self value]];
+  [self reloadData];
+}
+
+- (void)_alphaDidChangeValue:(FBColorComponentView*)sender
+{
+  _colorComponents.alpha = sender.value / _FBAlphaComponentMaxValue;
+  [self.delegate colorView:self didChangeValue:[self value]];
+  [self reloadData];
 }
 
 @end

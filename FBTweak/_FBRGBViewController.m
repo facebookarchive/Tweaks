@@ -14,11 +14,10 @@
 #import "FBTweak.h"
 #import "UIColor+HEX.h"
 
-@interface FBRGBViewController () <UITextFieldDelegate, FBRGBViewDataSource>
+@interface FBRGBViewController () <UITextFieldDelegate, FBColorViewDelegate>
 {
   RGB _colorComponents;
   FBTweak* _tweak;
-  NSArray* _colorComponentMaxValues;
 }
 
 @property(nonatomic, strong) FBRGBView* view;
@@ -32,9 +31,6 @@
   self = [super init];
   if (self) {
     _tweak = tweak;
-    _colorComponentMaxValues = @[@(255.0f), @(255.0f), @(255.0f),
-                                 @(100.0f)];
-
     self.title = _tweak.name;
 
     FBTweakValue value = (_tweak.currentValue ?: _tweak.defaultValue);
@@ -46,32 +42,13 @@
 - (void)loadView
 {
   self.view = [[FBRGBView alloc] init];
-  self.view.dataSource = self;
-  [self.view.colorComponentViews enumerateObjectsUsingBlock:^(FBColorComponentView* view, NSUInteger idx, BOOL *stop) {
-    [view.slider addTarget:self action:@selector(onSliderValueChanged:) forControlEvents:UIControlEventValueChanged];
-    [view.textField setDelegate:self];
-  }];
+  self.view.delegate = self;
 }
 
 - (void)viewDidLoad
 {
   [super viewDidLoad];
   [self.view reloadData];
-}
-
-- (IBAction)onSliderValueChanged:(FBSliderView*)slider
-{
-  [self _setColorComponentValue:slider.value atIndex:slider.tag];
-  [self.view reloadData];
-  _tweak.currentValue = [self _hexColorString];
-}
-
-- (void)dealloc
-{
-  [self.view.colorComponentViews enumerateObjectsUsingBlock:^(FBColorComponentView* colorComponentView, NSUInteger idx, BOOL *stop) {
-    colorComponentView.textField.delegate = nil;
-    [colorComponentView.slider removeTarget:self action:@selector(onSliderValueChanged:) forControlEvents:UIControlEventValueChanged];
-  }];
 }
 
 #pragma mark - FBRGBViewDataSource methods
@@ -81,37 +58,14 @@
   return _colorComponents;
 }
 
-#pragma mark - UITextFieldDelegate methods
-
-- (void)textFieldDidEndEditing:(UITextField *)textField
-{
-  CGFloat maxValue = [_colorComponentMaxValues[textField.tag] floatValue];
-  [self _setColorComponentValue:[textField.text floatValue] / maxValue atIndex:textField.tag];
-  _tweak.currentValue = [self _hexColorString];
-  [self.view reloadData];
-}
-
-- (BOOL)textFieldShouldReturn:(UITextField *)textField
-{
-  [textField resignFirstResponder];
-  return YES;
-}
-
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
-{
-  CGFloat maxValue = [_colorComponentMaxValues[textField.tag] floatValue];
-  NSString *newString = [textField.text stringByReplacingCharactersInRange:range withString:string];
-
-  //first, check if the new string is numeric only. If not, return NO;
-  NSCharacterSet *characterSet = [[NSCharacterSet characterSetWithCharactersInString:@"0123456789,."] invertedSet];
-  if ([newString rangeOfCharacterFromSet:characterSet].location != NSNotFound) {
-    return NO;
-  }
-
-  return [newString floatValue] <= maxValue;
-}
-
 #pragma mark - Private methods
+
+- (IBAction)_colorComponentDidChangeValue:(FBColorComponentView*)sender
+{
+  [self _setColorComponentValue:sender.value / sender.maximumValue atIndex:sender.tag];
+  [self.view reloadData];
+  _tweak.currentValue = [self _hexColorString];
+}
 
 - (NSString*)_hexColorString
 {

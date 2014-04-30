@@ -12,8 +12,7 @@
 #import "FBTweak.h"
 #import "_FBTweakCollectionViewController.h"
 #import "_FBTweakTableViewCell.h"
-#import "_FBRGBViewController.h"
-#import "_FBHSBViewController.h"
+#import "_FBTweakColorViewController.h"
 
 @interface _FBTweakCollectionViewController () <UITableViewDelegate, UITableViewDataSource>
 @end
@@ -96,7 +95,7 @@
   if ([cell mode] == _FBTweakTableViewCellModeColor) {
     FBTweakCollection *collection = _tweakCategory.tweakCollections[indexPath.section];
     FBTweak *tweak = collection.tweaks[indexPath.row];
-    FBHSBViewController *rgbViewController = [[FBHSBViewController alloc] initWithTweak:tweak];
+    FBTweakColorViewController *rgbViewController = [[FBTweakColorViewController alloc] initWithTweak:tweak];
     [self.navigationController pushViewController:rgbViewController animated:YES];
   }
 }

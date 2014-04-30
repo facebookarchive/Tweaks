@@ -9,6 +9,10 @@
 
 #import "UIColor+HEX.h"
 
+CGFloat const _FBRGBColorComponentMaxValue = 255.0f;
+CGFloat const _FBAlphaComponentMaxValue = 100.0f;
+CGFloat const _FBHSBColorComponentMaxValue = 1.0f;
+
 extern void RGB2HSB(RGB rgb, HSB* outHSB)
 {
   double rd = (double) rgb.red;

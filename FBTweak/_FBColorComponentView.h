@@ -14,15 +14,24 @@
 /**
  @abstract A view to edit a color component.
  */
-@interface FBColorComponentView : UIView
+@interface FBColorComponentView : UIControl
 
-//! @abstract The label for color component title.
-@property(nonatomic, strong, readonly) UILabel* label;
+//! @abstract The title.
+@property(nonatomic, copy) NSString* title;
+
+//! @abstract The current value. The default value is 0.0.
+@property(nonatomic, assign) CGFloat value;
+
+//! @abstract The minimum value. The default value is 0.0.
+@property(nonatomic, assign) CGFloat minimumValue;
+
+//! @abstract The maximum value. The default value is 255.0.
+@property(nonatomic, assign) CGFloat maximumValue;
+
+//! @abstract The format string to use apply for textfield value. `%.f` by default. 
+@property(nonatomic, copy) NSString* format;
 
 //! @abstract The color slider to edit color component.
 @property(nonatomic, strong, readonly) FBSliderView* slider;
-
-//! @abstract The text field to edit color component.
-@property(nonatomic, strong, readonly) UITextField* textField;
 
 @end

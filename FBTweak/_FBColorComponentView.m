@@ -10,11 +10,13 @@
 #import "_FBColorComponentView.h"
 #import "_FBSliderView.h"
 
+extern CGFloat const _FBRGBColorComponentMaxValue;
 static CGFloat const _FBColorComponentViewSpacing = 5.0f;
 static CGFloat const _FBColorComponentLabelWidth = 60.0f;
 static CGFloat const _FBColorComponentTextFieldWidth = 50.0f;
 
-@interface FBColorComponentView () {
+@interface FBColorComponentView () <UITextFieldDelegate>
+{
   BOOL _didSetupConstraints;
 }
 
@@ -56,6 +58,47 @@ static CGFloat const _FBColorComponentTextFieldWidth = 50.0f;
   _slider.tag = tag;
 }
 
+- (void)setTitle:(NSString *)title
+{
+  _label.text = title;
+}
+
+- (void)setMinimumValue:(CGFloat)minimumValue
+{
+  _slider.minimumValue = minimumValue;
+}
+
+- (void)setMaximumValue:(CGFloat)maximumValue
+{
+  _slider.maximumValue = maximumValue;
+}
+
+- (void)setValue:(CGFloat)value
+{
+  _slider.value = value;
+  _textField.text = [NSString stringWithFormat:_format, value];
+}
+
+- (NSString*)title
+{
+  return _label.text;
+}
+
+- (CGFloat)minimumValue
+{
+  return _slider.minimumValue;
+}
+
+- (CGFloat)maximumValue
+{
+  return _slider.maximumValue;
+}
+
+- (CGFloat)value
+{
+  return _slider.value;
+}
+
 - (void)updateConstraints
 {
   if (_didSetupConstraints == NO){
@@ -65,17 +108,46 @@ static CGFloat const _FBColorComponentTextFieldWidth = 50.0f;
   [super updateConstraints];
 }
 
+#pragma mark - UITextFieldDelegate methods
+
+- (void)textFieldDidEndEditing:(UITextField *)textField
+{
+  [self setValue:[textField.text floatValue]];
+  [self sendActionsForControlEvents:UIControlEventValueChanged];
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+  [textField resignFirstResponder];
+  return YES;
+}
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+  NSString *newString = [textField.text stringByReplacingCharactersInRange:range withString:string];
+
+  //first, check if the new string is numeric only. If not, return NO;
+  NSCharacterSet *characterSet = [[NSCharacterSet characterSetWithCharactersInString:@"0123456789,."] invertedSet];
+  if ([newString rangeOfCharacterFromSet:characterSet].location != NSNotFound) {
+    return NO;
+  }
+
+  return [newString floatValue] <= _slider.maximumValue;
+}
+
 #pragma mark - Private methods
 
 - (void)_baseInit
 {
+  _format = @"%.f";
+
   _label = [[UILabel alloc] init];
   _label.translatesAutoresizingMaskIntoConstraints = NO;
   _label.adjustsFontSizeToFitWidth = YES;
   [self addSubview:_label];
 
   _slider = [[FBSliderView alloc] init];
-  _slider.value = 1.0f;
+  _slider.maximumValue = _FBRGBColorComponentMaxValue;
   _slider.translatesAutoresizingMaskIntoConstraints = NO;
   [self addSubview:_slider];
 
@@ -84,6 +156,16 @@ static CGFloat const _FBColorComponentTextFieldWidth = 50.0f;
   _textField.translatesAutoresizingMaskIntoConstraints = NO;
   [_textField setKeyboardType:UIKeyboardTypeNumbersAndPunctuation];
   [self addSubview:_textField];
+
+  [self setValue:0.0f];
+  [_slider addTarget:self action:@selector(_didChangeSliderValue:) forControlEvents:UIControlEventValueChanged];
+  [_textField setDelegate:self];
+}
+
+- (void)_didChangeSliderValue:(FBSliderView*)sender
+{
+  [self setValue:sender.value];
+  [self sendActionsForControlEvents:UIControlEventValueChanged];
 }
 
 - (void)_setupConstraints

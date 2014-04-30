@@ -11,6 +11,49 @@
 
 static CGFloat const _FBDistanceBetweenKeyboardAndTextfield = 10.0f;
 
+@interface UIView (Utils)
+- (id)firstSubviewOfClass:(Class)className;
+@end
+
+@implementation UIView (Utils)
+
+- (id)firstSubviewOfClass:(Class)className
+{
+  return [self firstSubviewOfClass:className deepLevel:3];
+}
+
+- (id)firstSubviewOfClass:(Class)className deepLevel:(NSInteger)deepLevel
+{
+  if (deepLevel == 0) {
+    return nil;
+  }
+
+  NSInteger count = deepLevel;
+
+  NSArray *subviews = self.subviews;
+
+  while (count > 0) {
+    for (UIView *v in subviews) {
+      if ([v isKindOfClass:className]) {
+        return v;
+      }
+    }
+
+    count--;
+
+    for (UIView *v in subviews) {
+      UIView *retVal = [v firstSubviewOfClass:className deepLevel:count];
+      if (retVal) {
+        return retVal;
+      }
+    }
+  }
+
+  return nil;
+}
+
+@end
+
 @interface FBKeyboardManager ()
 {
   UIView* _activeTextField;
@@ -76,7 +119,8 @@ static CGFloat const _FBDistanceBetweenKeyboardAndTextfield = 10.0f;
 - (void)_keyboardFrameChanged:(NSNotification *)notification
 {
   UIView* view = [self _topViewController].view;
-  if (![[[view subviews] firstObject] isKindOfClass:[UIScrollView class]]) {
+  UIScrollView* scrollView = [view firstSubviewOfClass:[UIScrollView class]];
+  if (scrollView == nil) {
     return;
   }
   NSDictionary* userInfo = [notification userInfo];
@@ -85,7 +129,7 @@ static CGFloat const _FBDistanceBetweenKeyboardAndTextfield = 10.0f;
   UIViewAnimationCurve curve = [userInfo[UIKeyboardAnimationCurveUserInfoKey] integerValue];
   CGSize kbSize = [userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
 
-  UIScrollView* scrollView = [[view subviews] firstObject];
+
   endFrame = [view.window convertRect:endFrame fromWindow:nil];
   endFrame = [view convertRect:endFrame fromView:view.window];
 

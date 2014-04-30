@@ -12,6 +12,10 @@
 typedef struct { CGFloat red, green, blue, alpha; } RGB;
 typedef struct { CGFloat hue, saturation, brightness, alpha; } HSB;
 
+extern CGFloat const _FBRGBColorComponentMaxValue;
+extern CGFloat const _FBAlphaComponentMaxValue;
+extern CGFloat const _FBHSBColorComponentMaxValue;
+
 /**
  * Converts an RGB color value to HSV.
  * Assumes r, g, and b are contained in the set [0, 1] and
