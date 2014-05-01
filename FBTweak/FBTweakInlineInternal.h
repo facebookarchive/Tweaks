@@ -13,7 +13,7 @@
 #import "FBTweakCategory.h"
 #import "FBTweakCollection.h"
 #import "_FBTweakBindObserver.h"
-#import "UIColor+HEX.h"
+#import "FBColorUtils.h"
 
 #if !FB_TWEAK_ENABLED
 
@@ -105,7 +105,7 @@ extern NSString *_FBTweakIdentifier(fb_tweak_entry *entry);
     long long: [currentValue longLongValue], \
     unsigned long long: [currentValue unsignedLongLongValue], \
     BOOL: [currentValue boolValue], \
-    id: (([currentValue isKindOfClass:NSString.class] && [UIColor colorWithHexString:currentValue] != nil) ? [UIColor colorWithHexString:currentValue] : currentValue), \
+    id: (([currentValue isKindOfClass:NSString.class] && FBColorFromHexString(currentValue) != nil) ? FBColorFromHexString(currentValue) : currentValue), \
     /* assume char * as the default. */ \
     /* constant strings are typed as char[N] */ \
     /* and we can't enumerate all of those. */ \

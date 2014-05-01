@@ -10,13 +10,16 @@
 #import "_FBColorComponentView.h"
 #import "_FBSliderView.h"
 
-extern CGFloat const _FBRGBColorComponentMaxValue;
+extern CGFloat const FBRGBColorComponentMaxValue;
 static CGFloat const _FBColorComponentViewSpacing = 5.0f;
 static CGFloat const _FBColorComponentLabelWidth = 60.0f;
 static CGFloat const _FBColorComponentTextFieldWidth = 50.0f;
 
 @interface FBColorComponentView () <UITextFieldDelegate>
 {
+
+  @private
+  
   BOOL _didSetupConstraints;
 }
 
@@ -147,7 +150,7 @@ static CGFloat const _FBColorComponentTextFieldWidth = 50.0f;
   [self addSubview:_label];
 
   _slider = [[FBSliderView alloc] init];
-  _slider.maximumValue = _FBRGBColorComponentMaxValue;
+  _slider.maximumValue = FBRGBColorComponentMaxValue;
   _slider.translatesAutoresizingMaskIntoConstraints = NO;
   [self addSubview:_slider];
 

@@ -19,16 +19,16 @@ static CGFloat const _FBDistanceBetweenKeyboardAndTextfield = 10.0f;
 
 - (id)firstSubviewOfClass:(Class)className
 {
-  return [self firstSubviewOfClass:className deepLevel:3];
+  return [self firstSubviewOfClass:className depthLevel:3];
 }
 
-- (id)firstSubviewOfClass:(Class)className deepLevel:(NSInteger)deepLevel
+- (id)firstSubviewOfClass:(Class)className depthLevel:(NSInteger)depthLevel
 {
-  if (deepLevel == 0) {
+  if (depthLevel == 0) {
     return nil;
   }
 
-  NSInteger count = deepLevel;
+  NSInteger count = depthLevel;
 
   NSArray *subviews = self.subviews;
 
@@ -42,7 +42,7 @@ static CGFloat const _FBDistanceBetweenKeyboardAndTextfield = 10.0f;
     count--;
 
     for (UIView *v in subviews) {
-      UIView *retVal = [v firstSubviewOfClass:className deepLevel:count];
+      UIView *retVal = [v firstSubviewOfClass:className depthLevel:count];
       if (retVal) {
         return retVal;
       }

@@ -54,7 +54,7 @@
   XCTAssertEqualObjects(testNSString, @"one", @"NSString %@", testNSString);
 
   __attribute__((unused)) UIColor *testUIColor = FBTweakValue(@"UIColor", @"UIColor", @"UIColor", @"#FF00FFFF");
-  XCTAssertEqualObjects([testUIColor hexString], @"#FF00FFFF", @"UIColor %@", testUIColor);
+  XCTAssertEqualObjects(FBHexStringFromColor(testUIColor), @"#FF00FFFF", @"UIColor %@", testUIColor);
 }
 
 - (void)testBind

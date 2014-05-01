@@ -8,8 +8,8 @@
  */
 
 #import "FBTweak.h"
+#import "FBColorUtils.h"
 #import "_FBTweakTableViewCell.h"
-#import "UIColor+HEX.h"
 
 @interface UIImage (Utils)
 + (UIImage*)imageWithColor:(UIColor*)color size:(CGSize)size;
@@ -244,7 +244,7 @@
   } else if (_mode == _FBTweakTableViewCellModeString) {
     _textField.text = value;
   } else if (_mode == _FBTweakTableViewCellModeColor) {
-    [self.imageView setImage:[UIImage imageWithColor:[UIColor colorWithHexString:value] size:CGSizeMake(30, 30)]];
+    [self.imageView setImage:[UIImage imageWithColor:FBColorFromHexString(value) size:CGSizeMake(30, 30)]];
   } else if (_mode == _FBTweakTableViewCellModeInteger) {
     _stepper.value = [value longLongValue];
     _textField.text = [value stringValue];

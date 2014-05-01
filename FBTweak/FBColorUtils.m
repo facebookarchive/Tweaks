@@ -7,20 +7,20 @@
  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import "UIColor+HEX.h"
+#import "FBColorUtils.h"
 
-CGFloat const _FBRGBColorComponentMaxValue = 255.0f;
-CGFloat const _FBAlphaComponentMaxValue = 100.0f;
-CGFloat const _FBHSBColorComponentMaxValue = 1.0f;
+CGFloat const FBRGBColorComponentMaxValue = 255.0f;
+CGFloat const FBAlphaComponentMaxValue = 100.0f;
+CGFloat const FBHSBColorComponentMaxValue = 1.0f;
 
-extern void RGB2HSB(RGB rgb, HSB* outHSB)
+extern void FBRGB2HSB(RGB rgb, HSB* outHSB)
 {
   double rd = (double) rgb.red;
   double gd = (double) rgb.green;
   double bd = (double) rgb.blue;
   double max = fmax(rd, fmax(gd, bd));
   double min = fmin(rd, fmin(gd, bd));
-  double h, s, b = max;
+  double h = 0, s, b = max;
 
   double d = max - min;
   s = max == 0 ? 0 : d / max;
@@ -44,7 +44,7 @@ extern void RGB2HSB(RGB rgb, HSB* outHSB)
   outHSB->alpha = rgb.alpha;
 }
 
-extern void HSB2RGB(HSB hsb, RGB* outRGB)
+extern void FBHSB2RGB(HSB hsb, RGB* outRGB)
 {
   double r, g, b;
 
@@ -69,7 +69,7 @@ extern void HSB2RGB(HSB hsb, RGB* outRGB)
   outRGB->alpha = hsb.alpha;
 }
 
-extern RGB RGBColorComponents(UIColor* color)
+extern RGB FBRGBColorComponents(UIColor* color)
 {
   RGB result;
   CGColorSpaceModel colorSpaceModel = CGColorSpaceGetModel(CGColorGetColorSpace(color.CGColor));
@@ -89,15 +89,13 @@ extern RGB RGBColorComponents(UIColor* color)
   return result;
 }
 
-@implementation UIColor (HEX)
-
-- (NSString *)hexString
+extern NSString* FBHexStringFromColor(UIColor* color)
 {
-  CGColorSpaceModel colorSpaceModel = CGColorSpaceGetModel(CGColorGetColorSpace(self.CGColor));
+  CGColorSpaceModel colorSpaceModel = CGColorSpaceGetModel(CGColorGetColorSpace(color.CGColor));
   if (colorSpaceModel != kCGColorSpaceModelRGB && colorSpaceModel != kCGColorSpaceModelMonochrome) {
     return nil;
   }
-  const CGFloat *components = CGColorGetComponents(self.CGColor);
+  const CGFloat *components = CGColorGetComponents(color.CGColor);
   CGFloat red, green, blue, alpha;
   if (colorSpaceModel == kCGColorSpaceModelMonochrome) {
     red = green = blue = components[0];
@@ -109,11 +107,14 @@ extern RGB RGBColorComponents(UIColor* color)
     alpha = components[3];
   }
   NSString *hexColorString = [NSString stringWithFormat:@"#%02X%02X%02X%02X",
-                              (NSUInteger)(red * 255), (NSUInteger)(green * 255), (NSUInteger)(blue * 255), (NSUInteger)(alpha * 255)];
+                              (NSUInteger)(red * FBRGBColorComponentMaxValue),
+                              (NSUInteger)(green * FBRGBColorComponentMaxValue),
+                              (NSUInteger)(blue * FBRGBColorComponentMaxValue),
+                              (NSUInteger)(alpha * FBRGBColorComponentMaxValue)];
   return hexColorString;
 }
 
-+ (UIColor*)colorWithHexString:(NSString*)hexColor
+extern UIColor* FBColorFromHexString(NSString* hexColor)
 {
   if (![hexColor hasPrefix:@"#"]) {
     return nil;
@@ -130,7 +131,8 @@ extern RGB RGBColorComponents(UIColor* color)
   int b = (hexNum >> 8) & 0xFF;
   int a = (hexNum) & 0xFF;
 
-  return [UIColor colorWithRed:r / 255.0f green:g / 255.0f blue:b / 255.0f alpha:a / 255.0f];
+  return [UIColor colorWithRed:r / FBRGBColorComponentMaxValue
+                         green:g / FBRGBColorComponentMaxValue
+                          blue:b / FBRGBColorComponentMaxValue
+                         alpha:a / FBRGBColorComponentMaxValue];
 }
-
-@end

@@ -9,8 +9,6 @@
 
 #import <UIKit/UIKit.h>
 
-#import "UIColor+HEX.h"
-
 @interface FBColorWheelView : UIControl
 
 @property(nonatomic, assign) CGFloat hue;

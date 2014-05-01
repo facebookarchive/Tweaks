@@ -49,7 +49,9 @@
   FBTweakBind(_label, textColor, @"Content", @"Text", @"Color", @"#ff0000ff");
   FBTweakBind(_label, alpha, @"Content", @"Text", @"Alpha", 0.5, 0.0, 1.0);
   [_rootViewController.view addSubview:_label];
-  
+
+  FBTweakBind(_rootViewController.view, backgroundColor, @"Content", @"Background", @"Color", @"#ffffffff");
+
   UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(labelTapped)];
   [_label addGestureRecognizer:tapRecognizer];
   

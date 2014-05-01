@@ -12,9 +12,9 @@
 typedef struct { CGFloat red, green, blue, alpha; } RGB;
 typedef struct { CGFloat hue, saturation, brightness, alpha; } HSB;
 
-extern CGFloat const _FBRGBColorComponentMaxValue;
-extern CGFloat const _FBAlphaComponentMaxValue;
-extern CGFloat const _FBHSBColorComponentMaxValue;
+extern CGFloat const FBRGBColorComponentMaxValue;
+extern CGFloat const FBAlphaComponentMaxValue;
+extern CGFloat const FBHSBColorComponentMaxValue;
 
 /**
  * Converts an RGB color value to HSV.
@@ -24,7 +24,7 @@ extern CGFloat const _FBHSBColorComponentMaxValue;
  *  @param rgb   The rgb color values
  *  @param outHSB The hsb color values
  */
-extern void RGB2HSB(RGB rgb, HSB* outHSB);
+extern void FBRGB2HSB(RGB rgb, HSB* outHSB);
 
 /**
  * Converts an HSB color value to RGB.
@@ -34,13 +34,31 @@ extern void RGB2HSB(RGB rgb, HSB* outHSB);
  *  @param outRGB   The rgb color values
  *  @param hsb The hsb color values
  */
-extern void HSB2RGB(HSB hsb, RGB* outRGB);
+extern void FBHSB2RGB(HSB hsb, RGB* outRGB);
 
-extern RGB RGBColorComponents(UIColor* color);
+/**
+ *  Returns the rgb values of the color components.
+ *
+ *  @param color The color value.
+ *
+ *  @return The values of the color components (including alpha).
+ */
+extern RGB FBRGBColorComponents(UIColor* color);
 
-@interface UIColor (HEX)
+/**
+ *  Converts hex string to the UIColor representation.
+ *
+ *  @param color The color value.
+ *
+ *  @return The hex string color value.
+ */
+extern NSString* FBHexStringFromColor(UIColor* color);
 
-- (NSString*)hexString;
-+ (UIColor*)colorWithHexString:(NSString*)hexColor;
-
-@end
+/**
+ *  Converts UIColor value to the hex string.
+ *
+ *  @param hexString The hex string color value.
+ *
+ *  @return The color value.
+ */
+extern UIColor* FBColorFromHexString(NSString* hexString);

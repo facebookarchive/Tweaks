@@ -11,10 +11,17 @@
 #import "_FBColorWheelView.h"
 #import "_FBColorComponentView.h"
 #import "_FBSliderView.h"
-#import "UIColor+HEX.h"
+#import "FBColorUtils.h"
 
-extern CGFloat const _FBAlphaComponentMaxValue;
-extern CGFloat const _FBHSBColorComponentMaxValue;
+extern CGFloat const FBAlphaComponentMaxValue;
+extern CGFloat const FBHSBColorComponentMaxValue;
+
+static CGFloat const _FBColorSampleViewHeight = 30.0f;
+static CGFloat const _FBViewSpacing = 20.0f;
+static CGFloat const _FBViewMargin = 10.0f;
+static CGFloat const _FBTextFieldWidth = 50.0f;
+static CGFloat const _FBLabelSpacing = 5.0f;
+static CGFloat const _FBColorWheelHeight = 200.0f;
 
 @interface FBHSBView () <UITextFieldDelegate>
 {
@@ -42,7 +49,7 @@ extern CGFloat const _FBHSBColorComponentMaxValue;
 
 @implementation FBHSBView
 
-@synthesize delegate = _delegate;
+@synthesize delegate = _delegate, scrollView = _scrollView;
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
@@ -79,7 +86,7 @@ extern CGFloat const _FBHSBColorComponentMaxValue;
 
 - (void)setValue:(UIColor *)value
 {
-  RGB2HSB(RGBColorComponents(value), &_colorComponents);
+  FBRGB2HSB(FBRGBColorComponents(value), &_colorComponents);
   [self reloadData];
 }
 
@@ -117,7 +124,7 @@ extern CGFloat const _FBHSBColorComponentMaxValue;
     return NO;
   }
 
-  return [newString floatValue] <= _FBHSBColorComponentMaxValue;
+  return [newString floatValue] <= FBHSBColorComponentMaxValue;
 }
 
 #pragma mark - Private methods
@@ -174,7 +181,7 @@ extern CGFloat const _FBHSBColorComponentMaxValue;
 
   _brightnessView = [[FBColorComponentView alloc] init];
   _brightnessView.title = @"Brightness";
-  _brightnessView.maximumValue = _FBHSBColorComponentMaxValue;
+  _brightnessView.maximumValue = FBHSBColorComponentMaxValue;
   _brightnessView.format = @"%.2f";
   _brightnessView.translatesAutoresizingMaskIntoConstraints = NO;
   [_contentView addSubview:_brightnessView];
@@ -183,7 +190,7 @@ extern CGFloat const _FBHSBColorComponentMaxValue;
   _alphaView = [[FBColorComponentView alloc] init];
   _alphaView.title = @"Alpha";
   _alphaView.translatesAutoresizingMaskIntoConstraints = NO;
-  _alphaView.maximumValue = _FBAlphaComponentMaxValue;
+  _alphaView.maximumValue = FBAlphaComponentMaxValue;
   [_contentView addSubview:_alphaView];
 
   [_colorWheel addTarget:self action:@selector(_colorDidChangeValue:) forControlEvents:UIControlEventValueChanged];
@@ -215,10 +222,17 @@ extern CGFloat const _FBHSBColorComponentMaxValue;
                                                   multiplier:1.0
                                                     constant:0]];
 
+  NSDictionary* metrics = @{ @"spacing" : @(_FBViewSpacing),
+                             @"height" : @(_FBColorSampleViewHeight),
+                             @"margin" : @(_FBViewMargin),
+                             @"text_field_width" : @(_FBTextFieldWidth),
+                             @"color_wheel_height" : @(_FBColorWheelHeight),
+                             @"small_spacing" : @(_FBLabelSpacing)};
+
   views = NSDictionaryOfVariableBindings(_colorSample, _colorWheel);
-  [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[_colorSample]-10-|" options:0 metrics:nil views:views]];
-  [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[_colorWheel(200)]" options:0 metrics:nil views:views]];
-  [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-20-[_colorSample(30)]-20-[_colorWheel]" options:0 metrics:nil views:views]];
+  [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-margin-[_colorSample]-margin-|" options:0 metrics:metrics views:views]];
+  [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-margin-[_colorWheel(color_wheel_height)]" options:0 metrics:metrics views:views]];
+  [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-spacing-[_colorSample(height)]-spacing-[_colorWheel]" options:0 metrics:metrics views:views]];
   [_contentView addConstraint:[NSLayoutConstraint
                                constraintWithItem:_colorWheel
                                attribute:NSLayoutAttributeWidth
@@ -229,18 +243,18 @@ extern CGFloat const _FBHSBColorComponentMaxValue;
                                constant:0]];
 
   views = NSDictionaryOfVariableBindings(_colorSample, _colorWheel, _hsView, _hueLabel, _hueTextField, _saturationLabel, _saturationTextField);
-  [_hsView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_hueLabel]-5-[_hueTextField(50)]|" options:0 metrics:nil views:views]];
-  [_hsView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_saturationLabel]-5-[_saturationTextField(50)]|" options:0 metrics:nil views:views]];
-  [_hsView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_hueLabel]-10-[_saturationLabel]|" options:0 metrics:nil views:views]];
-  [_hsView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_hueTextField]-10-[_saturationTextField]|" options:0 metrics:nil views:views]];
-  [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[_colorWheel]-10-[_hsView]" options:NSLayoutFormatAlignAllCenterY metrics:nil views:views]];
+  [_hsView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_hueLabel]-small_spacing-[_hueTextField(text_field_width)]|" options:0 metrics:metrics views:views]];
+  [_hsView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_saturationLabel]-small_spacing-[_saturationTextField(text_field_width)]|" options:0 metrics:metrics views:views]];
+  [_hsView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_hueLabel]-margin-[_saturationLabel]|" options:0 metrics:metrics views:views]];
+  [_hsView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_hueTextField]-margin-[_saturationTextField]|" options:0 metrics:metrics views:views]];
+  [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[_colorWheel]-margin-[_hsView]" options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
 
   views = NSDictionaryOfVariableBindings(_colorWheel, _brightnessView, _alphaView);
-  [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[_brightnessView]-10-|" options:0 metrics:nil views:views]];
-  [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[_colorWheel]-20-[_brightnessView]" options:0 metrics:nil views:views]];
+  [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-margin-[_brightnessView]-margin-|" options:0 metrics:metrics views:views]];
+  [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[_colorWheel]-spacing-[_brightnessView]" options:0 metrics:metrics views:views]];
 
-  [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[_alphaView]-10-|" options:0 metrics:nil views:views]];
-  [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[_brightnessView]-20-[_alphaView]-|" options:0 metrics:nil views:views]];
+  [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-margin-[_alphaView]-margin-|" options:0 metrics:metrics views:views]];
+  [_contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[_brightnessView]-spacing-[_alphaView]-|" options:0 metrics:metrics views:views]];
 }
 
 - (void)_reloadViewsWithColorComponents:(HSB)colorComponents
@@ -253,7 +267,7 @@ extern CGFloat const _FBHSBColorComponentMaxValue;
 
 - (void)_updateSlidersWithColorComponents:(HSB)colorComponents
 {
-  [_alphaView setValue:colorComponents.alpha * _FBAlphaComponentMaxValue];
+  [_alphaView setValue:colorComponents.alpha * FBAlphaComponentMaxValue];
   [_brightnessView setValue:colorComponents.brightness];
   UIColor* tmp = [UIColor colorWithHue:colorComponents.hue saturation:colorComponents.saturation brightness:1.0f alpha:1.0f];
   [_brightnessView.slider setColors:@[(id)[UIColor blackColor].CGColor, (id)tmp.CGColor]];
@@ -282,7 +296,7 @@ extern CGFloat const _FBHSBColorComponentMaxValue;
 
 - (void)_alphaDidChangeValue:(FBColorComponentView*)sender
 {
-  _colorComponents.alpha = sender.value / _FBAlphaComponentMaxValue;
+  _colorComponents.alpha = sender.value / FBAlphaComponentMaxValue;
   [self.delegate colorView:self didChangeValue:[self value]];
   [self reloadData];
 }

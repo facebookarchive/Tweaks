@@ -8,6 +8,7 @@
  */
 
 #import "_FBColorWheelView.h"
+#import "FBColorUtils.h"
 
 @interface FBColorWheelView () {
 
@@ -160,7 +161,7 @@
         if (saturation > 0.99) a = (1.0 - saturation) * 100;
         else a = 1.0;
         HSB hsb = {hue, saturation, 1.0f, a};
-        HSB2RGB(hsb, &rgb);
+        FBHSB2RGB(hsb, &rgb);
       }
 
       int i = 4 * (x + y * size.width);
@@ -191,7 +192,7 @@
 {
   CGDataProviderRef dataProvider = CGDataProviderCreateWithCFData(data);
   CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-  CGImageRef imageRef = CGImageCreate(width, height, 8, 32, width * 4, colorSpace, kCGImageAlphaLast, dataProvider, NULL, 0, kCGRenderingIntentDefault);
+  CGImageRef imageRef = CGImageCreate(width, height, 8, 32, width * 4, colorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaLast, dataProvider, NULL, 0, kCGRenderingIntentDefault);
   CGDataProviderRelease(dataProvider);
   CGColorSpaceRelease(colorSpace);
   return (__bridge_transfer id)imageRef;

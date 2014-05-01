@@ -10,14 +10,14 @@
 #import "_FBRGBView.h"
 #import "_FBColorComponentView.h"
 #import "_FBSliderView.h"
-#import "UIColor+HEX.h"
+#import "FBColorUtils.h"
 
-extern CGFloat const _FBRGBColorComponentMaxValue;
-extern CGFloat const _FBAlphaComponentMaxValue;
+extern CGFloat const FBRGBColorComponentMaxValue;
+extern CGFloat const FBAlphaComponentMaxValue;
 
 static CGFloat const _FBColorSampleViewHeight = 30.0f;
-static CGFloat const _FBRGBViewSpacing = 20.0f;
-static CGFloat const _FBRGBContentViewMargin = 10.0f;
+static CGFloat const _FBViewSpacing = 20.0f;
+static CGFloat const _FBContentViewMargin = 10.0f;
 static NSUInteger const _FBRGBAColorComponentsSize = 4;
 
 @interface FBRGBView () {
@@ -36,7 +36,7 @@ static NSUInteger const _FBRGBAColorComponentsSize = 4;
 
 @implementation FBRGBView
 
-@synthesize delegate = _delegate;
+@synthesize delegate = _delegate, scrollView = _scrollView;
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
@@ -73,7 +73,7 @@ static NSUInteger const _FBRGBAColorComponentsSize = 4;
 
 - (void)setValue:(UIColor *)value
 {
-  _colorComponents = RGBColorComponents(value);
+  _colorComponents = FBRGBColorComponents(value);
   [self reloadData];
 }
 
@@ -102,8 +102,8 @@ static NSUInteger const _FBRGBAColorComponentsSize = 4;
 
   NSMutableArray* tmp = [NSMutableArray array];
   NSArray* titles = @[@"Red", @"Green", @"Blue", @"Alpha"];
-  NSArray* maxValues = @[@(_FBRGBColorComponentMaxValue), @(_FBRGBColorComponentMaxValue), @(_FBRGBColorComponentMaxValue),
-                         @(_FBAlphaComponentMaxValue)];
+  NSArray* maxValues = @[@(FBRGBColorComponentMaxValue), @(FBRGBColorComponentMaxValue), @(FBRGBColorComponentMaxValue),
+                         @(FBAlphaComponentMaxValue)];
   for(int i = 0; i < _FBRGBAColorComponentsSize; ++i) {
     UIControl* colorComponentView = [self _colorComponentViewWithTitle:titles[i] tag:i maxValue:[maxValues[i] floatValue]];
     [_contentView addSubview:colorComponentView];
@@ -174,8 +174,8 @@ static NSUInteger const _FBRGBAColorComponentsSize = 4;
                                                                       constant:0];
   [self addConstraint:rightConstraint];
 
-  NSDictionary* metrics = @{ @"spacing" : @(_FBRGBViewSpacing),
-                             @"margin" : @(_FBRGBContentViewMargin),
+  NSDictionary* metrics = @{ @"spacing" : @(_FBViewSpacing),
+                             @"margin" : @(_FBContentViewMargin),
                              @"height" : @(_FBColorSampleViewHeight) };
 
   views = NSDictionaryOfVariableBindings(_colorSample);

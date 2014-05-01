@@ -13,6 +13,9 @@ static const CGFloat _FBSliderViewMargin = _FBSliderViewHeight / 2.0f;
 static const CGFloat _FBSliderViewHeightTrackHeight = 3.0f;
 
 @interface FBSliderView () {
+
+  @private
+
   CALayer* _thumbLayer;
   CAGradientLayer* _trackLayer;
 }

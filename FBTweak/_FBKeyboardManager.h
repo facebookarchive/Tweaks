@@ -9,9 +9,19 @@
 
 #import <UIKit/UIKit.h>
 
+/**
+ @abstract Keyboard TextField manager. Adjust the content so that the target object remains visible.
+ */
 @interface FBKeyboardManager : NSObject
 
+/**
+ *  Enables the keyboard manager. The manager is enabled by default.
+ */
 - (void)enable;
+
+/**
+ *  Disables the keyboard manager.
+ */
 - (void)disable;
 
 @end

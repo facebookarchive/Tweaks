@@ -8,18 +8,24 @@
  */
 
 #import <UIKit/UIKit.h>
-#import "UIColor+HEX.h"
 
 @protocol FBColorViewDelegate;
 
+/**
+ @abstract The `FBColorView` protocol declares a view's interface for displaying and editing color value.
+ */
 @protocol FBColorView <NSObject>
 
 @required
 
+//! @abstract The current color value.
 @property(nonatomic, strong) UIColor* value;
 
 //! @abstract The object that acts as the delegate of the receiving color selection view.
 @property(nonatomic, weak) id<FBColorViewDelegate> delegate;
+
+//! @abstract The the scroll view.
+@property(nonatomic, strong, readonly) UIScrollView* scrollView;
 
 /**
  *  Reloads the content of the receiver.
@@ -39,6 +45,8 @@
 /**
  *  Tells the data source to return the color components.
  *
+ *  @param colorView The color view.
+ *  @param colorValue The new color value.
  *  @return The color components.
  */
 - (void)colorView:(id<FBColorView>)colorView didChangeValue:(UIColor*)colorValue;
