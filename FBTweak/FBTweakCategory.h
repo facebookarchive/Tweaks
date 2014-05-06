@@ -14,7 +14,7 @@
 /**
   @abstract A named grouping of collections.
  */
-@interface FBTweakCategory : NSObject
+@interface FBTweakCategory : NSObject <NSCoding>
 
 /**
   @abstract Creates a tweak category.

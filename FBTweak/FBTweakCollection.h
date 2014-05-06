@@ -14,7 +14,7 @@
 /**
   @abstract A named collection of tweaks.
  */
-@interface FBTweakCollection : NSObject
+@interface FBTweakCollection : NSObject <NSCoding>
 
 /**
   @abstract Creates a tweak collection.

@@ -15,6 +15,21 @@
   NSMutableDictionary *_identifierTweaks;
 }
 
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+  NSString *name = [coder decodeObjectForKey:@"name"];
+  
+  if ((self = [self initWithName:name])) {
+    _orderedTweaks = [[coder decodeObjectForKey:@"tweaks"] mutableCopy];
+    
+    for (FBTweak *tweak in _orderedTweaks) {
+      [_identifierTweaks setObject:tweak forKey:tweak.identifier];
+    }
+  }
+  
+  return self;
+}
+
 - (instancetype)initWithName:(NSString *)name
 {
   if ((self = [super init])) {
@@ -25,6 +40,12 @@
   }
   
   return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+  [coder encodeObject:_name forKey:@"name"];
+  [coder encodeObject:_orderedTweaks forKey:@"tweaks"];
 }
 
 - (FBTweak *)tweakWithIdentifier:(NSString *)identifier

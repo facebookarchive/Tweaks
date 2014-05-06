@@ -54,6 +54,19 @@ FBTweakBind(webView.scrollView, scrollEnabled, @"Browser", @"Scrolling", @"Enabl
 
 As with `FBTweakValue`, in release builds `FBTweakBind` expands to just setting the property to the default value.
 
+## Action
+Actions let you run a (global) block when a tweak is selected. To make one, use `FBTweakAction`:
+
+```objective-c
+FBTweakAction(@"Player", @"Audio", @"Volume", ^{
+  NSLog(@"Action selected.");
+});
+```
+
+The first three parameters are the standard tweak listing information, and the last is a block to call. You can use `FBTweakAction` in any scope, but the block must be global: it can't depend on any local or instance variables (it wouldn't know which object to adjust).
+
+Actions are useful for things like launching debug UIs, checking for updates, or (if you make one that intentionally crashes) testing crash reporting.
+
 ### Tweaks UI
 To configure your tweaks, you need a way to show the configuration UI. There's two options for that:
 
@@ -109,7 +122,7 @@ In release builds, the macros just expand to the default value. Nothing extra is
 ## Installation
 There are two options:
 
- 1. Tweaks is available as `Tweaks` in [Cocoapods](http://cocoapods.org).
+ 1. Tweaks is available as `Tweaks` in [Cocoapods](http://cocoapods.org). (If you have issues with custom Xcode configurations, [this comment](https://github.com/facebook/Tweaks/issues/4#issuecomment-40629741) might help.)
  2. Manually add the files from `FBTweak/` into your Xcode project. Slightly simpler, but updates are also manual.
 
 Tweaks requires iOS 6 or later.

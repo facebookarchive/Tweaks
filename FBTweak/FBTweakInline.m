@@ -30,8 +30,10 @@ static FBTweak *_FBTweakCreateWithEntry(NSString *identifier, fb_tweak_entry *en
 {
   FBTweak *tweak = [[FBTweak alloc] initWithIdentifier:identifier];
   tweak.name = *entry->name;
-  
-  if (strcmp(*entry->encoding, @encode(BOOL)) == 0) {
+
+  if (strcmp(*entry->encoding, FBTweakEncodingAction) == 0) {
+    tweak.defaultValue = *(dispatch_block_t __strong *)entry->value;
+  } else if (strcmp(*entry->encoding, @encode(BOOL)) == 0) {
     tweak.defaultValue = @(*(BOOL *)entry->value);
   } else if (strcmp(*entry->encoding, @encode(float)) == 0) {
     tweak.defaultValue = [NSNumber numberWithFloat:*(float *)entry->value];
