@@ -189,7 +189,7 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
     }
     
     if (!_tweak.stepValue) {
-        _stepper.stepValue = fminf(1.0, (_stepper.maximumValue - _stepper.minimumValue) / 100.0);
+      _stepper.stepValue = fminf(1.0, (_stepper.maximumValue - _stepper.minimumValue) / 100.0);
     }
   } else if (_mode == _FBTweakTableViewCellModeString) {
     _switch.hidden = YES;
