@@ -73,6 +73,11 @@ FBTweakAction(@"Actions", @"Global", @"Hello", ^{
   [tweaksButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
   [tweaksButton addTarget:self action:@selector(buttonTapped) forControlEvents:UIControlEventTouchUpInside];
   [_rootViewController.view addSubview:tweaksButton];
+    
+  FBTweak *animationDurationTweak = FBTweakInline(@"Content", @"Animation", @"Duration", 0.5);
+  animationDurationTweak.stepValue = [NSNumber numberWithFloat:0.005f];
+  animationDurationTweak.precisionValue = [NSNumber numberWithFloat:3.0f];
+  
 
   FBTweakAction(@"Actions", @"Scoped", @"Two", ^{
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Hello" message:@"Scoped alert test #2." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Done", nil];

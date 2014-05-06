@@ -143,7 +143,11 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
     _textField.hidden = NO;
     _textField.keyboardType = UIKeyboardTypeNumberPad;
     _stepper.hidden = NO;
-    _stepper.stepValue = 1.0;
+    if (_tweak.stepValue) {
+      _stepper.stepValue = [_tweak.stepValue floatValue];
+    } else {
+      _stepper.stepValue = 1.0;
+    }
 
     if (_tweak.minimumValue != nil) {
       _stepper.minimumValue = [_tweak.minimumValue longLongValue];
@@ -161,7 +165,13 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
     _textField.hidden = NO;
     _textField.keyboardType = UIKeyboardTypeDecimalPad;
     _stepper.hidden = NO;
-    
+      
+    if (_tweak.stepValue) {
+      _stepper.stepValue = [_tweak.stepValue floatValue];
+    } else {
+      _stepper.stepValue = 1.0;
+    }
+      
     if (_tweak.minimumValue != nil) {
       _stepper.minimumValue = [_tweak.minimumValue doubleValue];
     } else if ([_tweak.defaultValue doubleValue] == 0) {
@@ -178,7 +188,9 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
       _stepper.maximumValue = [_tweak.defaultValue doubleValue] * 10.0;
     }
     
-    _stepper.stepValue = fminf(1.0, (_stepper.maximumValue - _stepper.minimumValue) / 100.0);
+    if (!_tweak.stepValue) {
+      _stepper.stepValue = fminf(1.0, (_stepper.maximumValue - _stepper.minimumValue) / 100.0);
+    }
   } else if (_mode == _FBTweakTableViewCellModeString) {
     _switch.hidden = YES;
     _textField.hidden = NO;
@@ -273,6 +285,10 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
     double exp = log10(_stepper.stepValue);
     long precision = exp < 0 ? ceilf(fabs(exp)) : 0;
     
+    if (_tweak.precisionValue) {
+      precision = [[_tweak precisionValue] longValue];
+    }
+      
     NSString *format = [NSString stringWithFormat:@"%%.%ldf", precision];
     _textField.text = [NSString stringWithFormat:format, [value doubleValue]];
   }

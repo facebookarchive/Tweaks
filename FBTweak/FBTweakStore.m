@@ -84,7 +84,9 @@
   for (FBTweakCategory *category in self.tweakCategories) {
     for (FBTweakCollection *collection in category.tweakCollections) {
       for (FBTweak *tweak in collection.tweaks) {
-        tweak.currentValue = nil;
+        if (!tweak.isAction) {
+          tweak.currentValue = nil;
+        }
       }
     }
   }
