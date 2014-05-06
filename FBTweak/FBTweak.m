@@ -22,6 +22,8 @@
     _defaultValue = [coder decodeObjectForKey:@"defaultValue"];
     _minimumValue = [coder decodeObjectForKey:@"minimumValue"];
     _maximumValue = [coder decodeObjectForKey:@"maximumValue"];
+    _precisionValue = [coder decodeObjectForKey:@"precisionValue"];
+    _stepValue = [coder decodeObjectForKey:@"stepValue"];
     
     // Fall back to the user-defaults loaded value if current value isn't set.
     _currentValue = [coder decodeObjectForKey:@"currentValue"] ?: _currentValue;
@@ -50,6 +52,8 @@
     [coder encodeObject:_minimumValue forKey:@"minimumValue"];
     [coder encodeObject:_maximumValue forKey:@"maximumValue"];
     [coder encodeObject:_currentValue forKey:@"currentValue"];
+    [coder encodeObject:_precisionValue forKey:@"precisionValue"];
+    [coder encodeObject:_stepValue forKey:@"stepValue"];
   }
 }
 
