@@ -45,6 +45,8 @@
   _tableView.dataSource = self;
   _tableView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
   [self.view addSubview:_tableView];
+  
+  self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(_done)];
 }
 
 - (void)dealloc
@@ -58,6 +60,11 @@
   [super viewWillAppear:animated];
   
   [_tableView deselectRowAtIndexPath:_tableView.indexPathForSelectedRow animated:animated];
+}
+
+- (void)_done
+{
+  [_delegate tweakCollectionViewControllerSelectedDone:self];
 }
 
 - (void)_keyboardFrameChanged:(NSNotification *)notification

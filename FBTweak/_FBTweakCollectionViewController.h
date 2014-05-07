@@ -10,6 +10,7 @@
 #import <UIKit/UIKit.h>
 
 @class FBTweakCategory;
+@protocol _FBTweakCollectionViewControllerDelegate;
 
 /**
   @abstract Displays configuration options for tweak collections.
@@ -25,5 +26,20 @@
 
 //! @abstract The tweak category to show the collections in.
 @property (nonatomic, strong, readonly) FBTweakCategory *tweakCategory;
+
+/**
+  @abstract Responds to actions from the items list.
+ */
+@property (nonatomic, weak, readwrite) id<_FBTweakCollectionViewControllerDelegate> delegate;
+
+@end
+
+@protocol _FBTweakCollectionViewControllerDelegate <NSObject>
+
+/**
+  @abstract Called when done is selected.
+  @param viewController The view controller that selected done.
+ */
+- (void)tweakCollectionViewControllerSelectedDone:(_FBTweakCollectionViewController *)viewController;
 
 @end
