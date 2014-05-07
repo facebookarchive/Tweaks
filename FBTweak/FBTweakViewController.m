@@ -12,7 +12,7 @@
 #import "_FBTweakCategoryViewController.h"
 #import "_FBTweakCollectionViewController.h"
 
-@interface FBTweakViewController () <_FBTweakCategoryViewControllerDelegate>
+@interface FBTweakViewController () <_FBTweakCategoryViewControllerDelegate, _FBTweakCollectionViewControllerDelegate>
 @end
 
 @implementation FBTweakViewController {
@@ -35,10 +35,16 @@
 - (void)tweakCategoryViewController:(_FBTweakCategoryViewController *)viewController selectedCategory:(FBTweakCategory *)category
 {
   _FBTweakCollectionViewController *collectionViewController = [[_FBTweakCollectionViewController alloc] initWithTweakCategory:category];
+  collectionViewController.delegate = self;
   [self pushViewController:collectionViewController animated:YES];
 }
 
 - (void)tweakCategoryViewControllerSelectedDone:(_FBTweakCategoryViewController *)viewController
+{
+  [_tweaksDelegate tweakViewControllerPressedDone:self];
+}
+
+- (void)tweakCollectionViewControllerSelectedDone:(_FBTweakCollectionViewController *)viewController
 {
   [_tweaksDelegate tweakViewControllerPressedDone:self];
 }
