@@ -260,7 +260,12 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
 
 - (void)_stepperChanged:(UIStepper *)stepper
 {
-  [self _updateValue:@(stepper.value) primary:NO write:YES];
+  if (_mode == _FBTweakTableViewCellModeInteger) {
+    NSNumber *number = @([@(stepper.value) longLongValue]);
+    [self _updateValue:number primary:NO write:YES];
+  } else {
+    [self _updateValue:@(stepper.value) primary:NO write:YES];
+  }
 }
 
 - (void)_updateValue:(FBTweakValue)value primary:(BOOL)primary write:(BOOL)write
