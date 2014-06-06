@@ -80,7 +80,9 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
     CGRect accessoryFrame = CGRectUnion(stepperFrame, textFrame);
     _accessoryView.bounds = CGRectIntegral(accessoryFrame);
   } else if (_mode == _FBTweakTableViewCellModeString) {
-    CGRect textBounds = CGRectMake(0, 0, self.bounds.size.width / 3, self.bounds.size.height);
+    CGFloat labelWidth = self.textLabel.intrinsicContentSize.width;
+    CGFloat margin = self.textLabel.frame.origin.x;
+    CGRect textBounds = CGRectMake(0, 0, self.bounds.size.width - margin * 3 - labelWidth, self.bounds.size.height);
     _textField.frame = CGRectIntegral(textBounds);
     _accessoryView.bounds = CGRectIntegral(textBounds);
   } else if (_mode == _FBTweakTableViewCellModeAction) {
