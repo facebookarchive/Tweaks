@@ -7,6 +7,7 @@
  of patent rights can be found in the PATENTS file in the same directory.
  */
 
+#import "FBTweakEnabled.h"
 #import "FBTweakStore.h"
 #import "FBTweakShakeWindow.h"
 #import "FBTweakViewController.h"
@@ -41,12 +42,12 @@ static CFTimeInterval _FBTweakShakeWindowMinTimeInterval = 0.4;
 
 - (BOOL)_shouldPresentTweaks
 {
-#ifndef DEBUG
-    return NO;
+#if FB_TWEAK_ENABLED
+    return _shaking && [[UIApplication sharedApplication] applicationState] == UIApplicationStateActive;
 #elif TARGET_IPHONE_SIMULATOR
   return YES;
 #else
-  return _shaking && [[UIApplication sharedApplication] applicationState] == UIApplicationStateActive;
+  return NO;
 #endif
 }
 
