@@ -54,10 +54,6 @@ FBTweakBind(webView.scrollView, scrollEnabled, @"Browser", @"Scrolling", @"Enabl
 
 As with `FBTweakValue`, in release builds `FBTweakBind` expands to just setting the property to the default value.
 
-### Using with Swift
-
-When referencing Tweaks from a Swift project the shortcut macros listed above cannot be used. See the Advanced section for an example on using Tweaks from Swift.
-
 ## Action
 Actions let you run a (global) block when a tweak is selected. To make one, use `FBTweakAction`:
 
@@ -107,6 +103,21 @@ FBTweakCollection *collection = [category tweakCollectionWithName:@"Enable"];
 [tweak addObserver:self];
 ```
 
+Then, you can watch for when the tweak changes:
+
+```objective-c
+- (void)tweakDidChange:(FBTweak *)tweak
+{
+  self.advancedSettingsEnabled = ![tweak.currentValue boolValue];
+}
+```
+
+To override when tweaks are enabled, you can define the `FB_TWEAK_ENABLED` macro. It's suggested to avoid including them when submitting to the App Store.
+
+### Using from a Swift Project
+
+Tweaks can be used from Swift projects. In this case the handy shortcut macros defined in `FBTweakInline.h` are not available, meaning tweaks need to be created programmatically, similar to this example:
+
 ```swift
 let tweak = FBTweak(identifier: "com.tweaks.example.advanced")
 tweak.name = "Advanced settings"
@@ -124,14 +135,7 @@ store.addTweakCategory(category)
 tweak.addObserver(self)
 ```
 
-Then, you can watch for when the tweak changes:
-
-```objective-c
-- (void)tweakDidChange:(FBTweak *)tweak
-{
-  self.advancedSettingsEnabled = ![tweak.currentValue boolValue];
-}
-```
+After setting up a tweak you can watch for when it changes:
 
 ```swift
 func tweakDidChange(tweak: FBTweak!)
@@ -139,9 +143,6 @@ func tweakDidChange(tweak: FBTweak!)
     self.advancedSettingsEnabled = tweak.currentValue as Bool;
 }
 ```
-
-
-To override when tweaks are enabled, you can define the `FB_TWEAK_ENABLED` macro. It's suggested to avoid including them when submitting to the App Store.
 
 ### How it works
 In debug builds, the tweak macros use `__attribute__((section))` to statically store data about each tweak in the `__FBTweak` section of the mach-o. Tweaks loads that data at startup and loads the latest values from `NSUserDefaults`.
