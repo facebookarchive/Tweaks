@@ -54,6 +54,10 @@ FBTweakBind(webView.scrollView, scrollEnabled, @"Browser", @"Scrolling", @"Enabl
 
 As with `FBTweakValue`, in release builds `FBTweakBind` expands to just setting the property to the default value.
 
+### Using with Swift
+
+When referencing Tweaks from a Swift project the shortcut macros listed above cannot be used. See the Advanced section for an example on using Tweaks from Swift.
+
 ## Action
 Actions let you run a (global) block when a tweak is selected. To make one, use `FBTweakAction`:
 
@@ -103,6 +107,23 @@ FBTweakCollection *collection = [category tweakCollectionWithName:@"Enable"];
 [tweak addObserver:self];
 ```
 
+```swift
+let tweak = FBTweak(identifier: "com.tweaks.example.advanced")
+tweak.name = "Advanced settings"
+tweak.defaultValue = false
+
+let collection = FBTweakCollection(name: "Enable");
+collection.addTweak(tweak)
+        
+let category = FBTweakCategory(name: "Settings")
+category.addTweakCollection(collection);
+        
+let store = FBTweakStore.sharedInstance()
+store.addTweakCategory(category)
+
+tweak.addObserver(self)
+```
+
 Then, you can watch for when the tweak changes:
 
 ```objective-c
@@ -111,6 +132,14 @@ Then, you can watch for when the tweak changes:
   self.advancedSettingsEnabled = ![tweak.currentValue boolValue];
 }
 ```
+
+```swift
+func tweakDidChange(tweak: FBTweak!)
+{
+    self.advancedSettingsEnabled = tweak.currentValue as Bool;
+}
+```
+
 
 To override when tweaks are enabled, you can define the `FB_TWEAK_ENABLED` macro. It's suggested to avoid including them when submitting to the App Store.
 
