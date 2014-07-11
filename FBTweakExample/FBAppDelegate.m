@@ -32,6 +32,7 @@ FBTweakAction(@"Actions", @"Global", @"Hello", ^{
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    
   FBTweakAction(@"Actions", @"Scoped", @"One", ^{
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Hello" message:@"Scoped alert test #1." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Done", nil];
     [alert show];
