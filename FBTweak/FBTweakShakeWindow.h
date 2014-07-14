@@ -9,7 +9,6 @@
 
 #import <UIKit/UIKit.h>
 
-#import "FBTweakConstants.h"
 #import "FBTweakViewController.h"
 
 /**

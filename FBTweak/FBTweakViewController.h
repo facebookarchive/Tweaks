@@ -9,6 +9,8 @@
 
 #import <UIKit/UIKit.h>
 
+extern NSString *const FBTweakShakeViewControllerDidDismissNotification;
+
 @class FBTweakStore;
 @protocol FBTweakViewControllerDelegate;
 
