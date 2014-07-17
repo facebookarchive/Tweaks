@@ -21,6 +21,7 @@ static CFTimeInterval _FBTweakShakeWindowMinTimeInterval = 0.4;
 
 - (void)tweakViewControllerPressedDone:(FBTweakViewController *)tweakViewController
 {
+  [[NSNotificationCenter defaultCenter] postNotificationName:FBTweakShakeViewControllerDidDismissNotification object:tweakViewController];
   [tweakViewController dismissViewControllerAnimated:YES completion:NULL];
 }
 

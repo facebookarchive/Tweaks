@@ -84,6 +84,10 @@ To configure your tweaks, you need a way to show the configuration UI. There's t
 ```
 
  - You can present a `FBTweakViewController` from anywhere in your app. Be sure to restrict the activation UI to debug builds!
+ 
+#### Tweaks UI Dismiss Notification
+
+Alternatively, when the Tweaks UI is dismissed, you can register your notification center to listen to `FBTweakShakeViewControllerDidDismissNotification`, which can be used after importing `FBTweakViewController.h` 
 
 ### Advanced
 You can also access the objects that make up the macros mentioned above. That can be useful for more complex scenarios, like adjusting members of a C structure.

@@ -12,6 +12,8 @@
 #import "_FBTweakCategoryViewController.h"
 #import "_FBTweakCollectionViewController.h"
 
+NSString *const FBTweakShakeViewControllerDidDismissNotification = @"FBTweakShakeViewControllerDidDismissNotification";
+
 @interface FBTweakViewController () <_FBTweakCategoryViewControllerDelegate, _FBTweakCollectionViewControllerDelegate>
 @end
 
