@@ -10,8 +10,8 @@
 #import "_FBSliderView.h"
 
 static const CGFloat _FBSliderViewHeight = 28.0f;
-static const CGFloat _FBSliderViewMargin = _FBSliderViewHeight / 2.0f;
-static const CGFloat _FBSliderViewHeightTrackHeight = 3.0f;
+static const CGFloat _FBSliderViewThumbDimension = 28.0f;
+static const CGFloat _FBSliderViewTrackHeight = 3.0f;
 
 @interface FBSliderView () {
 
@@ -41,7 +41,7 @@ static const CGFloat _FBSliderViewHeightTrackHeight = 3.0f;
     self.layer.delegate = self;
 
     _trackLayer = [CAGradientLayer layer];
-    _trackLayer.cornerRadius = _FBSliderViewHeightTrackHeight / 2.0f;
+    _trackLayer.cornerRadius = _FBSliderViewTrackHeight / 2.0f;
     _trackLayer.startPoint = CGPointMake(0.0f, 0.5f);
     _trackLayer.endPoint = CGPointMake(1.0f, 0.5f);
     [self.layer addSublayer:_trackLayer];
@@ -75,13 +75,7 @@ static const CGFloat _FBSliderViewHeightTrackHeight = 3.0f;
   } else {
     _value = value;
   }
-  CGFloat width = CGRectGetWidth(self.bounds) - 2 * _FBSliderViewMargin;
-  CGFloat percentage = (_value - _minimumValue) / (_maximumValue - _minimumValue);
-  [CATransaction begin];
-  [CATransaction setValue:(id)kCFBooleanTrue
-                   forKey:kCATransactionDisableActions];
-  _thumbLayer.position = CGPointMake(width * percentage + _FBSliderViewMargin, _FBSliderViewHeight / 2);
-  [CATransaction commit];
+  [self _updateThumbPositionWithValue:_value];
 }
 
 - (void)setColors:(NSArray*)colors
@@ -120,12 +114,10 @@ static const CGFloat _FBSliderViewHeightTrackHeight = 3.0f;
   if (layer == self.layer) {
     CGFloat height = _FBSliderViewHeight;
     CGFloat width = CGRectGetWidth(self.bounds);
-    _trackLayer.bounds = CGRectMake(0, 0, width , _FBSliderViewHeightTrackHeight);
+    _trackLayer.bounds = CGRectMake(0, 0, width , _FBSliderViewTrackHeight);
     _trackLayer.position = CGPointMake(CGRectGetWidth(self.bounds) / 2, height / 2);
-    CGFloat dimension = _FBSliderViewHeight;
-    CGFloat percentage = (_value - _minimumValue) / (_maximumValue - _minimumValue);
-    _thumbLayer.bounds = CGRectMake(0, 0, dimension, dimension);
-    _thumbLayer.position = CGPointMake((width - 2 * _FBSliderViewMargin)  * percentage + _FBSliderViewMargin, _FBSliderViewHeight / 2);
+    _thumbLayer.bounds = CGRectMake(0, 0, _FBSliderViewThumbDimension, _FBSliderViewThumbDimension);
+    [self _updateThumbPositionWithValue:_value];
   }
 }
 
@@ -133,8 +125,7 @@ static const CGFloat _FBSliderViewHeightTrackHeight = 3.0f;
 
 - (void)_setValueWithPosition:(CGFloat)position
 {
-  CGFloat width = CGRectGetWidth(self.bounds) - 2 * _FBSliderViewMargin;
-  position -= _FBSliderViewMargin;
+  CGFloat width = CGRectGetWidth(self.bounds);
   if (position < 0) {
     position = 0;
   } else if (position > width) {
@@ -160,6 +151,21 @@ static const CGFloat _FBSliderViewHeightTrackHeight = 3.0f;
   }
   [locations addObject:@(1.0f)];
   _trackLayer.locations = [locations copy];
+}
+
+- (void)_updateThumbPositionWithValue:(CGFloat)value
+{
+  CGFloat width = CGRectGetWidth(self.bounds);
+  if (width == 0) {
+    return;
+  }
+  CGFloat percentage = (_value - _minimumValue) / (_maximumValue - _minimumValue);
+  CGFloat position = width * percentage;
+  [CATransaction begin];
+  [CATransaction setValue:(id)kCFBooleanTrue
+                   forKey:kCATransactionDisableActions];
+  _thumbLayer.position = CGPointMake(position - ((position - width / 2) / (width / 2)) * _FBSliderViewThumbDimension / 2, _FBSliderViewHeight / 2);
+  [CATransaction commit];
 }
 
 @end
