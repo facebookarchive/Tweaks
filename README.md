@@ -87,7 +87,7 @@ To configure your tweaks, you need a way to show the configuration UI. There's t
  
 #### Tweaks UI Dismiss Notification
 
-Alternatively, when the Tweaks UI is dismissed, you can register your notification center to listen to `FB_TWEAK_DISMISS_NOTIFICATION`.  
+Alternatively, when the Tweaks UI is dismissed, you can register your notification center to listen to `FBTweakShakeViewControllerDidDismissNotification`, which can be used after importing `FBTweakViewController.h` 
 
 ### Advanced
 You can also access the objects that make up the macros mentioned above. That can be useful for more complex scenarios, like adjusting members of a C structure.
