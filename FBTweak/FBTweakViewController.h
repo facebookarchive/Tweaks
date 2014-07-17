@@ -9,6 +9,12 @@
 
 #import <UIKit/UIKit.h>
 
+/**
+ @abstract A notification posted when the FBTweakViewController is dismissed 
+ @discussion Register an observer to listen to FBTweakShakeViewControllerDidDismissNotification.
+    The object included with the notification is the FBTweakViewController instance
+    being dismissed.
+ */
 extern NSString *const FBTweakShakeViewControllerDidDismissNotification;
 
 @class FBTweakStore;
