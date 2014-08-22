@@ -208,14 +208,14 @@ static CGFloat const _FBColorWheelHeight = 200.0f;
   views = NSDictionaryOfVariableBindings(_contentView);
   [_scrollView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_contentView]|" options:0 metrics:nil views:views]];
   [self addConstraint:[NSLayoutConstraint constraintWithItem:_contentView
-                                                   attribute:NSLayoutAttributeLeading
+                                                   attribute:NSLayoutAttributeLeft
                                                    relatedBy:0
                                                       toItem:self
                                                    attribute:NSLayoutAttributeLeft
                                                   multiplier:1.0
                                                     constant:0]];
   [self addConstraint:[NSLayoutConstraint constraintWithItem:_contentView
-                                                   attribute:NSLayoutAttributeTrailing
+                                                   attribute:NSLayoutAttributeRight
                                                    relatedBy:0
                                                       toItem:self
                                                    attribute:NSLayoutAttributeRight

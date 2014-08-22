@@ -157,7 +157,7 @@ static NSUInteger const _FBRGBAColorComponentsSize = 4;
   views = NSDictionaryOfVariableBindings(_contentView);
   [_scrollView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_contentView]|" options:0 metrics:nil views:views]];
   NSLayoutConstraint *leftConstraint = [NSLayoutConstraint constraintWithItem:_contentView
-                                                                    attribute:NSLayoutAttributeLeading
+                                                                    attribute:NSLayoutAttributeLeft
                                                                     relatedBy:0
                                                                        toItem:self
                                                                     attribute:NSLayoutAttributeLeft
@@ -166,7 +166,7 @@ static NSUInteger const _FBRGBAColorComponentsSize = 4;
   [self addConstraint:leftConstraint];
 
   NSLayoutConstraint *rightConstraint = [NSLayoutConstraint constraintWithItem:_contentView
-                                                                     attribute:NSLayoutAttributeTrailing
+                                                                     attribute:NSLayoutAttributeRight
                                                                      relatedBy:0
                                                                         toItem:self
                                                                      attribute:NSLayoutAttributeRight
