@@ -11,6 +11,7 @@
 #import <FBTweak/FBTweakShakeWindow.h>
 #import <FBTweak/FBTweakInline.h>
 #import <FBTweak/FBTweakViewController.h>
+#import <FBTweak/FBTweak+Dictionary.h>
 
 #import "FBAppDelegate.h"
 
@@ -84,6 +85,12 @@ FBTweakAction(@"Actions", @"Global", @"Hello", ^{
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Hello" message:@"Scoped alert test #2." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Done", nil];
     [alert show];
   });
+
+  NSDictionary *dict = @{@"key1": @"value1",
+                         @"key2": @"value2",
+                         @"key3": @"value3",
+                         };
+  FBDictionaryTweak(@"Local Server", @"Auth", @"Login", dict, @"key1");
 
   return YES;
 }
