@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Facebook. All rights reserved.
 //
 
-#import <FBTweak/FBTweak.h>
+#import "FBTweak.h"
 
 /**
  Implementation works by storing the dictionary in the tweak's `stepValue`.
