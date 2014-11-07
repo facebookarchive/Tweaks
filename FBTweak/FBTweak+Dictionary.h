@@ -21,4 +21,5 @@
 
 @end
 
+FBTweak* FBDictionaryTweak(NSString *categoryName, NSString *collectionName, NSString *tweakName, NSDictionary *dictionary, id defaultKey);
 FBTweakValue FBDictionaryTweak(NSString *categoryName, NSString *collectionName, NSString *tweakName, NSDictionary *dictionary, id defaultKey);

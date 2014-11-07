@@ -36,7 +36,7 @@
   return self.dictionaryValue.allValues;
 }
 
-FBTweakValue FBDictionaryTweak(NSString *categoryName, NSString *collectionName, NSString *tweakName, NSDictionary *dictionary, id defaultKey)
+FBTweak* FBDictionaryTweak(NSString *categoryName, NSString *collectionName, NSString *tweakName, NSDictionary *dictionary, id defaultKey)
 {
   FBTweakStore *store = [FBTweakStore sharedInstance];
   FBTweakCategory *cat = [store tweakCategoryWithName:categoryName];
@@ -64,7 +64,12 @@ FBTweakValue FBDictionaryTweak(NSString *categoryName, NSString *collectionName,
     
     [collection addTweak:tweak];
   }
-  
+  return tweak;
+}
+
+FBTweakValue FBDictionaryTweakValue(NSString *categoryName, NSString *collectionName, NSString *tweakName, NSDictionary *dictionary, id defaultKey)
+{
+  FBTweak *tweak = FBDictionaryTweak(categoryName, collectionName, tweakName, dictionary, defaultKey);
   return tweak.currentValue ?: tweak.defaultValue;
 }
 
