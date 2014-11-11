@@ -10,6 +10,7 @@
 #import "FBTweak.h"
 #import "_FBTweakTableViewCell.h"
 #import "FBTweak+Dictionary.h"
+#import "FBTweak+Array.h"
 
 typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
   _FBTweakTableViewCellModeNone = 0,
@@ -19,6 +20,7 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
   _FBTweakTableViewCellModeString,
   _FBTweakTableViewCellModeAction,
   _FBTweakTableViewCellModeDictionary,
+  _FBTweakTableViewCellModeArray,
 };
 
 @interface _FBTweakTableViewCell () <UITextFieldDelegate>
@@ -100,6 +102,12 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
     CGRect textBounds = CGRectMake(0, 0, textFieldWidth, self.bounds.size.height);
     _valueLabel.frame = CGRectIntegral(textBounds);
     _accessoryView.bounds = CGRectIntegral(textBounds);
+  } else if (_mode == _FBTweakTableViewCellModeArray) {
+    CGFloat margin = CGRectGetMinX(self.textLabel.frame);
+    CGFloat textFieldWidth = self.bounds.size.width - (margin * 3.0) - [self.textLabel sizeThatFits:CGSizeZero].width;
+    CGRect textBounds = CGRectMake(0, 0, textFieldWidth, self.bounds.size.height);
+    _valueLabel.frame = CGRectIntegral(textBounds);
+    _accessoryView.bounds = CGRectIntegral(textBounds);
   }
   
   // This positions the accessory view, so call it after updating its bounds.
@@ -120,6 +128,8 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
   if ([tweak isDictionary]) {
     value = _tweak.dictionaryValue[value];
     mode = _FBTweakTableViewCellModeDictionary;
+  } else if ([tweak isArray]) {
+    mode = _FBTweakTableViewCellModeArray;
   } else if ([value isKindOfClass:[NSString class]]) {
     mode = _FBTweakTableViewCellModeString;
   } else if ([value isKindOfClass:[NSNumber class]]) {
@@ -230,6 +240,11 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
     _textField.hidden = YES;
     _stepper.hidden = YES;
     _valueLabel.hidden = NO;
+  } else if (_mode == _FBTweakTableViewCellModeArray) {
+    _switch.hidden = YES;
+    _textField.hidden = YES;
+    _stepper.hidden = YES;
+    _valueLabel.hidden = NO;
   } else {
     _switch.hidden = YES;
     _textField.hidden = YES;
@@ -329,6 +344,13 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
     NSString *format = [NSString stringWithFormat:@"%%.%ldf", precision];
     _textField.text = [NSString stringWithFormat:format, [value doubleValue]];
   } else if (_mode == _FBTweakTableViewCellModeDictionary) {
+    if (primary) {
+      if ([value isKindOfClass:[NSString class]]) {
+        NSString *displayValue = [value stringByAppendingString:@" >"];
+        _valueLabel.text = displayValue;
+      }
+    }
+  } else if (_mode == _FBTweakTableViewCellModeArray) {
     if (primary) {
       if ([value isKindOfClass:[NSString class]]) {
         NSString *displayValue = [value stringByAppendingString:@" >"];

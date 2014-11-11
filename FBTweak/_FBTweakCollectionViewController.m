@@ -13,6 +13,8 @@
 #import "_FBTweakTableViewCell.h"
 #import "FBTweak+Dictionary.h"
 #import "_FBTweakDictionaryViewController.h"
+#import "FBTweak+Array.h"
+#import "_FBTweakArrayViewController.h"
 
 @interface _FBTweakCollectionViewController () <UITableViewDelegate, UITableViewDataSource>
 @end
@@ -139,6 +141,10 @@
     _FBTweakDictionaryViewController *vc = [[_FBTweakDictionaryViewController alloc] init];
     vc.tweak = tweak;
     [self.navigationController pushViewController:vc animated:YES];
+  } else if ([tweak isArray]) {
+      _FBTweakArrayViewController *vc = [[_FBTweakArrayViewController alloc] init];
+      vc.tweak = tweak;
+      [self.navigationController pushViewController:vc animated:YES];
   }
 }
 

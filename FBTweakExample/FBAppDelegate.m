@@ -12,6 +12,7 @@
 #import <FBTweak/FBTweakInline.h>
 #import <FBTweak/FBTweakViewController.h>
 #import <FBTweak/FBTweak+Dictionary.h>
+#import <FBTweak/FBTweak+Array.h>
 
 #import "FBAppDelegate.h"
 
@@ -92,6 +93,8 @@ FBTweakAction(@"Actions", @"Global", @"Hello", ^{
                          };
   FBDictionaryTweak(@"Local Server", @"Auth", @"Login", dict, @"key1");
 
+  FBArrayTweak(@"Local Server", @"Array", @"endpoint", @[@"success", @"failure", @"unauthorized"], @"success");
+  
   return YES;
 }
 
