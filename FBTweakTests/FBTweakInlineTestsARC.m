@@ -15,6 +15,25 @@
 #error ARC is required.
 #endif
 
+typedef NS_ENUM(unsigned long, UnsignedLongEnum) {
+  UnsignedLongEnumOff,
+  UnsignedLongEnumVerbose,
+  UnsignedLongEnumInfo,
+  UnsignedLongEnumWarn,
+  UnsignedLongEnumError,
+};
+
+@interface FBTweakTestObject : NSObject
+
+@property (nonatomic, assign, readwrite) UnsignedLongEnum unsignedLongProperty;
+
+@end
+
+@implementation FBTweakTestObject
+
+@end
+
+
 @interface FBTweakInlineTestsARC : XCTestCase
 
 @end
@@ -39,6 +58,12 @@
 
   __attribute__((unused)) unsigned int testUnsignedInt = FBTweakValue(@"Unsigned Int", @"Unsigned Int", @"Unsigned Int", 1);
   XCTAssertEqual(testUnsignedInt, (unsigned int)1, @"Unsigned Int %d", testUnsignedInt);
+
+  __attribute__((unused)) long testLong = FBTweakValue(@"Long", @"Long", @"Long", -1);
+  XCTAssertEqual(testLong, (long)-1, @"Long %ld", testLong);
+
+  __attribute__((unused)) unsigned long testUnsignedLong = FBTweakValue(@"Unsigned Long", @"Unsigned Long", @"Unsigned Long", 1);
+  XCTAssertEqual(testUnsignedLong, (unsigned long)1, @"Unsigned Long %lu", testUnsignedLong);
 
   __attribute__((unused)) long long testLongLong = FBTweakValue(@"Long Long", @"Long Long", @"Long Long", -1);
   XCTAssertEqual(testLongLong, (long long)-1, @"Long Long %lld", testLongLong);
@@ -111,6 +136,14 @@
   FBTweak *m = FBTweakInline(@"URL", @"Request", @"Bind", 5.0);
   m.currentValue = @(20.0);
   XCTAssertEqual(v.timeoutInterval, (NSTimeInterval)20.0, @"request %@ %@", v, m);
+
+  FBTweakTestObject *o = [FBTweakTestObject new];
+  FBTweakBind(o, unsignedLongProperty, @"Test", @"Object", @"Long", UnsignedLongEnumInfo, UnsignedLongEnumOff, UnsignedLongEnumError);
+  XCTAssertEqual(o.unsignedLongProperty, UnsignedLongEnumInfo, @"test object: %@", @(o.unsignedLongProperty));
+
+  FBTweak *oTweak = FBTweakInline(@"Test", @"Object", @"Long", UnsignedLongEnumInfo);
+  oTweak.currentValue = @(UnsignedLongEnumWarn);
+  XCTAssertEqual(o.unsignedLongProperty, UnsignedLongEnumWarn, @"test object: %@", @(o.unsignedLongProperty));
 }
 
 @end
