@@ -114,6 +114,10 @@ extern NSString *_FBTweakIdentifier(fb_tweak_entry *entry);
     const int: [currentValue intValue], \
     unsigned int: [currentValue unsignedIntValue], \
     const unsigned int: [currentValue unsignedIntValue], \
+    long: [currentValue longValue], \
+    const long: [currentValue longValue], \
+    unsigned long: [currentValue unsignedLongValue], \
+    const unsigned long: [currentValue unsignedLongValue], \
     long long: [currentValue longLongValue], \
     const long long: [currentValue longLongValue], \
     unsigned long long: [currentValue unsignedLongLongValue], \
