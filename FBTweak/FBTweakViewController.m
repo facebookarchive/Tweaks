@@ -39,7 +39,7 @@ NSString *const FBTweakShakeViewControllerDidDismissNotification = @"FBTweakShak
     if (categoryName && (category = [store tweakCategoryWithName:categoryName])) {
       _FBTweakCollectionViewController *collectionViewController = [[_FBTweakCollectionViewController alloc] initWithTweakCategory:category];
       collectionViewController.delegate = self;
-      [self pushViewController:collectionViewController animated:YES];
+      [self pushViewController:collectionViewController animated:NO];
     }
   }
 
