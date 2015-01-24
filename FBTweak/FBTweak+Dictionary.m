@@ -14,22 +14,26 @@
 
 @implementation FBTweak (Dictionary)
 
-- (BOOL)isDictionary {
+- (BOOL)isDictionary
+{
   return (self.dictionaryValue != nil);
 }
 
-- (NSDictionary *)dictionaryValue {
+- (NSDictionary *)dictionaryValue
+{
   if ([self.stepValue isKindOfClass:[NSDictionary class]]) {
     return self.stepValue;
   }
   return nil;
 }
 
-- (void)setDictionaryValue:(NSDictionary *)dictionaryValue {
+- (void)setDictionaryValue:(NSDictionary *)dictionaryValue
+{
   self.stepValue = dictionaryValue;
 }
 
-- (NSArray *)allKeys {
+- (NSArray *)allKeys
+{
   return self.dictionaryValue.allKeys;
 }
 

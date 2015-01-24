@@ -76,7 +76,8 @@
   [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (NSArray *)allTweakKeys {
+- (NSArray *)allTweakKeys
+{
   return [self.tweak.allKeys sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
     return [obj1 compare:obj2];
   }];

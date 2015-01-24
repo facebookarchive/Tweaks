@@ -14,18 +14,21 @@
 
 @implementation FBTweak (Array)
 
-- (BOOL)isArray {
+- (BOOL)isArray
+{
   return (self.arrayValue != nil);
 }
 
-- (NSArray *)arrayValue {
+- (NSArray *)arrayValue
+{
   if ([self.stepValue isKindOfClass:[NSArray class]]) {
     return self.stepValue;
   }
   return nil;
 }
 
-- (void)setArrayValue:(NSArray *)arrayValue {
+- (void)setArrayValue:(NSArray *)arrayValue
+{
   self.stepValue = arrayValue;
 }
 
