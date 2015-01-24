@@ -33,12 +33,11 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
   UISwitch *_switch;
   UITextField *_textField;
   UIStepper *_stepper;
-  UILabel *_valueLabel;
 }
 
 - (instancetype)initWithReuseIdentifier:(NSString *)reuseIdentifier;
 {
-  if ((self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier])) {
+  if ((self = [super initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:reuseIdentifier])) {
     _accessoryView = [[UIView alloc] init];
 
     _switch = [[UISwitch alloc] init];
@@ -54,9 +53,7 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
     [_stepper addTarget:self action:@selector(_stepperChanged:) forControlEvents:UIControlEventValueChanged];
     [_accessoryView addSubview:_stepper];
     
-    _valueLabel = [[UILabel alloc] init];
-    _valueLabel.textAlignment = NSTextAlignmentRight;
-    [_accessoryView addSubview:_valueLabel];
+    self.detailTextLabel.textColor = [UIColor blackColor];
   }
 
   return self;
@@ -96,18 +93,6 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
     _accessoryView.bounds = CGRectIntegral(textBounds);
   } else if (_mode == _FBTweakTableViewCellModeAction) {
     _accessoryView.bounds = CGRectZero;
-  } else if (_mode == _FBTweakTableViewCellModeDictionary) {
-    CGFloat margin = CGRectGetMinX(self.textLabel.frame);
-    CGFloat textFieldWidth = self.bounds.size.width - (margin * 3.0) - [self.textLabel sizeThatFits:CGSizeZero].width;
-    CGRect textBounds = CGRectMake(0, 0, textFieldWidth, self.bounds.size.height);
-    _valueLabel.frame = CGRectIntegral(textBounds);
-    _accessoryView.bounds = CGRectIntegral(textBounds);
-  } else if (_mode == _FBTweakTableViewCellModeArray) {
-    CGFloat margin = CGRectGetMinX(self.textLabel.frame);
-    CGFloat textFieldWidth = self.bounds.size.width - (margin * 3.0) - [self.textLabel sizeThatFits:CGSizeZero].width;
-    CGRect textBounds = CGRectMake(0, 0, textFieldWidth, self.bounds.size.height);
-    _valueLabel.frame = CGRectIntegral(textBounds);
-    _accessoryView.bounds = CGRectIntegral(textBounds);
   }
 
   // This positions the accessory view, so call it after updating its bounds.
@@ -158,19 +143,18 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
 
   self.accessoryView = _accessoryView;
   self.accessoryType = UITableViewCellAccessoryNone;
+  self.detailTextLabel.text = nil;
   self.selectionStyle = UITableViewCellSelectionStyleNone;
 
   if (_mode == _FBTweakTableViewCellModeBoolean) {
     _switch.hidden = NO;
     _textField.hidden = YES;
     _stepper.hidden = YES;
-    _valueLabel.hidden = YES;
   } else if (_mode == _FBTweakTableViewCellModeInteger) {
     _switch.hidden = YES;
     _textField.hidden = NO;
     _textField.keyboardType = UIKeyboardTypeNumberPad;
     _stepper.hidden = NO;
-    _valueLabel.hidden = YES;
     if (_tweak.stepValue) {
       _stepper.stepValue = [_tweak.stepValue floatValue];
     } else {
@@ -193,7 +177,6 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
     _textField.hidden = NO;
     _textField.keyboardType = UIKeyboardTypeDecimalPad;
     _stepper.hidden = NO;
-    _valueLabel.hidden = YES;
     
     if (_tweak.stepValue) {
       _stepper.stepValue = [_tweak.stepValue floatValue];
@@ -225,12 +208,10 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
     _textField.hidden = NO;
     _textField.keyboardType = UIKeyboardTypeDefault;
     _stepper.hidden = YES;
-    _valueLabel.hidden = YES;
   } else if (_mode == _FBTweakTableViewCellModeAction) {
     _switch.hidden = YES;
     _textField.hidden = YES;
     _stepper.hidden = YES;
-    _valueLabel.hidden = YES;
     
     self.accessoryView = nil;
     self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -239,17 +220,20 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
     _switch.hidden = YES;
     _textField.hidden = YES;
     _stepper.hidden = YES;
-    _valueLabel.hidden = NO;
+    self.accessoryView = nil;
+    self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    self.selectionStyle = UITableViewCellSelectionStyleBlue;
   } else if (_mode == _FBTweakTableViewCellModeArray) {
     _switch.hidden = YES;
     _textField.hidden = YES;
     _stepper.hidden = YES;
-    _valueLabel.hidden = NO;
+    self.accessoryView = nil;
+    self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    self.selectionStyle = UITableViewCellSelectionStyleBlue;
   } else {
     _switch.hidden = YES;
     _textField.hidden = YES;
     _stepper.hidden = YES;
-    _valueLabel.hidden = YES;
   }
   
   [self setNeedsLayout];
@@ -345,15 +329,11 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
     _textField.text = [NSString stringWithFormat:format, [value doubleValue]];
   } else if (_mode == _FBTweakTableViewCellModeDictionary) {
     if (primary) {
-      NSString *displayValue = [[value description] stringByAppendingString:@" >"];
-      _valueLabel.text = displayValue;
+      self.detailTextLabel.text = value;
     }
   } else if (_mode == _FBTweakTableViewCellModeArray) {
     if (primary) {
-      if ([value isKindOfClass:[NSString class]]) {
-        NSString *displayValue = [value stringByAppendingString:@" >"];
-        _valueLabel.text = displayValue;
-      }
+      self.detailTextLabel.text = value;
     }
   }
 }
