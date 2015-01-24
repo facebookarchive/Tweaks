@@ -49,7 +49,6 @@ FBTweak* FBDictionaryTweak(NSString *categoryName, NSString *collectionName, NSS
     [cat addTweakCollection:collection];
   }
   
-  
   FBTweak *tweak = [collection tweakWithIdentifier:tweakName];
   
   if (!tweak) {

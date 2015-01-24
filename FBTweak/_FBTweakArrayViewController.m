@@ -53,12 +53,13 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:_FBTweakDictionaryViewControllerCellIdentifier];
     }
     
-    NSString *value = self.tweak.arrayValue[indexPath.row];
-    cell.textLabel.text = value;
+    FBTweakValue rowValue = self.tweak.arrayValue[indexPath.row];
+    NSString *stringValue = [rowValue description];
+    cell.textLabel.text = stringValue;
     
     cell.accessoryType = UITableViewCellAccessoryNone;
-    NSString *selectedValue = (self.tweak.currentValue ?: self.tweak.defaultValue);
-    if ([selectedValue isEqualToString:value]) {
+    FBTweakValue selectedValue = (self.tweak.currentValue ?: self.tweak.defaultValue);
+    if ([selectedValue isEqual:rowValue]) {
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
     }
     

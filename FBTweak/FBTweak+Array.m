@@ -45,7 +45,6 @@ FBTweak* FBArrayTweak(NSString *categoryName, NSString *collectionName, NSString
     [cat addTweakCollection:collection];
   }
   
-  
   FBTweak *tweak = [collection tweakWithIdentifier:tweakName];
   
   if (!tweak) {
