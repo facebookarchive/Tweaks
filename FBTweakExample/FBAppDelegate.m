@@ -25,8 +25,9 @@
   
   UILabel *_label;
   UIButton *_tweaksButton;
-  FBTweak *_flipTweak;
   FBTweak *_buttonColorTweak;
+  FBTweak *_flipTweak;
+  FBTweak *_rotationTweak;
 }
 
 FBTweakAction(@"Actions", @"Global", @"Hello", ^{
@@ -99,8 +100,11 @@ FBTweakAction(@"Actions", @"Global", @"Hello", ^{
   UIColor *color = _buttonColorTweak.dictionaryValue[key];
   [_tweaksButton setTitleColor:color forState:UIControlStateNormal];
     
-  FBArrayTweak(@"Local Server", @"Array", @"endpoint", @[@"success", @"failure", @"unauthorized"], @"success");
-  
+  _rotationTweak = FBArrayTweak(@"Content", @"Text", @"Rotation (radians)", @[@(0), @(M_PI_4), @(M_PI_2)], @(0));
+  FBTweakValue rotation = _rotationTweak.currentValue ?: _rotationTweak.defaultValue;
+  _label.transform = CGAffineTransformRotate(CGAffineTransformIdentity, [rotation floatValue]);
+  [_rotationTweak addObserver:self];
+    
   return YES;
 }
 
@@ -113,6 +117,10 @@ FBTweakAction(@"Actions", @"Global", @"Hello", ^{
     NSString *key = _buttonColorTweak.currentValue ?: _buttonColorTweak.defaultValue;
     UIColor *titleColor = [_buttonColorTweak dictionaryValue][key];
     [_tweaksButton setTitleColor:titleColor forState:UIControlStateNormal];
+  }
+  else if (tweak == _rotationTweak) {
+    FBTweakValue value = _rotationTweak.currentValue ?: _rotationTweak.defaultValue;
+    _label.transform = CGAffineTransformRotate(CGAffineTransformIdentity, [value floatValue]);
   }
 }
 

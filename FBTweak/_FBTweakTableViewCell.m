@@ -128,6 +128,7 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
   if ([tweak isDictionary]) {
     mode = _FBTweakTableViewCellModeDictionary;
   } else if ([tweak isArray]) {
+    value = [value description];
     mode = _FBTweakTableViewCellModeArray;
   } else if ([value isKindOfClass:[NSString class]]) {
     mode = _FBTweakTableViewCellModeString;
