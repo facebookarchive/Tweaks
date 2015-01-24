@@ -8,6 +8,8 @@
  */
 
 #import "FBTweakInlineInternal.h"
+#import "FBTweak+Array.h"
+#import "FBTweak+Dictionary.h"
 
 /**
   @abstract Common parameters in these macros.
