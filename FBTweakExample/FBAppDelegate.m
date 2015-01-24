@@ -95,7 +95,8 @@ FBTweakAction(@"Actions", @"Global", @"Hello", ^{
                          };
   _buttonColorTweak = FBDictionaryTweak(@"Content", @"Tweaks Button", @"Color", dict, @"black");
   [_buttonColorTweak addObserver:self];
-  UIColor *color = FBDictionaryTweakValueForKey(@"Content",  @"Tweaks Button", @"Color", dict, @"black");
+  NSString *key = _buttonColorTweak.currentValue ?: _buttonColorTweak.defaultValue;
+  UIColor *color = _buttonColorTweak.dictionaryValue[key];
   [_tweaksButton setTitleColor:color forState:UIControlStateNormal];
     
   FBArrayTweak(@"Local Server", @"Array", @"endpoint", @[@"success", @"failure", @"unauthorized"], @"success");
@@ -109,7 +110,8 @@ FBTweakAction(@"Actions", @"Global", @"Hello", ^{
     _window.layer.sublayerTransform = CATransform3DMakeScale(1.0, [_flipTweak.currentValue boolValue] ? -1.0 : 1.0, 1.0);
   }
   else if (tweak == _buttonColorTweak) {
-    UIColor *titleColor = [_buttonColorTweak dictionaryValue][_buttonColorTweak.currentValue];
+    NSString *key = _buttonColorTweak.currentValue ?: _buttonColorTweak.defaultValue;
+    UIColor *titleColor = [_buttonColorTweak dictionaryValue][key];
     [_tweaksButton setTitleColor:titleColor forState:UIControlStateNormal];
   }
 }
