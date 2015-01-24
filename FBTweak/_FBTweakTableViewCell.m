@@ -40,7 +40,7 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
 {
   if ((self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier])) {
     _accessoryView = [[UIView alloc] init];
-    
+
     _switch = [[UISwitch alloc] init];
     [_switch addTarget:self action:@selector(_switchChanged:) forControlEvents:UIControlEventValueChanged];
     [_accessoryView addSubview:_switch];
@@ -58,7 +58,7 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
     _valueLabel.textAlignment = NSTextAlignmentRight;
     [_accessoryView addSubview:_valueLabel];
   }
-  
+
   return self;
 }
 
@@ -109,7 +109,7 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
     _valueLabel.frame = CGRectIntegral(textBounds);
     _accessoryView.bounds = CGRectIntegral(textBounds);
   }
-  
+
   // This positions the accessory view, so call it after updating its bounds.
   [super layoutSubviews];
 }
@@ -155,11 +155,11 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
 - (void)_updateMode:(_FBTweakTableViewCellMode)mode
 {
   _mode = mode;
-  
+
   self.accessoryView = _accessoryView;
   self.accessoryType = UITableViewCellAccessoryNone;
   self.selectionStyle = UITableViewCellSelectionStyleNone;
-  
+
   if (_mode == _FBTweakTableViewCellModeBoolean) {
     _switch.hidden = NO;
     _textField.hidden = YES;
@@ -176,13 +176,13 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
     } else {
       _stepper.stepValue = 1.0;
     }
-    
+
     if (_tweak.minimumValue != nil) {
       _stepper.minimumValue = [_tweak.minimumValue longLongValue];
     } else {
       _stepper.minimumValue = [_tweak.defaultValue longLongValue] / 10.0;
     }
-    
+
     if (_tweak.maximumValue != nil) {
       _stepper.maximumValue = [_tweak.maximumValue longLongValue];
     } else {
@@ -261,11 +261,11 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
 {
   [super setSelected:selected animated:animated];
-  
+
   if (_mode == _FBTweakTableViewCellModeAction) {
     if (selected) {
       [self setSelected:NO animated:YES];
-      
+
       dispatch_block_t block = _tweak.defaultValue;
       if (block != NULL) {
         block();

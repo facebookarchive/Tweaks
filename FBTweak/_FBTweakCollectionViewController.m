@@ -66,10 +66,10 @@
 
 - (void)_reloadData
 {
-    _sortedCollections = [_tweakCategory.tweakCollections sortedArrayUsingComparator:^(FBTweakCollection *a, FBTweakCollection *b) {
-        return [a.name localizedStandardCompare:b.name];
-    }];
-    [_tableView reloadData];
+  _sortedCollections = [_tweakCategory.tweakCollections sortedArrayUsingComparator:^(FBTweakCollection *a, FBTweakCollection *b) {
+    return [a.name localizedStandardCompare:b.name];
+  }];
+  [_tableView reloadData];
 }
 
 - (void)_done
@@ -142,9 +142,9 @@
     vc.tweak = tweak;
     [self.navigationController pushViewController:vc animated:YES];
   } else if ([tweak isArray]) {
-      _FBTweakArrayViewController *vc = [[_FBTweakArrayViewController alloc] init];
-      vc.tweak = tweak;
-      [self.navigationController pushViewController:vc animated:YES];
+    _FBTweakArrayViewController *vc = [[_FBTweakArrayViewController alloc] init];
+    vc.tweak = tweak;
+    [self.navigationController pushViewController:vc animated:YES];
   }
 }
 
