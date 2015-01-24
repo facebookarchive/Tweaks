@@ -10,7 +10,12 @@
 #import "FBTweak.h"
 
 /**
- Implementation works by storing the dictionary in the tweak's `stepValue`.
+ @abstract Implementation works by storing the dictionary in the tweak's `stepValue`.
+ @discussion Dictionary tweaks contain objects which cannot be evaluated at compile-time like most
+   other tweaks. As a result, the tweak must be accessed once before it will be available in the 
+   Tweaks UI. Depending on your use-case, an option for this can be to register dictionary tweaks
+   from a class's `+initialize` method. This will ensure that the tweak is registered immediately on
+   application launch, and the tweak can be accessed later to retrieve the current value.
  */
 @interface FBTweak (Dictionary)
 
