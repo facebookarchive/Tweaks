@@ -24,7 +24,9 @@
   UIViewController *_rootViewController;
   
   UILabel *_label;
+  UIButton *_tweaksButton;
   FBTweak *_flipTweak;
+  FBTweak *_buttonColorTweak;
 }
 
 FBTweakAction(@"Actions", @"Global", @"Hello", ^{
@@ -71,11 +73,11 @@ FBTweakAction(@"Actions", @"Global", @"Hello", ^{
   CGRect tweaksButtonFrame = _window.bounds;
   tweaksButtonFrame.origin.y = _label.bounds.size.height;
   tweaksButtonFrame.size.height = tweaksButtonFrame.size.height - _label.bounds.size.height;
-  UIButton *tweaksButton = [[UIButton alloc] initWithFrame:tweaksButtonFrame];
-  [tweaksButton setTitle:@"Show Tweaks" forState:UIControlStateNormal];
-  [tweaksButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-  [tweaksButton addTarget:self action:@selector(buttonTapped) forControlEvents:UIControlEventTouchUpInside];
-  [_rootViewController.view addSubview:tweaksButton];
+  _tweaksButton = [[UIButton alloc] initWithFrame:tweaksButtonFrame];
+  [_tweaksButton setTitle:@"Show Tweaks" forState:UIControlStateNormal];
+  [_tweaksButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+  [_tweaksButton addTarget:self action:@selector(buttonTapped) forControlEvents:UIControlEventTouchUpInside];
+  [_rootViewController.view addSubview:_tweaksButton];
     
   FBTweak *animationDurationTweak = FBTweakInline(@"Content", @"Animation", @"Duration", 0.5);
   animationDurationTweak.stepValue = [NSNumber numberWithFloat:0.005f];
@@ -87,12 +89,15 @@ FBTweakAction(@"Actions", @"Global", @"Hello", ^{
     [alert show];
   });
 
-  NSDictionary *dict = @{@"key1": @"value1",
-                         @"key2": @"value2",
-                         @"key3": @"value3",
+  NSDictionary *dict = @{@"black": [UIColor blackColor],
+                         @"blue": [UIColor blueColor],
+                         @"green": [UIColor greenColor],
                          };
-  FBDictionaryTweak(@"Local Server", @"Auth", @"Login", dict, @"key1");
-
+  _buttonColorTweak = FBDictionaryTweak(@"Content", @"Tweaks Button", @"Color", dict, @"black");
+  [_buttonColorTweak addObserver:self];
+  UIColor *color = FBDictionaryTweakValueForKey(@"Content",  @"Tweaks Button", @"Color", dict, @"black");
+  [_tweaksButton setTitleColor:color forState:UIControlStateNormal];
+    
   FBArrayTweak(@"Local Server", @"Array", @"endpoint", @[@"success", @"failure", @"unauthorized"], @"success");
   
   return YES;
@@ -102,6 +107,10 @@ FBTweakAction(@"Actions", @"Global", @"Hello", ^{
 {
   if (tweak == _flipTweak) {
     _window.layer.sublayerTransform = CATransform3DMakeScale(1.0, [_flipTweak.currentValue boolValue] ? -1.0 : 1.0, 1.0);
+  }
+  else if (tweak == _buttonColorTweak) {
+    UIColor *titleColor = [_buttonColorTweak dictionaryValue][_buttonColorTweak.currentValue];
+    [_tweaksButton setTitleColor:titleColor forState:UIControlStateNormal];
   }
 }
 

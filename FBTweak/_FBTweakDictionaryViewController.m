@@ -55,9 +55,7 @@
   
   NSArray *allKeys = [self allTweakKeys];
   NSString *key = allKeys[indexPath.row];
-  NSString *value = self.tweak.dictionaryValue[key];
   cell.textLabel.text = key;
-  cell.detailTextLabel.text = value;
   
   cell.accessoryType = UITableViewCellAccessoryNone;
   NSString *selectedKey = (self.tweak.currentValue ?: self.tweak.defaultValue);

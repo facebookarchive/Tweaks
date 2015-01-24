@@ -126,7 +126,6 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
   
   _FBTweakTableViewCellMode mode = _FBTweakTableViewCellModeNone;
   if ([tweak isDictionary]) {
-    value = _tweak.dictionaryValue[value];
     mode = _FBTweakTableViewCellModeDictionary;
   } else if ([tweak isArray]) {
     mode = _FBTweakTableViewCellModeArray;
@@ -345,10 +344,8 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
     _textField.text = [NSString stringWithFormat:format, [value doubleValue]];
   } else if (_mode == _FBTweakTableViewCellModeDictionary) {
     if (primary) {
-      if ([value isKindOfClass:[NSString class]]) {
-        NSString *displayValue = [value stringByAppendingString:@" >"];
-        _valueLabel.text = displayValue;
-      }
+      NSString *displayValue = [[value description] stringByAppendingString:@" >"];
+      _valueLabel.text = displayValue;
     }
   } else if (_mode == _FBTweakTableViewCellModeArray) {
     if (primary) {
