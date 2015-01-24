@@ -40,14 +40,14 @@
  @abstract Loads a dictionary tweak defined inline.
  @return A {@ref FBTweak} for the dictionary tweak.
  */
-FBTweak* FBDictionaryTweak(NSString *categoryName, NSString *collectionName, NSString *tweakName, NSDictionary *dictionary, NSString *defaultKey);
+FBTweak *FBDictionaryTweak(NSString *categoryName, NSString *collectionName, NSString *tweakName, NSDictionary *dictionary, NSString *defaultKey);
 
 /**
  @abstract Loads the key of a dictionary tweak inine.
  @param dictionary A dictionary with string values for keys.
  @return The current string key for the tweak, or the default key if none is set.
  */
-NSString* FBDictionaryTweakValue(NSString *categoryName, NSString *collectionName, NSString *tweakName, NSDictionary *dictionary, NSString *defaultKey);
+NSString *FBDictionaryTweakValue(NSString *categoryName, NSString *collectionName, NSString *tweakName, NSDictionary *dictionary, NSString *defaultKey);
 
 /**
  @abstract Loads the dictionary's value associated with the key of a dictionary tweak inine.

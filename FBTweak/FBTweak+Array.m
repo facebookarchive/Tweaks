@@ -32,7 +32,7 @@
   self.stepValue = arrayValue;
 }
 
-FBTweak* FBArrayTweak(NSString *categoryName, NSString *collectionName, NSString *tweakName, NSArray *array, id defaultValue)
+FBTweak *FBArrayTweak(NSString *categoryName, NSString *collectionName, NSString *tweakName, NSArray *array, id defaultValue)
 {
   FBTweakStore *store = [FBTweakStore sharedInstance];
   FBTweakCategory *cat = [store tweakCategoryWithName:categoryName];

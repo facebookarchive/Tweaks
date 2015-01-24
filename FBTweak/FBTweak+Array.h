@@ -35,7 +35,7 @@
  @abstract Loads an array tweak defined inline.
  @return A {@ref FBTweak} for the array tweak.
  */
-FBTweak* FBArrayTweak(NSString *categoryName, NSString *collectionName, NSString *tweakName, NSArray *array, id defaultValue);
+FBTweak *FBArrayTweak(NSString *categoryName, NSString *collectionName, NSString *tweakName, NSArray *array, id defaultValue);
 
 /**
  @abstract Loads the array's value of an array tweak inine.
