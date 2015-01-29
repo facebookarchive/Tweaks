@@ -85,12 +85,35 @@
 
 - (void)_reset
 {
-  UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Are you sure?"
-                                                  message:@"Are you sure you want to reset your tweaks? This cannot be undone."
-                                                 delegate:self
-                                        cancelButtonTitle:@"Cancel"
-                                        otherButtonTitles:@"Reset", nil];
-  [alert show];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 8000
+  if ([UIAlertController class] != nil) {
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Are you sure?"
+                                                                             message:@"Are you sure you want to reset your tweaks? This cannot be undone."
+                                                                      preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+      // do nothing
+    }];
+    [alertController addAction:cancelAction];
+
+    UIAlertAction *resetAction = [UIAlertAction actionWithTitle:@"Reset" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+      [_store reset];
+    }];
+    [alertController addAction:resetAction];
+
+    [self presentViewController:alertController animated:YES completion:NULL];
+  } else {
+#endif
+    // To allow using Tweaks from within app extensions, which do not allow linking against UIAlertView, load the class dynamically.
+    // Note this codepath will never be executed in an app extension, since UIAlertController will always be available when they are.
+    UIAlertView *alert = [[NSClassFromString(@"UIAlertView") alloc] initWithTitle:@"Are you sure?"
+                                                    message:@"Are you sure you want to reset your tweaks? This cannot be undone."
+                                                   delegate:self
+                                          cancelButtonTitle:@"Cancel"
+                                          otherButtonTitles:@"Reset", nil];
+    [alert show];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 8000
+  }
+#endif
 }
 
 - (void)_export

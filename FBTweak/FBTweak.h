@@ -20,6 +20,34 @@
 typedef id FBTweakValue;
 
 /**
+  @abstract Represents a range of values for a numeric tweak.
+  @discussion Use this for the -possibleValues on a tweak.
+ */
+@interface FBTweakNumericRange : NSObject
+
+/**
+  @abstract Creates a new numeric range.
+  @discussion This is the designated initializer.
+  @param minimumValue The minimum value of the range.
+  @param maximumValue The maximum value of the range.
+ */
+- (instancetype)initWithMinimumValue:(FBTweakValue)minimumValue maximumValue:(FBTweakValue)maximumValue;
+
+/**
+  @abstract The minimum value of the range.
+  @discussion Will always have a value.
+ */
+@property (nonatomic, strong, readwrite) FBTweakValue minimumValue;
+
+/**
+  @abstract The maximum value of the range.
+  @discussion Will always have a value.
+ */
+@property (nonatomic, strong, readwrite) FBTweakValue maximumValue;
+
+@end
+
+/**
   @abstract Represents a unique, named tweak.
   @discussion A tweak contains a persistent, editable value.
  */
@@ -28,6 +56,7 @@ typedef id FBTweakValue;
 /**
   @abstract Creates a new tweak model.
   @discussion This is the designated initializer.
+  @param identifier The identifier for the tweak. Required.
  */
 - (instancetype)initWithIdentifier:(NSString *)identifier;
 
@@ -59,34 +88,45 @@ typedef id FBTweakValue;
 
 /**
   @abstract The current value of the tweak. Can be nil.
-  @discussion Changes will be propagated to disk. Enforces minimum
-    and maximum values when changed. Must not be set on actions.
+  @discussion Changes will be propagated to disk. Enforces within
+    possible values when changed. Must not be set on actions.
  */
 @property (nonatomic, strong, readwrite) FBTweakValue currentValue;
 
 /**
+  @abstract The possible values of the tweak.
+  @discussion Optional. If nil, any value is allowed. If an
+    FBTweakNumericRange, represents a range of numeric values.
+    If an array or dictionary, contains all of the allowed values.
+    Should not be set on tweaks representing actions.
+ */
+@property (nonatomic, strong, readwrite) id possibleValues;
+
+/**
   @abstract The minimum value of the tweak.
-  @discussion Optional. If nil, there is no minimum.
+  @discussion Optional. If nil, there is no minimum. Numeric only.
     Should not be set on tweaks representing actions.
  */
 @property (nonatomic, strong, readwrite) FBTweakValue minimumValue;
 
 /**
   @abstract The maximum value of the tweak.
-  @discussion Optional. If nil, there is no maximum.
+  @discussion Optional. If nil, there is no maximum. Numeric only.
     Should not be set on tweaks representing actions.
  */
 @property (nonatomic, strong, readwrite) FBTweakValue maximumValue;
 
 /**
- @abstract The step value of the tweak.
- @discussion Optional. If nil, the step value is calculated of miniumum and maxium.
+  @abstract The step value of the tweak.
+  @discussion Optional. If nil, the step value is calculated from
+    the miniumum and maxium values. Only used for numeric tweaks.
  */
 @property (nonatomic, strong, readwrite) FBTweakValue stepValue;
 
 /**
- @abstract The decimal precision value of the tweak.
- @discussion Optional. If nil, the precision value is calculated of the step value.
+  @abstract The decimal precision value of the tweak.
+  @discussion Optional. If nil, the precision value is calculated from
+    the step value. Only used for numeric tweaks.
  */
 @property (nonatomic, strong, readwrite) FBTweakValue precisionValue;
 

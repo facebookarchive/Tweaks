@@ -22,7 +22,7 @@ The simplest way to create a tweak is to replace a constant with `FBTweakValue`:
 CGFloat animationDuration = FBTweakValue(@"Category", @"Group", @"Duration", 0.5);
 ```
 
-The first three parameters are where the tweak is listed and what it's called, and the last one is the default value. You can pass in many types of constants for the default:
+The first three parameters are where the tweak is listed and what it's called, and the last one is the default value. You can pass in many types of values for the default: booleans, numbers, or strings.
 
 ```objective-c
 if (FBTweakValue(@"Category", @"Feature", @"Enabled", YES)) {
@@ -32,7 +32,13 @@ if (FBTweakValue(@"Category", @"Feature", @"Enabled", YES)) {
 
 In release builds, the `FBTweakValue` macro expands to just the default value, so there's no performance impact. In debug builds, though, it fetches the latest value of the tweak.
 
-For numeric tweaks (`NSInteger`, `CGFloat`, and others), you can pass an extra two parameters which are used as the minimum and maximum value for the tweak:
+You can also pass a fourth parameter, which will constrain the possible values for a tweak. The fourth parameter can be an array, dictionary, or an `FBTweakNumericRange`. If it's a dictionary, the values should be strings to show in the list of choices. Arrays will show the values' `description` as choices. (Note that you have to surround array and dictionary literals with an extra set of parentheses.)
+
+```objective-c
+self.initialMode = FBTweakValue(@"Header", @"Initial", @"Mode", @(FBSimpleMode), (@{ @(FBSimpleMode) : @"Simple", @(FBAdvancedMode) : @"Advanced" }));
+```
+
+For numeric tweaks (`NSInteger`, `CGFloat`, and others), you can instead pass two parameters, which constrain the value to a `FBTweakNumericRange`:
 
 ```objective-c
 self.red = FBTweakValue(@"Header", @"Colors", @"Red", 0.5, 0.0, 1.0);

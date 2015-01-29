@@ -31,63 +31,35 @@ static FBTweak *_FBTweakCreateWithEntry(NSString *identifier, fb_tweak_entry *en
   FBTweak *tweak = [[FBTweak alloc] initWithIdentifier:identifier];
   tweak.name = *entry->name;
 
+  if (entry->possible != NULL) {
+    tweak.possibleValues = fb_tweak_entry_block_field(id, entry, possible);
+  }
+
   if (strcmp(*entry->encoding, FBTweakEncodingAction) == 0) {
-    tweak.defaultValue = *(dispatch_block_t __strong *)entry->value;
+    tweak.defaultValue = *(__strong dispatch_block_t *)entry->value;
   } else if (strcmp(*entry->encoding, @encode(BOOL)) == 0) {
-    tweak.defaultValue = @(*(BOOL *)entry->value);
+    tweak.defaultValue = @(fb_tweak_entry_block_field(BOOL, entry, value));
   } else if (strcmp(*entry->encoding, @encode(float)) == 0) {
-    tweak.defaultValue = [NSNumber numberWithFloat:*(float *)entry->value];
-    if (entry->min != NULL && entry->max != NULL) {
-      tweak.minimumValue = [NSNumber numberWithFloat:*(float *)entry->min];
-      tweak.maximumValue = [NSNumber numberWithFloat:*(float *)entry->max];
-    }
+    tweak.defaultValue = [NSNumber numberWithFloat:fb_tweak_entry_block_field(float, entry, value)];
   } else if (strcmp(*entry->encoding, @encode(double)) == 0) {
-    tweak.defaultValue = [NSNumber numberWithDouble:*(double *)entry->value];
-    if (entry->min != NULL && entry->max != NULL) {
-      tweak.minimumValue = [NSNumber numberWithDouble:*(double *)entry->min];
-      tweak.maximumValue = [NSNumber numberWithDouble:*(double *)entry->max];
-    }
+    tweak.defaultValue = [NSNumber numberWithDouble:fb_tweak_entry_block_field(double, entry, value)];
   } else if (strcmp(*entry->encoding, @encode(short)) == 0) {
-    tweak.defaultValue = [NSNumber numberWithShort:*(short *)entry->value];
-    if (entry->min != NULL && entry->max != NULL) {
-      tweak.minimumValue = [NSNumber numberWithShort:*(short *)entry->min];
-      tweak.maximumValue = [NSNumber numberWithShort:*(short *)entry->max];
-    }
+    tweak.defaultValue = [NSNumber numberWithShort:fb_tweak_entry_block_field(short, entry, value)];
   } else if (strcmp(*entry->encoding, @encode(unsigned short)) == 0) {
-    tweak.defaultValue = [NSNumber numberWithUnsignedShort:*(unsigned short int *)entry->value];
-    if (entry->min != NULL && entry->max != NULL) {
-      tweak.minimumValue = [NSNumber numberWithUnsignedShort:*(unsigned short *)entry->min];
-      tweak.maximumValue = [NSNumber numberWithUnsignedShort:*(unsigned short *)entry->max];
-    }
+    tweak.defaultValue = [NSNumber numberWithUnsignedShort:fb_tweak_entry_block_field(unsigned short, entry, value)];
   } else if (strcmp(*entry->encoding, @encode(int)) == 0) {
-    tweak.defaultValue = [NSNumber numberWithInt:*(int *)entry->value];
-    if (entry->min != NULL && entry->max != NULL) {
-      tweak.minimumValue = [NSNumber numberWithInt:*(int *)entry->min];
-      tweak.maximumValue = [NSNumber numberWithInt:*(int *)entry->max];
-    }
+    tweak.defaultValue = [NSNumber numberWithInt:fb_tweak_entry_block_field(int, entry, value)];
   } else if (strcmp(*entry->encoding, @encode(unsigned int)) == 0) {
-    tweak.defaultValue = [NSNumber numberWithUnsignedInt:*(unsigned int *)entry->value];
-    if (entry->min != NULL && entry->max != NULL) {
-      tweak.minimumValue = [NSNumber numberWithUnsignedInt:*(unsigned int *)entry->min];
-      tweak.maximumValue = [NSNumber numberWithUnsignedInt:*(unsigned int *)entry->max];
-    }
+    tweak.defaultValue = [NSNumber numberWithUnsignedInt:fb_tweak_entry_block_field(unsigned int, entry, value)];
   } else if (strcmp(*entry->encoding, @encode(long long)) == 0) {
-    tweak.defaultValue = [NSNumber numberWithLongLong:*(long long *)entry->value];
-    if (entry->min != NULL && entry->max != NULL) {
-      tweak.minimumValue = [NSNumber numberWithLongLong:*(long long *)entry->min];
-      tweak.maximumValue = [NSNumber numberWithLongLong:*(long long *)entry->max];
-    }
+    tweak.defaultValue = [NSNumber numberWithLongLong:fb_tweak_entry_block_field(long long, entry, value)];
   } else if (strcmp(*entry->encoding, @encode(unsigned long long)) == 0) {
-    tweak.defaultValue = [NSNumber numberWithUnsignedLongLong:*(unsigned long long *)entry->value];
-    if (entry->min != NULL && entry->max != NULL) {
-      tweak.minimumValue = [NSNumber numberWithUnsignedLongLong:*(unsigned long long *)entry->min];
-      tweak.maximumValue = [NSNumber numberWithUnsignedLongLong:*(unsigned long long *)entry->max];
-    }
+    tweak.defaultValue = [NSNumber numberWithUnsignedLongLong:fb_tweak_entry_block_field(unsigned long long, entry, value)];
   } else if (*entry->encoding[0] == '[') {
     // Assume it's a C string.
-    tweak.defaultValue = [NSString stringWithUTF8String:entry->value];
+    tweak.defaultValue = [NSString stringWithUTF8String:fb_tweak_entry_block_field(char *, entry, value)];
   } else if (strcmp(*entry->encoding, @encode(id)) == 0) {
-    tweak.defaultValue = *((__unsafe_unretained id *)entry->value);
+    tweak.defaultValue = fb_tweak_entry_block_field(id, entry, value);
   } else {
     NSCAssert(NO, @"Unknown encoding %s for tweak %@. Value was %p.", *entry->encoding, _FBTweakIdentifier(entry), entry->value);
     tweak = nil;
