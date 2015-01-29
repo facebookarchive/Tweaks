@@ -96,7 +96,7 @@
 - (FBTweakValue)minimumValue
 {
   if ([_possibleValues isKindOfClass:[FBTweakNumericRange class]]) {
-    return [_possibleValues minimumValue];
+    return [(FBTweakNumericRange *)_possibleValues minimumValue];
   } else {
     return nil;
   }
@@ -107,7 +107,7 @@
   if (minimumValue == nil) {
     _possibleValues = nil;
   } else if ([_possibleValues isKindOfClass:[FBTweakNumericRange class]]) {
-    _possibleValues = [[FBTweakNumericRange alloc] initWithMinimumValue:minimumValue maximumValue:[_possibleValues maximumValue]];
+    _possibleValues = [[FBTweakNumericRange alloc] initWithMinimumValue:minimumValue maximumValue:[(FBTweakNumericRange *)_possibleValues maximumValue]];
   } else {
     _possibleValues = [[FBTweakNumericRange alloc] initWithMinimumValue:minimumValue maximumValue:minimumValue];
   }
@@ -116,7 +116,7 @@
 - (FBTweakValue)maximumValue
 {
   if ([_possibleValues isKindOfClass:[FBTweakNumericRange class]]) {
-    return [_possibleValues maximumValue];
+    return [(FBTweakNumericRange *)_possibleValues maximumValue];
   } else {
     return nil;
   }
@@ -127,7 +127,7 @@
   if (maximumValue == nil) {
     _possibleValues = nil;
   } else if ([_possibleValues isKindOfClass:[FBTweakNumericRange class]]) {
-    _possibleValues = [[FBTweakNumericRange alloc] initWithMinimumValue:[_possibleValues minimumValue] maximumValue:maximumValue];
+    _possibleValues = [[FBTweakNumericRange alloc] initWithMinimumValue:[(FBTweakNumericRange *)_possibleValues minimumValue] maximumValue:maximumValue];
   } else {
     _possibleValues = [[FBTweakNumericRange alloc] initWithMinimumValue:maximumValue maximumValue:maximumValue];
   }
