@@ -44,6 +44,9 @@ typedef struct {
   char **encoding;
 } fb_tweak_entry;
 
+// cast to a pointer to a block, dereferenece said pointer, call said block
+#define fb_tweak_entry_block_field(type, entry, field) (*(type (^__unsafe_unretained (*))(void))(entry->field))()
+
 extern NSString *_FBTweakIdentifier(fb_tweak_entry *entry);
   
 #if __has_feature(objc_arc)

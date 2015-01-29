@@ -21,10 +21,6 @@
 
 #if FB_TWEAK_ENABLED
 
-// cast to a pointer to a block, dereferenece said pointer, call said block
-#define entry_block_field(type, entry, field) (*(type (^__unsafe_unretained (*))(void))(entry->field))()
-#define entry_value(type, entry) entry_block_field(type, entry, value)
-
 extern NSString *_FBTweakIdentifier(fb_tweak_entry *entry)
 {
   return [NSString stringWithFormat:@"FBTweak:%@-%@-%@", *entry->category, *entry->collection, *entry->name];
@@ -36,34 +32,34 @@ static FBTweak *_FBTweakCreateWithEntry(NSString *identifier, fb_tweak_entry *en
   tweak.name = *entry->name;
 
   if (entry->possible != NULL) {
-    tweak.possibleValues = entry_block_field(id, entry, possible);
+    tweak.possibleValues = fb_tweak_entry_block_field(id, entry, possible);
   }
 
   if (strcmp(*entry->encoding, FBTweakEncodingAction) == 0) {
     tweak.defaultValue = *(__strong dispatch_block_t *)entry->value;
   } else if (strcmp(*entry->encoding, @encode(BOOL)) == 0) {
-    tweak.defaultValue = @(entry_value(BOOL, entry));
+    tweak.defaultValue = @(fb_tweak_entry_block_field(BOOL, entry, value));
   } else if (strcmp(*entry->encoding, @encode(float)) == 0) {
-    tweak.defaultValue = [NSNumber numberWithFloat:entry_value(float, entry)];
+    tweak.defaultValue = [NSNumber numberWithFloat:fb_tweak_entry_block_field(float, entry, value)];
   } else if (strcmp(*entry->encoding, @encode(double)) == 0) {
-    tweak.defaultValue = [NSNumber numberWithDouble:entry_value(double, entry)];
+    tweak.defaultValue = [NSNumber numberWithDouble:fb_tweak_entry_block_field(double, entry, value)];
   } else if (strcmp(*entry->encoding, @encode(short)) == 0) {
-    tweak.defaultValue = [NSNumber numberWithShort:entry_value(short, entry)];
+    tweak.defaultValue = [NSNumber numberWithShort:fb_tweak_entry_block_field(short, entry, value)];
   } else if (strcmp(*entry->encoding, @encode(unsigned short)) == 0) {
-    tweak.defaultValue = [NSNumber numberWithUnsignedShort:entry_value(unsigned short, entry)];
+    tweak.defaultValue = [NSNumber numberWithUnsignedShort:fb_tweak_entry_block_field(unsigned short, entry, value)];
   } else if (strcmp(*entry->encoding, @encode(int)) == 0) {
-    tweak.defaultValue = [NSNumber numberWithInt:entry_value(int, entry)];
+    tweak.defaultValue = [NSNumber numberWithInt:fb_tweak_entry_block_field(int, entry, value)];
   } else if (strcmp(*entry->encoding, @encode(unsigned int)) == 0) {
-    tweak.defaultValue = [NSNumber numberWithUnsignedInt:entry_value(unsigned int, entry)];
+    tweak.defaultValue = [NSNumber numberWithUnsignedInt:fb_tweak_entry_block_field(unsigned int, entry, value)];
   } else if (strcmp(*entry->encoding, @encode(long long)) == 0) {
-    tweak.defaultValue = [NSNumber numberWithLongLong:entry_value(long long, entry)];
+    tweak.defaultValue = [NSNumber numberWithLongLong:fb_tweak_entry_block_field(long long, entry, value)];
   } else if (strcmp(*entry->encoding, @encode(unsigned long long)) == 0) {
-    tweak.defaultValue = [NSNumber numberWithUnsignedLongLong:entry_value(unsigned long long, entry)];
+    tweak.defaultValue = [NSNumber numberWithUnsignedLongLong:fb_tweak_entry_block_field(unsigned long long, entry, value)];
   } else if (*entry->encoding[0] == '[') {
     // Assume it's a C string.
-    tweak.defaultValue = [NSString stringWithUTF8String:entry_value(char *, entry)];
+    tweak.defaultValue = [NSString stringWithUTF8String:fb_tweak_entry_block_field(char *, entry, value)];
   } else if (strcmp(*entry->encoding, @encode(id)) == 0) {
-    tweak.defaultValue = entry_value(id, entry);
+    tweak.defaultValue = fb_tweak_entry_block_field(id, entry, value);
   } else {
     NSCAssert(NO, @"Unknown encoding %s for tweak %@. Value was %p.", *entry->encoding, _FBTweakIdentifier(entry), entry->value);
     tweak = nil;

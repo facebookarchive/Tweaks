@@ -87,12 +87,19 @@ FBTweakAction(@"Actions", @"Global", @"Hello", ^{
     [alert show];
   });
 
-  NSNumber *colorIndex = FBTweakValue(@"Content", @"Tweaks Button", @"Color", @(0), (@{
-    @(0) : @"Black",
-    @(1) : @"Blue",
-    @(2) : @"Green",
+  typedef NS_ENUM(NSUInteger, FBColor) {
+    FBBlackColor,
+    FBBlueColor,
+    FBGreenColor,
+  };
+
+  NSNumber *colorIndex = FBTweakValue(@"Content", @"Tweaks Button", @"Color", @(FBBlackColor), (@{
+    @(FBBlackColor) : @"Black",
+    @(FBBlueColor) : @"Blue",
+    @(FBGreenColor) : @"Green",
   }));
-  [_tweaksButton setTitleColor:(colorIndex.integerValue == 0 ? [UIColor blackColor] : colorIndex.integerValue == 1 ? [UIColor blueColor] : [UIColor greenColor]) forState:UIControlStateNormal];
+  UIColor *color = (colorIndex.integerValue == FBBlackColor ? [UIColor blackColor] : colorIndex.integerValue == FBBlueColor ? [UIColor blueColor] : [UIColor greenColor]);
+  [_tweaksButton setTitleColor:color forState:UIControlStateNormal];
 
   NSNumber *rotation = FBTweakValue(@"Content", @"Text", @"Rotation (radians)", @(0), (@[@(0), @(M_PI_4), @(M_PI_2)]));
   _label.transform = CGAffineTransformRotate(CGAffineTransformIdentity, [rotation floatValue]);
