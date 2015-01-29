@@ -11,8 +11,6 @@
 #import <FBTweak/FBTweakShakeWindow.h>
 #import <FBTweak/FBTweakInline.h>
 #import <FBTweak/FBTweakViewController.h>
-#import <FBTweak/FBTweak+Dictionary.h>
-#import <FBTweak/FBTweak+Array.h>
 
 #import "FBAppDelegate.h"
 
@@ -27,7 +25,6 @@
   UIButton *_tweaksButton;
   FBTweak *_buttonColorTweak;
   FBTweak *_flipTweak;
-  FBTweak *_rotationTweak;
 }
 
 FBTweakAction(@"Actions", @"Global", @"Hello", ^{
@@ -90,21 +87,16 @@ FBTweakAction(@"Actions", @"Global", @"Hello", ^{
     [alert show];
   });
 
-  NSDictionary *dict = @{@"black": [UIColor blackColor],
-                         @"blue": [UIColor blueColor],
-                         @"green": [UIColor greenColor],
-                         };
-  _buttonColorTweak = FBDictionaryTweak(@"Content", @"Tweaks Button", @"Color", dict, @"black");
-  [_buttonColorTweak addObserver:self];
-  NSString *key = _buttonColorTweak.currentValue ?: _buttonColorTweak.defaultValue;
-  UIColor *color = _buttonColorTweak.dictionaryValue[key];
-  [_tweaksButton setTitleColor:color forState:UIControlStateNormal];
-    
-  _rotationTweak = FBArrayTweak(@"Content", @"Text", @"Rotation (radians)", @[@(0), @(M_PI_4), @(M_PI_2)], @(0));
-  FBTweakValue rotation = _rotationTweak.currentValue ?: _rotationTweak.defaultValue;
+  NSNumber *colorIndex = FBTweakValue(@"Content", @"Tweaks Button", @"Color", @(0), (@{
+    @(0) : @"Black",
+    @(1) : @"Blue",
+    @(2) : @"Green",
+  }));
+  [_tweaksButton setTitleColor:(colorIndex.integerValue == 0 ? [UIColor blackColor] : colorIndex.integerValue == 1 ? [UIColor blueColor] : [UIColor greenColor]) forState:UIControlStateNormal];
+
+  NSNumber *rotation = FBTweakValue(@"Content", @"Text", @"Rotation (radians)", @(0), (@[@(0), @(M_PI_4), @(M_PI_2)]));
   _label.transform = CGAffineTransformRotate(CGAffineTransformIdentity, [rotation floatValue]);
-  [_rotationTweak addObserver:self];
-    
+
   return YES;
 }
 
@@ -112,15 +104,6 @@ FBTweakAction(@"Actions", @"Global", @"Hello", ^{
 {
   if (tweak == _flipTweak) {
     _window.layer.sublayerTransform = CATransform3DMakeScale(1.0, [_flipTweak.currentValue boolValue] ? -1.0 : 1.0, 1.0);
-  }
-  else if (tweak == _buttonColorTweak) {
-    NSString *key = _buttonColorTweak.currentValue ?: _buttonColorTweak.defaultValue;
-    UIColor *titleColor = [_buttonColorTweak dictionaryValue][key];
-    [_tweaksButton setTitleColor:titleColor forState:UIControlStateNormal];
-  }
-  else if (tweak == _rotationTweak) {
-    FBTweakValue value = _rotationTweak.currentValue ?: _rotationTweak.defaultValue;
-    _label.transform = CGAffineTransformRotate(CGAffineTransformIdentity, [value floatValue]);
   }
 }
 

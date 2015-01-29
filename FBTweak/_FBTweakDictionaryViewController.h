@@ -12,13 +12,21 @@
 @class FBTweak;
 
 /**
- @abstract Displays list of keys in a dictionary tweak.
+  @abstract Displays list of keys in a dictionary tweak.
  */
 @interface _FBTweakDictionaryViewController : UIViewController
 
 /**
- @abstract The dictionary tweak to display in the view controller.
+  @abstract Creates a tweak dictionary view controller.
+  @discussion This is the designated initializer.
+  @param tweak The tweak the view controller is for. Must
+    not be nil, and must have a dictionary of possibleValues.
  */
-@property (nonatomic, strong) FBTweak *tweak;
+- (instancetype)initWithTweak:(FBTweak *)tweak;
+
+/**
+  @abstract The dictionary tweak to display in the view controller.
+ */
+@property (nonatomic, strong, readonly) FBTweak *tweak;
 
 @end

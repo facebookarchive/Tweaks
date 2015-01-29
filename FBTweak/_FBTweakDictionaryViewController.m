@@ -9,15 +9,27 @@
 
 #import "_FBTweakDictionaryViewController.h"
 #import "FBTweak.h"
-#import "FBTweak+Dictionary.h"
 
 @interface _FBTweakDictionaryViewController () <UITableViewDataSource, UITableViewDelegate>
 
-@property (nonatomic, strong) UITableView *tableView;
-
 @end
 
-@implementation _FBTweakDictionaryViewController
+@implementation _FBTweakDictionaryViewController {
+  UITableView *_tableView;
+}
+
+- (instancetype)initWithTweak:(FBTweak *)tweak
+{
+  NSParameterAssert(tweak != nil);
+  NSParameterAssert([tweak.possibleValues isKindOfClass:[NSDictionary class]]);
+
+  if ((self = [super init])) {
+    _tweak = tweak;
+    self.title = _tweak.name;
+  }
+
+  return self;
+}
 
 - (void)viewDidLoad
 {
@@ -43,7 +55,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-  return self.tweak.allKeys.count;
+  return [_tweak.possibleValues count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -55,12 +67,13 @@
   }
   
   NSArray *allKeys = [self allTweakKeys];
-  NSString *key = allKeys[indexPath.row];
-  cell.textLabel.text = key;
+  FBTweakValue key = allKeys[indexPath.row];
+  NSString *value = _tweak.possibleValues[key];
+  cell.textLabel.text = value;
   
   cell.accessoryType = UITableViewCellAccessoryNone;
-  NSString *selectedKey = (self.tweak.currentValue ?: self.tweak.defaultValue);
-  if ([selectedKey isEqualToString:key]) {
+  NSString *selectedKey = (_tweak.currentValue ?: _tweak.defaultValue);
+  if ([selectedKey isEqual:key]) {
     cell.accessoryType = UITableViewCellAccessoryCheckmark;
   }
   
@@ -78,8 +91,11 @@
 
 - (NSArray *)allTweakKeys
 {
-  return [self.tweak.allKeys sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-    return [obj1 compare:obj2];
+  // Sort by visible name.
+  return [[_tweak.possibleValues allKeys] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+    id value1 = _tweak.possibleValues[obj1];
+    id value2 = _tweak.possibleValues[obj2];
+    return [value1 compare:value2];
   }];
 }
 

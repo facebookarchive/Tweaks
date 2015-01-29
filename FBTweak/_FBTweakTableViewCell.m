@@ -9,8 +9,6 @@
 
 #import "FBTweak.h"
 #import "_FBTweakTableViewCell.h"
-#import "FBTweak+Dictionary.h"
-#import "FBTweak+Array.h"
 
 typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
   _FBTweakTableViewCellModeNone = 0,
@@ -110,10 +108,9 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
   FBTweakValue value = (_tweak.currentValue ?: _tweak.defaultValue);
   
   _FBTweakTableViewCellMode mode = _FBTweakTableViewCellModeNone;
-  if ([tweak isDictionary]) {
+  if ([tweak.possibleValues isKindOfClass:[NSDictionary class]]) {
     mode = _FBTweakTableViewCellModeDictionary;
-  } else if ([tweak isArray]) {
-    value = [value description];
+  } else if ([tweak.possibleValues isKindOfClass:[NSArray class]]) {
     mode = _FBTweakTableViewCellModeArray;
   } else if ([value isKindOfClass:[NSString class]]) {
     mode = _FBTweakTableViewCellModeString;
@@ -329,11 +326,11 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
     _textField.text = [NSString stringWithFormat:format, [value doubleValue]];
   } else if (_mode == _FBTweakTableViewCellModeDictionary) {
     if (primary) {
-      self.detailTextLabel.text = value;
+      self.detailTextLabel.text = _tweak.possibleValues[value];
     }
   } else if (_mode == _FBTweakTableViewCellModeArray) {
     if (primary) {
-      self.detailTextLabel.text = value;
+      self.detailTextLabel.text = [value description];
     }
   }
 }

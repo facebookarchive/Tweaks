@@ -9,11 +9,10 @@
 
 #import "FBTweakCollection.h"
 #import "FBTweakCategory.h"
+#import "FBTweak.h"
 #import "_FBTweakCollectionViewController.h"
 #import "_FBTweakTableViewCell.h"
-#import "FBTweak+Dictionary.h"
 #import "_FBTweakDictionaryViewController.h"
-#import "FBTweak+Array.h"
 #import "_FBTweakArrayViewController.h"
 
 @interface _FBTweakCollectionViewController () <UITableViewDelegate, UITableViewDataSource>
@@ -137,13 +136,11 @@
 {
   FBTweakCollection *collection = _sortedCollections[indexPath.section];
   FBTweak *tweak = collection.tweaks[indexPath.row];
-  if ([tweak isDictionary]) {
-    _FBTweakDictionaryViewController *vc = [[_FBTweakDictionaryViewController alloc] init];
-    vc.tweak = tweak;
+  if ([tweak.possibleValues isKindOfClass:[NSDictionary class]]) {
+    _FBTweakDictionaryViewController *vc = [[_FBTweakDictionaryViewController alloc] initWithTweak:tweak];
     [self.navigationController pushViewController:vc animated:YES];
-  } else if ([tweak isArray]) {
-    _FBTweakArrayViewController *vc = [[_FBTweakArrayViewController alloc] init];
-    vc.tweak = tweak;
+  } else if ([tweak.possibleValues isKindOfClass:[NSArray class]]) {
+    _FBTweakArrayViewController *vc = [[_FBTweakArrayViewController alloc] initWithTweak:tweak];
     [self.navigationController pushViewController:vc animated:YES];
   }
 }

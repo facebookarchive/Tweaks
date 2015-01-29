@@ -12,13 +12,21 @@
 @class FBTweak;
 
 /**
- @abstract Displays list of values in an array tweak.
+  @abstract Displays list of values in an array tweak.
  */
 @interface _FBTweakArrayViewController : UIViewController
 
 /**
- @abstract The array tweak to display in the view controller.
+  @abstract Creates a tweak array view controller.
+  @discussion This is the designated initializer.
+  @param tweak The tweak the view controller is for.
+    Must not be nil, and must have an array of possibleValues.
  */
-@property (nonatomic, strong) FBTweak *tweak;
+- (instancetype)initWithTweak:(FBTweak *)tweak;
+
+/**
+  @abstract The array tweak to display in the view controller.
+ */
+@property (nonatomic, strong, readonly) FBTweak *tweak;
 
 @end

@@ -9,15 +9,27 @@
 
 #import "_FBTweakArrayViewController.h"
 #import "FBTweak.h"
-#import "FBTweak+Array.h"
 
 @interface _FBTweakArrayViewController () <UITableViewDataSource, UITableViewDelegate>
 
-@property (nonatomic, strong) UITableView *tableView;
-
 @end
 
-@implementation _FBTweakArrayViewController
+@implementation _FBTweakArrayViewController {
+  UITableView *_tableView;
+}
+
+- (instancetype)initWithTweak:(FBTweak *)tweak
+{
+  NSParameterAssert(tweak != nil);
+  NSParameterAssert([tweak.possibleValues isKindOfClass:[NSArray class]]);
+
+  if ((self = [super init])) {
+    _tweak = tweak;
+    self.title = _tweak.name;
+  }
+
+  return self;
+}
 
 - (void)viewDidLoad
 {
@@ -43,7 +55,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-  return self.tweak.arrayValue.count;
+  return [self.tweak.possibleValues count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -54,7 +66,7 @@
     cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:_FBTweakDictionaryViewControllerCellIdentifier];
   }
 
-  FBTweakValue rowValue = self.tweak.arrayValue[indexPath.row];
+  FBTweakValue rowValue = self.tweak.possibleValues[indexPath.row];
   NSString *stringValue = [rowValue description];
   cell.textLabel.text = stringValue;
 
@@ -69,7 +81,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-  NSString *value = self.tweak.arrayValue[indexPath.row];
+  NSString *value = self.tweak.possibleValues[indexPath.row];
   self.tweak.currentValue = value;
   [self.navigationController popViewControllerAnimated:YES];
 }

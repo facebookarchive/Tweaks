@@ -40,12 +40,8 @@
 		18EFE52D189F250700DA6A5D /* FBTweakInlineTestsMRR.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EFE52C189F250700DA6A5D /* FBTweakInlineTestsMRR.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		18EFE536189F38D500DA6A5D /* FBTweakEnabled.h in Headers */ = {isa = PBXBuildFile; fileRef = 18EFE535189F38D500DA6A5D /* FBTweakEnabled.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		29E9F17B18E35C9C001EAF7D /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29E9F17A18E35C9C001EAF7D /* MessageUI.framework */; };
-		5BACB31A1A1280BD00C4F79D /* FBTweak+Array.h in Headers */ = {isa = PBXBuildFile; fileRef = 5BACB3181A1280BD00C4F79D /* FBTweak+Array.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		5BACB31B1A1280BD00C4F79D /* FBTweak+Array.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BACB3191A1280BD00C4F79D /* FBTweak+Array.m */; };
 		5BACB31E1A12813C00C4F79D /* _FBTweakArrayViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 5BACB31C1A12813C00C4F79D /* _FBTweakArrayViewController.h */; };
 		5BACB31F1A12813C00C4F79D /* _FBTweakArrayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BACB31D1A12813C00C4F79D /* _FBTweakArrayViewController.m */; };
-		5BE25A4E1A0AA90E00C97C3E /* FBTweak+Dictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = 5BE25A4C1A0AA90E00C97C3E /* FBTweak+Dictionary.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		5BE25A4F1A0AA90E00C97C3E /* FBTweak+Dictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BE25A4D1A0AA90E00C97C3E /* FBTweak+Dictionary.m */; };
 		5BE25A521A0AA9D500C97C3E /* _FBTweakDictionaryViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 5BE25A501A0AA9D500C97C3E /* _FBTweakDictionaryViewController.h */; };
 		5BE25A531A0AA9D500C97C3E /* _FBTweakDictionaryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BE25A511A0AA9D500C97C3E /* _FBTweakDictionaryViewController.m */; };
 /* End PBXBuildFile section */
@@ -96,12 +92,8 @@
 		18EFE52C189F250700DA6A5D /* FBTweakInlineTestsMRR.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBTweakInlineTestsMRR.m; sourceTree = "<group>"; };
 		18EFE535189F38D500DA6A5D /* FBTweakEnabled.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBTweakEnabled.h; sourceTree = "<group>"; };
 		29E9F17A18E35C9C001EAF7D /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
-		5BACB3181A1280BD00C4F79D /* FBTweak+Array.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = "FBTweak+Array.h"; sourceTree = "<group>"; tabWidth = 2; };
-		5BACB3191A1280BD00C4F79D /* FBTweak+Array.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = "FBTweak+Array.m"; sourceTree = "<group>"; tabWidth = 2; };
 		5BACB31C1A12813C00C4F79D /* _FBTweakArrayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _FBTweakArrayViewController.h; sourceTree = "<group>"; };
 		5BACB31D1A12813C00C4F79D /* _FBTweakArrayViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _FBTweakArrayViewController.m; sourceTree = "<group>"; };
-		5BE25A4C1A0AA90E00C97C3E /* FBTweak+Dictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "FBTweak+Dictionary.h"; sourceTree = "<group>"; };
-		5BE25A4D1A0AA90E00C97C3E /* FBTweak+Dictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = "FBTweak+Dictionary.m"; sourceTree = "<group>"; tabWidth = 2; };
 		5BE25A501A0AA9D500C97C3E /* _FBTweakDictionaryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _FBTweakDictionaryViewController.h; sourceTree = "<group>"; };
 		5BE25A511A0AA9D500C97C3E /* _FBTweakDictionaryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = _FBTweakDictionaryViewController.m; sourceTree = "<group>"; tabWidth = 2; usesTabs = 0; };
 /* End PBXFileReference section */
@@ -210,10 +202,6 @@
 				18EFE526189F19B300DA6A5D /* FBTweakCategory.m */,
 				18EFE4BF189EBEAD00DA6A5D /* FBTweakStore.h */,
 				18EFE4C0189EBEAD00DA6A5D /* FBTweakStore.m */,
-				5BE25A4C1A0AA90E00C97C3E /* FBTweak+Dictionary.h */,
-				5BE25A4D1A0AA90E00C97C3E /* FBTweak+Dictionary.m */,
-				5BACB3181A1280BD00C4F79D /* FBTweak+Array.h */,
-				5BACB3191A1280BD00C4F79D /* FBTweak+Array.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -261,14 +249,12 @@
 				18EFE4B7189EBC3100DA6A5D /* FBTweak.h in Headers */,
 				18EFE4D5189EEBC500DA6A5D /* _FBTweakCategoryViewController.h in Headers */,
 				18EFE4D9189EEED800DA6A5D /* _FBTweakCollectionViewController.h in Headers */,
-				5BACB31A1A1280BD00C4F79D /* FBTweak+Array.h in Headers */,
 				18EFE4B4189EBAC200DA6A5D /* FBTweakViewController.h in Headers */,
 				18EFE4C1189EBEAD00DA6A5D /* FBTweakStore.h in Headers */,
 				18EFE4B2189EBAC200DA6A5D /* FBTweakInline.h in Headers */,
 				18EFE4B3189EBAC200DA6A5D /* FBTweakShakeWindow.h in Headers */,
 				18EFE536189F38D500DA6A5D /* FBTweakEnabled.h in Headers */,
 				18EFE4D0189EC70300DA6A5D /* FBTweakInlineInternal.h in Headers */,
-				5BE25A4E1A0AA90E00C97C3E /* FBTweak+Dictionary.h in Headers */,
 				18EFE527189F19B300DA6A5D /* FBTweakCategory.h in Headers */,
 				18EFE4BC189EBC4B00DA6A5D /* FBTweakCollection.h in Headers */,
 				5BE25A521A0AA9D500C97C3E /* _FBTweakDictionaryViewController.h in Headers */,
@@ -359,9 +345,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BACB31B1A1280BD00C4F79D /* FBTweak+Array.m in Sources */,
 				5BE25A531A0AA9D500C97C3E /* _FBTweakDictionaryViewController.m in Sources */,
-				5BE25A4F1A0AA90E00C97C3E /* FBTweak+Dictionary.m in Sources */,
 				18EFE4A7189EBA9E00DA6A5D /* FBTweakViewController.m in Sources */,
 				18EFE4BD189EBC4B00DA6A5D /* FBTweakCollection.m in Sources */,
 				18EFE4C2189EBEAD00DA6A5D /* FBTweakStore.m in Sources */,
