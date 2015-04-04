@@ -32,7 +32,7 @@ if (FBTweakValue(@"Category", @"Feature", @"Enabled", YES)) {
 
 In release builds, the `FBTweakValue` macro expands to just the default value, so there's no performance impact. In debug builds, though, it fetches the latest value of the tweak.
 
-You can also pass a fourth parameter, which will constrain the possible values for a tweak. The fourth parameter can be an array, dictionary, or an `FBTweakNumericRange`. If it's a dictionary, the values should be strings to show in the list of choices. Arrays will show the values' `description` as choices. (Note that you have to surround array and dictionary literals with an extra set of parentheses.)
+You can also pass a fifth parameter, which will constrain the possible values for a tweak. The fifth parameter can be an array, dictionary, or an `FBTweakNumericRange`. If it's a dictionary, the values should be strings to show in the list of choices. Arrays will show the values' `description` as choices. (Note that you have to surround array and dictionary literals with an extra set of parentheses.)
 
 ```objective-c
 self.initialMode = FBTweakValue(@"Header", @"Initial", @"Mode", @(FBSimpleMode), (@{ @(FBSimpleMode) : @"Simple", @(FBAdvancedMode) : @"Advanced" }));
