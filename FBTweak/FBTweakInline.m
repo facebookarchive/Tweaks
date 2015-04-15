@@ -83,10 +83,12 @@ static FBTweak *_FBTweakCreateWithEntry(NSString *identifier, fb_tweak_entry *en
 #ifdef __LP64__
   typedef uint64_t fb_tweak_value;
   typedef struct section_64 fb_tweak_section;
+  typedef struct mach_header_64 fb_tweak_header;
 #define fb_tweak_getsectbynamefromheader getsectbynamefromheader_64
 #else
   typedef uint32_t fb_tweak_value;
   typedef struct section fb_tweak_section;
+  typedef struct mach_header fb_tweak_header;
 #define fb_tweak_getsectbynamefromheader getsectbynamefromheader
 #endif
   
@@ -96,15 +98,15 @@ static FBTweak *_FBTweakCreateWithEntry(NSString *identifier, fb_tweak_entry *en
   dladdr(&_FBTweakIdentifier, &info);
   
   const fb_tweak_value mach_header = (fb_tweak_value)info.dli_fbase;
-  const fb_tweak_section *section = fb_tweak_getsectbynamefromheader((void *)mach_header, FBTweakSegmentName, FBTweakSectionName);
-  
-  if (section == NULL) {
-    return;
+
+  unsigned long size;
+  fb_tweak_entry *data = (fb_tweak_entry *) getsectiondata((const fb_tweak_header *) mach_header, FBTweakSegmentName, FBTweakSectionName, &size);
+  if (data == NULL) {
+    return ;
   }
-  
-  for (fb_tweak_value addr = section->offset; addr < section->offset + section->size; addr += sizeof(fb_tweak_entry)) {
-    fb_tweak_entry *entry = (fb_tweak_entry *)(mach_header + addr);
-    
+  size_t count = size / sizeof(fb_tweak_entry);
+  for (size_t i = 0; i < count; i++) {
+    fb_tweak_entry *entry = &data[i];
     FBTweakCategory *category = [store tweakCategoryWithName:*entry->category];
     if (category == nil) {
       category = [[FBTweakCategory alloc] initWithName:*entry->category];
