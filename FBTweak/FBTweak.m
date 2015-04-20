@@ -24,6 +24,21 @@
   return self;
 }
 
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+  FBTweakValue minimumValue = [coder decodeObjectForKey:@"minimumValue"];
+  FBTweakValue maximumValue = [coder decodeObjectForKey:@"maximumValue"];
+  self = [self initWithMinimumValue:minimumValue maximumValue:maximumValue];
+
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+  [coder encodeObject:_minimumValue forKey:@"minimumValue"];
+  [coder encodeObject:_maximumValue forKey:@"maximumValue"];
+}
+
 @end
 
 @implementation FBTweak {
