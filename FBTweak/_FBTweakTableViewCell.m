@@ -121,7 +121,9 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
         strcmp([value objCType], @encode(_Bool)) == 0) {
       mode = _FBTweakTableViewCellModeBoolean;
     } else if (strcmp([value objCType], @encode(NSInteger)) == 0 ||
-               strcmp([value objCType], @encode(NSUInteger)) == 0) {
+               strcmp([value objCType], @encode(NSUInteger)) == 0 ||
+               strcmp([value objCType], @encode(int)) == 0 ||
+               strcmp([value objCType], @encode(long)) == 0) {
       mode = _FBTweakTableViewCellModeInteger;
     } else {
       mode = _FBTweakTableViewCellModeReal;
