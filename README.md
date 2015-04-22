@@ -1,5 +1,6 @@
 # Tweaks
 Tweaks is an easy way to fine-tune an iOS app.
+[![Build Status](https://travis-ci.org/facebook/Tweaks.svg?branch=master)](https://travis-ci.org/facebook/Tweaks)
 
 ![Tweaks](https://github.com/facebook/Tweaks/blob/master/Images/Tweaks.gif?raw=true)
 
