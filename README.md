@@ -145,4 +145,3 @@ See the CONTRIBUTING file for how to help out.
 
 ## License
 Tweaks is BSD-licensed. We also provide an additional patent grant.
-
