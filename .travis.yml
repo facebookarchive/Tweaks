@@ -1,0 +1,3 @@
+language: objective-c
+script: xctool test -project FBTweak.xcodeproj -scheme FBTweak -sdk iphonesimulator8.1 -destination "platform=iOS Simulator,OS=8.1,name=iPhone 6"
+
