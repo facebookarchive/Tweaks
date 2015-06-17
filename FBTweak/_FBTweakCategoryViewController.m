@@ -18,7 +18,7 @@
 @implementation _FBTweakCategoryViewController {
   UITableView *_tableView;
   UIToolbar *_toolbar;
-
+  
   NSArray *_sortedCategories;
 }
 
@@ -32,7 +32,7 @@
       return [a.name localizedStandardCompare:b.name];
     }];
   }
-
+  
   return self;
 }
 
@@ -94,23 +94,25 @@
       // do nothing
     }];
     [alertController addAction:cancelAction];
-
+    
     UIAlertAction *resetAction = [UIAlertAction actionWithTitle:@"Reset" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
       [_store reset];
     }];
     [alertController addAction:resetAction];
-
+    
     [self presentViewController:alertController animated:YES completion:NULL];
   } else {
 #endif
-    // To allow using Tweaks from within app extensions, which do not allow linking against UIAlertView, load the class dynamically.
-    // Note this codepath will never be executed in an app extension, since UIAlertController will always be available when they are.
-    UIAlertView *alert = [[NSClassFromString(@"UIAlertView") alloc] initWithTitle:@"Are you sure?"
+#if (!defined(__has_feature) || !__has_feature(attribute_availability_app_extension))
+    // This is iOS 7 or lower. We need to use UIAlertView, because UIAlertController is not available.
+    // UIAlertView, however, is not available in app-extensions, so to allow compilation, we conditionally compile this branch only when we're not an app-extension. UIAlertController is always available in app-extensions, so this is safe.
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Are you sure?"
                                                     message:@"Are you sure you want to reset your tweaks? This cannot be undone."
                                                    delegate:self
                                           cancelButtonTitle:@"Cancel"
                                           otherButtonTitles:@"Reset", nil];
     [alert show];
+#endif
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 8000
   }
 #endif
@@ -161,7 +163,7 @@
   }
   
   cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-
+  
   FBTweakCategory *category = _sortedCategories[indexPath.row];
   cell.textLabel.text = category.name;
   
