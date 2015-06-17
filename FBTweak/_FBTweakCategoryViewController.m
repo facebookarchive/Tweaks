@@ -18,7 +18,7 @@
 @implementation _FBTweakCategoryViewController {
   UITableView *_tableView;
   UIToolbar *_toolbar;
-  
+
   NSArray *_sortedCategories;
 }
 
@@ -32,7 +32,7 @@
       return [a.name localizedStandardCompare:b.name];
     }];
   }
-  
+
   return self;
 }
 
@@ -94,7 +94,7 @@
       // do nothing
     }];
     [alertController addAction:cancelAction];
-    
+
     UIAlertAction *resetAction = [UIAlertAction actionWithTitle:@"Reset" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
       [_store reset];
     }];
@@ -163,7 +163,7 @@
   }
   
   cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-  
+
   FBTweakCategory *category = _sortedCategories[indexPath.row];
   cell.textLabel.text = category.name;
   
