@@ -99,7 +99,7 @@
       [_store reset];
     }];
     [alertController addAction:resetAction];
-    
+
     [self presentViewController:alertController animated:YES completion:NULL];
   } else {
 #endif
