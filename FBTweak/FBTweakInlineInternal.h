@@ -103,7 +103,11 @@ extern NSString *_FBTweakIdentifier(fb_tweak_entry *entry);
   return __inline_tweak; \
 })())
 #define _FBTweakInline(category_, collection_, name_, ...) _FBTweakDispatch(_FBTweakInlineWithoutRange, _FBTweakInlineWithRange, _FBTweakInlineWithPossible, __VA_ARGS__)(category_, collection_, name_, __VA_ARGS__)
-  
+
+#ifdef __cplusplus
+#define _FBTweakValueInternal(...) \
+((^{ static_assert(false, "C++ not supported at present. See https://github.com/facebook/Tweaks/issues/84."); nil; })())
+#else
 #define _FBTweakValueInternal(tweak_, category_, collection_, name_, default_) \
 ((^{ \
   /* returns a correctly typed version of the current tweak value */ \
@@ -140,6 +144,7 @@ extern NSString *_FBTweakIdentifier(fb_tweak_entry *entry);
     default: [currentValue UTF8String] \
   ); \
 })())
+#endif
 
 #define _FBTweakValueWithoutRange(category_, collection_, name_, default_) \
 ((^{ \
