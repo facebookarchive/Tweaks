@@ -125,6 +125,36 @@ Then, you can watch for when the tweak changes:
 
 To override when tweaks are enabled, you can define the `FB_TWEAK_ENABLED` macro. It's suggested to avoid including them when submitting to the App Store.
 
+### Using from a Swift Project
+
+Tweaks can be used from Swift projects. In this case the handy shortcut macros defined in `FBTweakInline.h` are not available, meaning tweaks need to be created programmatically, similar to this example:
+
+```swift
+let tweak = FBTweak(identifier: "com.tweaks.example.advanced")
+tweak.name = "Advanced settings"
+tweak.defaultValue = false
+
+let collection = FBTweakCollection(name: "Enable");
+collection.addTweak(tweak)
+        
+let category = FBTweakCategory(name: "Settings")
+category.addTweakCollection(collection);
+        
+let store = FBTweakStore.sharedInstance()
+store.addTweakCategory(category)
+
+tweak.addObserver(self)
+```
+
+After setting up a tweak you can watch for when it changes:
+
+```swift
+func tweakDidChange(tweak: FBTweak!)
+{
+    self.advancedSettingsEnabled = tweak.currentValue as Bool;
+}
+```
+
 ### How it works
 In debug builds, the tweak macros use `__attribute__((section))` to statically store data about each tweak in the `__FBTweak` section of the mach-o. Tweaks loads that data at startup and loads the latest values from `NSUserDefaults`.
 
