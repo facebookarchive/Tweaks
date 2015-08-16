@@ -13,7 +13,7 @@ static const CGFloat _FBSliderViewHeight = 28.0f;
 static const CGFloat _FBSliderViewThumbDimension = 28.0f;
 static const CGFloat _FBSliderViewTrackHeight = 3.0f;
 
-@interface FBSliderView () {
+@interface _FBSliderView () {
 
   @private
 
@@ -23,7 +23,7 @@ static const CGFloat _FBSliderViewTrackHeight = 3.0f;
 
 @end
 
-@implementation FBSliderView
+@implementation _FBSliderView
 
 + (BOOL)requiresConstraintBasedLayout
 {

@@ -15,7 +15,7 @@ static CGFloat const _FBColorComponentViewSpacing = 5.0f;
 static CGFloat const _FBColorComponentLabelWidth = 60.0f;
 static CGFloat const _FBColorComponentTextFieldWidth = 50.0f;
 
-@interface FBColorComponentView () <UITextFieldDelegate>
+@interface _FBColorComponentView () <UITextFieldDelegate>
 {
 
   @private
@@ -24,12 +24,12 @@ static CGFloat const _FBColorComponentTextFieldWidth = 50.0f;
 }
 
 @property(nonatomic, strong, readwrite) UILabel* label;
-@property(nonatomic, strong, readwrite) FBSliderView* slider;
+@property(nonatomic, strong, readwrite) _FBSliderView* slider;
 @property(nonatomic, strong, readwrite) UITextField* textField;
 
 @end
 
-@implementation FBColorComponentView
+@implementation _FBColorComponentView
 
 + (BOOL)requiresConstraintBasedLayout
 {
@@ -149,7 +149,7 @@ static CGFloat const _FBColorComponentTextFieldWidth = 50.0f;
   _label.adjustsFontSizeToFitWidth = YES;
   [self addSubview:_label];
 
-  _slider = [[FBSliderView alloc] init];
+  _slider = [[_FBSliderView alloc] init];
   _slider.maximumValue = FBRGBColorComponentMaxValue;
   _slider.translatesAutoresizingMaskIntoConstraints = NO;
   [self addSubview:_slider];
@@ -165,7 +165,7 @@ static CGFloat const _FBColorComponentTextFieldWidth = 50.0f;
   [_textField setDelegate:self];
 }
 
-- (void)_didChangeSliderValue:(FBSliderView*)sender
+- (void)_didChangeSliderValue:(_FBSliderView*)sender
 {
   [self setValue:sender.value];
   [self sendActionsForControlEvents:UIControlEventValueChanged];

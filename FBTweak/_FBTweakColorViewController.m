@@ -14,11 +14,11 @@
 #import "FBColorUtils.h"
 #import "FBTweak.h"
 
-@interface _FBTweakColorViewController () <FBColorViewDelegate>
+@interface _FBTweakColorViewController () <_FBColorViewDelegate>
 {
   @private
 
-  UIView<FBColorView>* _currentView;
+  UIView<_FBColorView>* _currentView;
   NSArray* _colorSelectionViews;
   FBTweak* _tweak;
   _FBKeyboardManager* _keyboardManager;
@@ -65,18 +65,18 @@
 
 #pragma mark - FBColorViewDelegate methods
 
-- (void)colorView:(id<FBColorView>)colorView didChangeValue:(UIColor*)colorValue
+- (void)colorView:(id<_FBColorView>)colorView didChangeValue:(UIColor*)colorValue
 {
   _tweak.currentValue = FBHexStringFromColor(colorValue);
 }
 
 #pragma mark - Private methods
 
-- (UIView<FBColorView>*)_colorSelectionViewAtIndex:(NSUInteger)idx
+- (UIView<_FBColorView>*)_colorSelectionViewAtIndex:(NSUInteger)idx
 {
   if (!_colorSelectionViews) {
-    UIView* rgbView = [[FBRGBView alloc] initWithFrame:self.view.bounds];
-    UIView* hsbView = [[FBHSBView alloc] initWithFrame:self.view.bounds];
+    UIView* rgbView = [[_FBRGBView alloc] initWithFrame:self.view.bounds];
+    UIView* hsbView = [[_FBHSBView alloc] initWithFrame:self.view.bounds];
     _colorSelectionViews = @[rgbView, hsbView];
   }
   return idx < [_colorSelectionViews count] ? _colorSelectionViews[idx] : nil;
@@ -108,7 +108,7 @@
   return segmentedControl;
 }
 
-- (void)_applyNavBarInsetsForView:(UIView<FBColorView>*)view
+- (void)_applyNavBarInsetsForView:(UIView<_FBColorView>*)view
 {
   // For insetting with a navigation bar
   CGFloat topInset = CGRectGetHeight(self.navigationController.navigationBar.frame) + CGRectGetHeight([UIApplication sharedApplication].statusBarFrame);

@@ -14,6 +14,6 @@
 /**
  @abstract A view to edit RGBA color components.
  */
-@interface FBRGBView : UIView <FBColorView>
+@interface _FBRGBView : UIView <_FBColorView>
 
 @end

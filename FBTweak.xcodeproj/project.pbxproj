@@ -259,8 +259,6 @@
 				18EFE4D8189EEED800DA6A5D /* _FBTweakCollectionViewController.m */,
 				18EFE4DB189EF75800DA6A5D /* _FBTweakTableViewCell.h */,
 				18EFE4DC189EF75800DA6A5D /* _FBTweakTableViewCell.m */,
-				5EADAADE18FB3C2D00D06EAB /* _FBColorComponentView.h */,
-				5EADAADF18FB3C2D00D06EAB /* _FBColorComponentView.m */,
 				5BE25A501A0AA9D500C97C3E /* _FBTweakDictionaryViewController.h */,
 				5BE25A511A0AA9D500C97C3E /* _FBTweakDictionaryViewController.m */,
 				5BACB31C1A12813C00C4F79D /* _FBTweakArrayViewController.h */,
@@ -276,6 +274,8 @@
 				5E1708CC1905CBF800402135 /* _FBRGBView.m */,
 				5E1708D7190866C400402135 /* _FBHSBView.h */,
 				5E1708D8190866C400402135 /* _FBHSBView.m */,
+				5EADAADE18FB3C2D00D06EAB /* _FBColorComponentView.h */,
+				5EADAADF18FB3C2D00D06EAB /* _FBColorComponentView.m */,
 				5E1708DB190B147000402135 /* _FBKeyboardManager.h */,
 				5E1708DC190B147000402135 /* _FBKeyboardManager.m */,
 			);

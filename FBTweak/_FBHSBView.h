@@ -14,6 +14,6 @@
 /**
  @abstract A view to edit HSB color components.
  */
-@interface FBHSBView : UIView <FBColorView>
+@interface _FBHSBView : UIView <_FBColorView>
 
 @end

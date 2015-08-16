@@ -23,14 +23,14 @@ static CGFloat const _FBTextFieldWidth = 50.0f;
 static CGFloat const _FBLabelSpacing = 5.0f;
 static CGFloat const _FBColorWheelHeight = 200.0f;
 
-@interface FBHSBView () <UITextFieldDelegate>
+@interface _FBHSBView () <UITextFieldDelegate>
 {
 
 @private
 
-  FBColorWheelView* _colorWheel;
-  FBColorComponentView* _brightnessView;
-  FBColorComponentView* _alphaView;
+  _FBColorWheelView* _colorWheel;
+  _FBColorComponentView* _brightnessView;
+  _FBColorComponentView* _alphaView;
   UIView* _colorSample;
   UIScrollView* _scrollView;
   UIView* _contentView;
@@ -47,7 +47,7 @@ static CGFloat const _FBColorWheelHeight = 200.0f;
 
 @end
 
-@implementation FBHSBView
+@implementation _FBHSBView
 
 @synthesize delegate = _delegate, scrollView = _scrollView;
 
@@ -146,7 +146,7 @@ static CGFloat const _FBColorWheelHeight = 200.0f;
   _colorSample.translatesAutoresizingMaskIntoConstraints = NO;
   [_contentView addSubview:_colorSample];
 
-  _colorWheel = [[FBColorWheelView alloc] init];
+  _colorWheel = [[_FBColorWheelView alloc] init];
   _colorWheel.translatesAutoresizingMaskIntoConstraints = NO;
   [_contentView addSubview:_colorWheel];
 
@@ -179,7 +179,7 @@ static CGFloat const _FBColorWheelHeight = 200.0f;
   [_hsView addSubview:_saturationTextField];
 
 
-  _brightnessView = [[FBColorComponentView alloc] init];
+  _brightnessView = [[_FBColorComponentView alloc] init];
   _brightnessView.title = @"Brightness";
   _brightnessView.maximumValue = FBHSBColorComponentMaxValue;
   _brightnessView.format = @"%.2f";
@@ -187,7 +187,7 @@ static CGFloat const _FBColorWheelHeight = 200.0f;
   [_contentView addSubview:_brightnessView];
 
 
-  _alphaView = [[FBColorComponentView alloc] init];
+  _alphaView = [[_FBColorComponentView alloc] init];
   _alphaView.title = @"Alpha";
   _alphaView.translatesAutoresizingMaskIntoConstraints = NO;
   _alphaView.maximumValue = FBAlphaComponentMaxValue;
@@ -279,7 +279,7 @@ static CGFloat const _FBColorWheelHeight = 200.0f;
   _saturationTextField.text = [NSString stringWithFormat:@"%.2f", colorComponents.saturation];
 }
 
-- (void)_colorDidChangeValue:(FBColorWheelView*)sender
+- (void)_colorDidChangeValue:(_FBColorWheelView*)sender
 {
   _colorComponents.hue = sender.hue;
   _colorComponents.saturation = sender.saturation;
@@ -287,14 +287,14 @@ static CGFloat const _FBColorWheelHeight = 200.0f;
   [self reloadData];
 }
 
-- (void)_brightnessDidChangeValue:(FBColorComponentView*)sender
+- (void)_brightnessDidChangeValue:(_FBColorComponentView*)sender
 {
   _colorComponents.brightness = sender.value;
   [self.delegate colorView:self didChangeValue:[self value]];
   [self reloadData];
 }
 
-- (void)_alphaDidChangeValue:(FBColorComponentView*)sender
+- (void)_alphaDidChangeValue:(_FBColorComponentView*)sender
 {
   _colorComponents.alpha = sender.value / FBAlphaComponentMaxValue;
   [self.delegate colorView:self didChangeValue:[self value]];

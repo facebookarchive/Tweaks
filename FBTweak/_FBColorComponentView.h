@@ -9,12 +9,12 @@
 
 #import <UIKit/UIKit.h>
 
-@class FBSliderView;
+@class _FBSliderView;
 
 /**
  @abstract A view to edit a color component.
  */
-@interface FBColorComponentView : UIControl
+@interface _FBColorComponentView : UIControl
 
 //! @abstract The title.
 @property(nonatomic, copy) NSString* title;
@@ -32,6 +32,6 @@
 @property(nonatomic, copy) NSString* format;
 
 //! @abstract The color slider to edit color component.
-@property(nonatomic, strong, readonly) FBSliderView* slider;
+@property(nonatomic, strong, readonly) _FBSliderView* slider;
 
 @end

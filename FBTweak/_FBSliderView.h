@@ -12,7 +12,7 @@
 /**
  @abstract A slider with a gradient track.
  */
-@interface FBSliderView : UIControl
+@interface _FBSliderView : UIControl
 
 /**
  *  The slider's current value. The default value is 0.0.

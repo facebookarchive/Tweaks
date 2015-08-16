@@ -9,7 +9,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface FBColorWheelView : UIControl
+@interface _FBColorWheelView : UIControl
 
 @property(nonatomic, assign) CGFloat hue;
 @property(nonatomic, assign) CGFloat saturation;

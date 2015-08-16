@@ -10,7 +10,7 @@
 #import "_FBColorWheelView.h"
 #import "FBColorUtils.h"
 
-@interface FBColorWheelView () {
+@interface _FBColorWheelView () {
 
   @private
 
@@ -21,7 +21,7 @@
 
 @end
 
-@implementation FBColorWheelView
+@implementation _FBColorWheelView
 
 + (BOOL)requiresConstraintBasedLayout
 {

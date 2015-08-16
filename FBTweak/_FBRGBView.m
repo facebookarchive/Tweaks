@@ -20,7 +20,7 @@ static CGFloat const _FBViewSpacing = 20.0f;
 static CGFloat const _FBContentViewMargin = 10.0f;
 static NSUInteger const _FBRGBAColorComponentsSize = 4;
 
-@interface FBRGBView () {
+@interface _FBRGBView () {
 
 @private
 
@@ -34,7 +34,7 @@ static NSUInteger const _FBRGBAColorComponentsSize = 4;
 
 @end
 
-@implementation FBRGBView
+@implementation _FBRGBView
 
 @synthesize delegate = _delegate, scrollView = _scrollView;
 
@@ -113,7 +113,7 @@ static NSUInteger const _FBRGBAColorComponentsSize = 4;
   _colorComponentViews = [tmp copy];
 }
 
-- (IBAction)_colorComponentDidChangeValue:(FBColorComponentView*)sender
+- (IBAction)_colorComponentDidChangeValue:(_FBColorComponentView*)sender
 {
   [self _setColorComponentValue:sender.value / sender.maximumValue atIndex:sender.tag];
   [self.delegate colorView:self didChangeValue:[self value]];
@@ -140,7 +140,7 @@ static NSUInteger const _FBRGBAColorComponentsSize = 4;
 
 - (UIControl*)_colorComponentViewWithTitle:(NSString*)title tag:(NSUInteger)tag maxValue:(CGFloat)maxValue
 {
-  FBColorComponentView* colorComponentView = [[FBColorComponentView alloc] init];
+  _FBColorComponentView* colorComponentView = [[_FBColorComponentView alloc] init];
   colorComponentView.title = title;
   colorComponentView.translatesAutoresizingMaskIntoConstraints = NO;
   colorComponentView.tag  = tag;
@@ -201,8 +201,8 @@ static NSUInteger const _FBRGBAColorComponentsSize = 4;
 - (void)_reloadColorComponentViews:(RGB)colorComponents
 {
   NSArray* components = [self _colorComponentsWithRGB:colorComponents];
-  [_colorComponentViews enumerateObjectsUsingBlock:^(FBColorComponentView* colorComponentView, NSUInteger idx, BOOL *stop) {
-    FBSliderView* slider = colorComponentView.slider;
+  [_colorComponentViews enumerateObjectsUsingBlock:^(_FBColorComponentView* colorComponentView, NSUInteger idx, BOOL *stop) {
+    _FBSliderView* slider = colorComponentView.slider;
     if (idx < _FBRGBAColorComponentsSize - 1) {
       [self _updateSlider:slider withColorComponents:components];
     }
@@ -210,7 +210,7 @@ static NSUInteger const _FBRGBAColorComponentsSize = 4;
   }];
 }
 
-- (void)_updateSlider:(FBSliderView*)slider withColorComponents:(NSArray*)colorComponents
+- (void)_updateSlider:(_FBSliderView*)slider withColorComponents:(NSArray*)colorComponents
 {
   NSUInteger colorIndex = slider.tag;
   CGFloat currentColorValue = [colorComponents[colorIndex] floatValue];
