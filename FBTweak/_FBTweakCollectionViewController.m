@@ -13,20 +13,23 @@
 #import "_FBTweakCollectionViewController.h"
 #import "_FBTweakTableViewCell.h"
 #import "_FBTweakColorViewController.h"
+#import "_FBTweakDictionaryViewController.h"
+#import "_FBTweakArrayViewController.h"
 
 @interface _FBTweakCollectionViewController () <UITableViewDelegate, UITableViewDataSource>
 @end
 
 @implementation _FBTweakCollectionViewController {
   UITableView *_tableView;
+  NSArray *_sortedCollections;
 }
 
 - (instancetype)initWithTweakCategory:(FBTweakCategory *)category
 {
   if ((self = [super init])) {
     _tweakCategory = category;
-    
     self.title = _tweakCategory.name;
+    [self _reloadData];
   }
   
   return self;
@@ -41,6 +44,8 @@
   _tableView.dataSource = self;
   _tableView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
   [self.view addSubview:_tableView];
+  
+  self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(_done)];
 }
 
 - (void)dealloc
@@ -54,23 +59,60 @@
   [super viewWillAppear:animated];
   
   [_tableView deselectRowAtIndexPath:_tableView.indexPathForSelectedRow animated:animated];
+  [self _reloadData];
+}
+
+- (void)_reloadData
+{
+  _sortedCollections = [_tweakCategory.tweakCollections sortedArrayUsingComparator:^(FBTweakCollection *a, FBTweakCollection *b) {
+    return [a.name localizedStandardCompare:b.name];
+  }];
   [_tableView reloadData];
+}
+
+- (void)_done
+{
+  [_delegate tweakCollectionViewControllerSelectedDone:self];
+}
+
+- (void)_keyboardFrameChanged:(NSNotification *)notification
+{
+  CGRect endFrame = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+  endFrame = [self.view.window convertRect:endFrame fromWindow:nil];
+  endFrame = [self.view convertRect:endFrame fromView:self.view.window];
+  
+  NSTimeInterval duration = [notification.userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+  UIViewAnimationCurve curve = [notification.userInfo[UIKeyboardAnimationCurveUserInfoKey] integerValue];
+  
+  void (^animations)() = ^{
+    UIEdgeInsets contentInset = _tableView.contentInset;
+    contentInset.bottom = (self.view.bounds.size.height - CGRectGetMinY(endFrame));
+    _tableView.contentInset = contentInset;
+    
+    UIEdgeInsets scrollIndicatorInsets = _tableView.scrollIndicatorInsets;
+    scrollIndicatorInsets.bottom = (self.view.bounds.size.height - CGRectGetMinY(endFrame));
+    _tableView.scrollIndicatorInsets = scrollIndicatorInsets;
+  };
+  
+  UIViewAnimationOptions options = (curve << 16) | UIViewAnimationOptionBeginFromCurrentState;
+  
+  [UIView animateWithDuration:duration delay:0 options:options animations:animations completion:NULL];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-  return _tweakCategory.tweakCollections.count;
+  return _sortedCollections.count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-  FBTweakCollection *collection = _tweakCategory.tweakCollections[section];
+  FBTweakCollection *collection = _sortedCollections[section];
   return collection.tweaks.count;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-  FBTweakCollection *collection = _tweakCategory.tweakCollections[section];
+  FBTweakCollection *collection = _sortedCollections[section];
   return collection.name;
 }
 
@@ -82,7 +124,7 @@
     cell = [[_FBTweakTableViewCell alloc] initWithReuseIdentifier:_FBTweakCollectionViewControllerCellIdentifier];
   }
   
-  FBTweakCollection *collection = _tweakCategory.tweakCollections[indexPath.section];
+  FBTweakCollection *collection = _sortedCollections[indexPath.section];
   FBTweak *tweak = collection.tweaks[indexPath.row];
   cell.tweak = tweak;
   
@@ -91,12 +133,17 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-  _FBTweakTableViewCell *cell = (_FBTweakTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
-  if ([cell mode] == _FBTweakTableViewCellModeColor) {
-    FBTweakCollection *collection = _tweakCategory.tweakCollections[indexPath.section];
-    FBTweak *tweak = collection.tweaks[indexPath.row];
-    FBTweakColorViewController *rgbViewController = [[FBTweakColorViewController alloc] initWithTweak:tweak];
-    [self.navigationController pushViewController:rgbViewController animated:YES];
+  FBTweakCollection *collection = _sortedCollections[indexPath.section];
+  FBTweak *tweak = collection.tweaks[indexPath.row];
+  if ([tweak.possibleValues isKindOfClass:[NSDictionary class]]) {
+    _FBTweakDictionaryViewController *vc = [[_FBTweakDictionaryViewController alloc] initWithTweak:tweak];
+    [self.navigationController pushViewController:vc animated:YES];
+  } else if ([tweak.possibleValues isKindOfClass:[NSArray class]]) {
+    _FBTweakArrayViewController *vc = [[_FBTweakArrayViewController alloc] initWithTweak:tweak];
+    [self.navigationController pushViewController:vc animated:YES];
+  } else if ([tweak.possibleValues isKindOfClass:[UIColor class]]) {
+    FBTweakColorViewController *vc = [[FBTweakColorViewController alloc] initWithTweak:tweak];
+    [self.navigationController pushViewController:vc animated:YES];
   }
 }
 

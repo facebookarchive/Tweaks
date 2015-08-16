@@ -45,4 +45,12 @@
  */
 #define FBTweakBind(object_, property_, category_, collection_, name_, ...) _FBTweakBind(object_, property_, category_, collection_, name_, __VA_ARGS__)
 
+/**
+  @abstract Performs an action on tweak selection.
+  @param ... The last parameter is a block containing the action to run.
+  @discussion The action does not have access to local state. It might be necessary to
+    access global state in the block to perform actions scoped to a specific class.
+ */
+#define FBTweakAction(category_, collection_, name_, ...) _FBTweakAction(category_, collection_, name_, __VA_ARGS__)
+
 

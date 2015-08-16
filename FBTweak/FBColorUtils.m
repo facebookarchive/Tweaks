@@ -106,11 +106,11 @@ extern NSString* FBHexStringFromColor(UIColor* color)
     blue = components[2];
     alpha = components[3];
   }
-  NSString *hexColorString = [NSString stringWithFormat:@"#%02X%02X%02X%02X",
-                              (NSUInteger)(red * FBRGBColorComponentMaxValue),
-                              (NSUInteger)(green * FBRGBColorComponentMaxValue),
-                              (NSUInteger)(blue * FBRGBColorComponentMaxValue),
-                              (NSUInteger)(alpha * FBRGBColorComponentMaxValue)];
+  NSString *hexColorString = [NSString stringWithFormat:@"#%02lX%02lX%02lX%02lX",
+                              (unsigned long)(red * FBRGBColorComponentMaxValue),
+                              (unsigned long)(green * FBRGBColorComponentMaxValue),
+                              (unsigned long)(blue * FBRGBColorComponentMaxValue),
+                              (unsigned long)(alpha * FBRGBColorComponentMaxValue)];
   return hexColorString;
 }
 

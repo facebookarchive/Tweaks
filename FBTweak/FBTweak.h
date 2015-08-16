@@ -13,20 +13,50 @@
 
 /**
   @abstract Represents a possible value of a tweak.
-  @discussion Should be able to be persisted in user defaults.
+  @discussion Should be able to be persisted in user defaults,
+    except actions (represented as blocks without a currentValue).
     For minimum and maximum values, should implement -compare:.
  */
 typedef id FBTweakValue;
 
 /**
-  @abstract Represents a unqie, named tweak.
+  @abstract Represents a range of values for a numeric tweak.
+  @discussion Use this for the -possibleValues on a tweak.
+ */
+@interface FBTweakNumericRange : NSObject <NSCoding>
+
+/**
+  @abstract Creates a new numeric range.
+  @discussion This is the designated initializer.
+  @param minimumValue The minimum value of the range.
+  @param maximumValue The maximum value of the range.
+ */
+- (instancetype)initWithMinimumValue:(FBTweakValue)minimumValue maximumValue:(FBTweakValue)maximumValue;
+
+/**
+  @abstract The minimum value of the range.
+  @discussion Will always have a value.
+ */
+@property (nonatomic, strong, readwrite) FBTweakValue minimumValue;
+
+/**
+  @abstract The maximum value of the range.
+  @discussion Will always have a value.
+ */
+@property (nonatomic, strong, readwrite) FBTweakValue maximumValue;
+
+@end
+
+/**
+  @abstract Represents a unique, named tweak.
   @discussion A tweak contains a persistent, editable value.
  */
-@interface FBTweak : NSObject
+@interface FBTweak : NSObject <NSCoding>
 
 /**
   @abstract Creates a new tweak model.
   @discussion This is the designated initializer.
+  @param identifier The identifier for the tweak. Required.
  */
 - (instancetype)initWithIdentifier:(NSString *)identifier;
 
@@ -43,28 +73,62 @@ typedef id FBTweakValue;
 @property (nonatomic, copy, readwrite) NSString *name;
 
 /**
- @abstract The default value of the tweak.
- @discussion Use this when the current value is unset.
+  @abstract If this tweak is an action, with a block value.
+  @param If YES, {@ref currentValue} should not be set and
+    {@ref defaultValue} is a block rather than a value object.
+ */
+@property (nonatomic, readonly, assign, getter = isAction) BOOL action;
+
+/**
+  @abstract The default value of the tweak.
+  @discussion Use this when the current value is unset.
+    For actions, set this property to a block instead.
  */
 @property (nonatomic, strong, readwrite) FBTweakValue defaultValue;
 
 /**
   @abstract The current value of the tweak. Can be nil.
-  @discussion Changes to this property will be propagated to disk.
+  @discussion Changes will be propagated to disk. Enforces within
+    possible values when changed. Must not be set on actions.
  */
 @property (nonatomic, strong, readwrite) FBTweakValue currentValue;
 
 /**
+  @abstract The possible values of the tweak.
+  @discussion Optional. If nil, any value is allowed. If an
+    FBTweakNumericRange, represents a range of numeric values.
+    If an array or dictionary, contains all of the allowed values.
+    Should not be set on tweaks representing actions.
+ */
+@property (nonatomic, strong, readwrite) id possibleValues;
+
+/**
   @abstract The minimum value of the tweak.
-  @discussion Optional. If nil, there is no minimum.
+  @discussion Optional. If nil, there is no minimum. Numeric only.
+    Should not be set on tweaks representing actions.
  */
 @property (nonatomic, strong, readwrite) FBTweakValue minimumValue;
 
 /**
   @abstract The maximum value of the tweak.
-  @discussion Optional. If nil, there is no maximum.
+  @discussion Optional. If nil, there is no maximum. Numeric only.
+    Should not be set on tweaks representing actions.
  */
 @property (nonatomic, strong, readwrite) FBTweakValue maximumValue;
+
+/**
+  @abstract The step value of the tweak.
+  @discussion Optional. If nil, the step value is calculated from
+    the miniumum and maxium values. Only used for numeric tweaks.
+ */
+@property (nonatomic, strong, readwrite) FBTweakValue stepValue;
+
+/**
+  @abstract The decimal precision value of the tweak.
+  @discussion Optional. If nil, the precision value is calculated from
+    the step value. Only used for numeric tweaks.
+ */
+@property (nonatomic, strong, readwrite) FBTweakValue precisionValue;
 
 /**
   @abstract Adds an observer to the tweak.

@@ -9,6 +9,14 @@
 
 #import <UIKit/UIKit.h>
 
+/**
+ @abstract A notification posted when the FBTweakViewController is dismissed 
+ @discussion Register an observer to listen to FBTweakShakeViewControllerDidDismissNotification.
+    The object included with the notification is the FBTweakViewController instance
+    being dismissed.
+ */
+extern NSString *const FBTweakShakeViewControllerDidDismissNotification;
+
 @class FBTweakStore;
 @protocol FBTweakViewControllerDelegate;
 
@@ -20,9 +28,17 @@
 /**
   @abstract Create a tweak view controller.
   @param store The tweak store to show. Usually +[FBTweakStore sharedInstance].
-  @discussion The designated initializer.
+  @discussion Calls -[initWithStore:category:] with a nil category.
  */
 - (instancetype)initWithStore:(FBTweakStore *)store;
+
+/**
+  @abstract Create a tweak view controller drilled-down to a specific category
+  @param store The tweak store to show. Usually +[FBTweakStore sharedInstance].
+  @param name The tweak category to drill down to. Use nil to show all categories
+  @discussion The designated initializer.
+ */
+- (instancetype)initWithStore:(FBTweakStore *)store category:(NSString *)categoryName;
 
 /**
   @abstract Responds to tweak view controller actions.

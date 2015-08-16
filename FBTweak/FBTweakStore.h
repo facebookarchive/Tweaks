@@ -14,7 +14,7 @@
 /**
   @abstract The global store for tweaks.
  */
-@interface FBTweakStore : NSObject
+@interface FBTweakStore : NSObject <NSCoding>
 
 /**
   @abstract Creates or returns the shared global store.

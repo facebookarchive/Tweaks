@@ -15,11 +15,35 @@
 #error ARC is required.
 #endif
 
+typedef NS_ENUM(unsigned long, UnsignedLongEnum) {
+  UnsignedLongEnumOff,
+  UnsignedLongEnumVerbose,
+  UnsignedLongEnumInfo,
+  UnsignedLongEnumWarn,
+  UnsignedLongEnumError,
+};
+
+@interface FBTweakTestObject : NSObject
+
+@property (nonatomic, assign, readwrite) UnsignedLongEnum unsignedLongProperty;
+
+@end
+
+@implementation FBTweakTestObject
+
+@end
+
+
 @interface FBTweakInlineTestsARC : XCTestCase
 
 @end
 
 @implementation FBTweakInlineTestsARC
+
+- (void)setUp
+{
+    [[FBTweakStore sharedInstance] reset];
+}
 
 - (void)testValueTypes
 {
@@ -35,11 +59,17 @@
   __attribute__((unused)) unsigned int testUnsignedInt = FBTweakValue(@"Unsigned Int", @"Unsigned Int", @"Unsigned Int", 1);
   XCTAssertEqual(testUnsignedInt, (unsigned int)1, @"Unsigned Int %d", testUnsignedInt);
 
+  __attribute__((unused)) long testLong = FBTweakValue(@"Long", @"Long", @"Long", -1);
+  XCTAssertEqual(testLong, (long)-1, @"Long %ld", testLong);
+
+  __attribute__((unused)) unsigned long testUnsignedLong = FBTweakValue(@"Unsigned Long", @"Unsigned Long", @"Unsigned Long", 1);
+  XCTAssertEqual(testUnsignedLong, (unsigned long)1, @"Unsigned Long %lu", testUnsignedLong);
+
   __attribute__((unused)) long long testLongLong = FBTweakValue(@"Long Long", @"Long Long", @"Long Long", -1);
-  XCTAssertEqual(testLongLong, (long long)-1, @"Long Long %d", testLongLong);
+  XCTAssertEqual(testLongLong, (long long)-1, @"Long Long %lld", testLongLong);
 
   __attribute__((unused)) unsigned long long testUnsignedLongLong = FBTweakValue(@"Unsigned Long Long", @"Unsigned Long Long", @"Unsigned Long Long", 1);
-  XCTAssertEqual(testUnsignedLongLong, (unsigned long long)1, @"Unsigned Long Long %d", testUnsignedLongLong);
+  XCTAssertEqual(testUnsignedLongLong, (unsigned long long)1, @"Unsigned Long Long %llu", testUnsignedLongLong);
 
   __attribute__((unused)) float testFloat = FBTweakValue(@"Float", @"Float", @"Float", 1.0);
   XCTAssertEqual(testFloat, (float)1.0, @"Float %f", testFloat);
@@ -55,6 +85,51 @@
 
   __attribute__((unused)) UIColor *testUIColor = FBTweakValue(@"UIColor", @"UIColor", @"UIColor", @"#FF00FFFF");
   XCTAssertEqualObjects(FBHexStringFromColor(testUIColor), @"#FF00FFFF", @"UIColor %@", testUIColor);
+
+  __attribute__((unused)) NSString *testNSArray = FBTweakValue(@"NSArray", @"NSArray", @"NSArray", @"two", (@[@"one", @"two", @"three"]));
+  XCTAssertEqualObjects(testNSArray, @"two", @"NSArray %@", testNSArray);
+
+  __attribute__((unused)) NSString *testNSDictionary = FBTweakValue(@"NSDictionary", @"NSDictionary", @"NSDictionary", @"key2", (@{@"key1":@"value1", @"key2":@"value2"}));
+  XCTAssertEqualObjects(testNSDictionary, @"key2", @"NSString %@", testNSDictionary);
+}
+
+- (void)testConstantValues
+{
+  static const double staticConstInput = 1.0;
+  double staticConstValue = FBTweakValue(@"Static", @"Static", @"Static", staticConstInput);
+  XCTAssertEqual(staticConstValue, staticConstInput, @"Static %f %f", staticConstInput, staticConstValue);
+}
+
+// All values should be converted to the same type as the default.
+- (void)testMixedRangeTypes
+{
+  FBTweak *mixedFloatTweak = FBTweakInline(@"Mixed Float", @"Mixed Float", @"Mixed Float", (float)1.0, (double)1.0, (long)1.0);
+  XCTAssertEqualObjects([NSString stringWithUTF8String:[mixedFloatTweak.defaultValue objCType]], @"f", @"Mixed Float Default %s", [mixedFloatTweak.defaultValue objCType]);
+  XCTAssertEqual([mixedFloatTweak.defaultValue floatValue], (float)1.0, @"Mixed Float Default %@", mixedFloatTweak.defaultValue);
+  XCTAssertEqualObjects([NSString stringWithUTF8String:[mixedFloatTweak.minimumValue objCType]], @"f", @"Mixed Float Minimum %s", [mixedFloatTweak.minimumValue objCType]);
+  XCTAssertEqual([mixedFloatTweak.minimumValue floatValue], (float)1.0, @"Mixed Float Minimum %@", mixedFloatTweak.minimumValue);
+  XCTAssertEqualObjects([NSString stringWithUTF8String:[mixedFloatTweak.maximumValue objCType]], @"f", @"Mixed Float Maximum %s", [mixedFloatTweak.maximumValue objCType]);
+  XCTAssertEqual([mixedFloatTweak.maximumValue floatValue], (float)1.0, @"Mixed Float Maximum %@", mixedFloatTweak.maximumValue);
+
+  FBTweak *mixedIntTweak = FBTweakInline(@"Mixed Int", @"Mixed Int", @"Mixed Int", (int)1, (char)1, (double)1);
+  XCTAssertEqualObjects([NSString stringWithUTF8String:[mixedIntTweak.defaultValue objCType]], @"i", @"Mixed Int Default %@", mixedIntTweak.defaultValue);
+  XCTAssertEqual([mixedIntTweak.defaultValue floatValue], (int)1, @"Mixed Int Default %@", mixedIntTweak.defaultValue);
+  XCTAssertEqualObjects([NSString stringWithUTF8String:[mixedIntTweak.minimumValue objCType]], @"i", @"Mixed Int Minimum %@", mixedIntTweak.minimumValue);
+  XCTAssertEqual([mixedIntTweak.minimumValue floatValue], (int)1, @"Mixed Int Minimum %@", mixedIntTweak.minimumValue);
+  XCTAssertEqualObjects([NSString stringWithUTF8String:[mixedIntTweak.maximumValue objCType]], @"i", @"Mixed Int Maximum %@", mixedIntTweak.maximumValue);
+  XCTAssertEqual([mixedIntTweak.maximumValue floatValue], (int)1, @"Mixed Int Maximum %@", mixedIntTweak.maximumValue);
+}
+
+// Actions use variables so they can work in the global scope, test for name conflicts.
+- (void)testMultipleActions
+{
+  FBTweakAction(@"Action", @"Action", @"One", ^{
+    NSLog(@"Action One");
+  });
+
+  FBTweakAction(@"Action", @"Action", @"Two", ^{
+    NSLog(@"Action Two");
+  });
 }
 
 - (void)testBind
@@ -66,6 +141,14 @@
   FBTweak *m = FBTweakInline(@"URL", @"Request", @"Bind", 5.0);
   m.currentValue = @(20.0);
   XCTAssertEqual(v.timeoutInterval, (NSTimeInterval)20.0, @"request %@ %@", v, m);
+
+  FBTweakTestObject *o = [FBTweakTestObject new];
+  FBTweakBind(o, unsignedLongProperty, @"Test", @"Object", @"Long", UnsignedLongEnumInfo, UnsignedLongEnumOff, UnsignedLongEnumError);
+  XCTAssertEqual(o.unsignedLongProperty, UnsignedLongEnumInfo, @"test object: %@", @(o.unsignedLongProperty));
+
+  FBTweak *oTweak = FBTweakInline(@"Test", @"Object", @"Long", UnsignedLongEnumInfo);
+  oTweak.currentValue = @(UnsignedLongEnumWarn);
+  XCTAssertEqual(o.unsignedLongProperty, UnsignedLongEnumWarn, @"test object: %@", @(o.unsignedLongProperty));
 }
 
 @end

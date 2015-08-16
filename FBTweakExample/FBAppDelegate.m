@@ -22,15 +22,28 @@
   UIViewController *_rootViewController;
   
   UILabel *_label;
+  UIButton *_tweaksButton;
+  FBTweak *_buttonColorTweak;
   FBTweak *_flipTweak;
 }
 
+FBTweakAction(@"Actions", @"Global", @"Hello", ^{
+  UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Hello" message:@"Global alert test." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Done", nil];
+  [alert show];
+});
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    
+  FBTweakAction(@"Actions", @"Scoped", @"One", ^{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Hello" message:@"Scoped alert test #1." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Done", nil];
+    [alert show];
+  });
+
   _window = [[FBTweakShakeWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
   _window.backgroundColor = [UIColor whiteColor];
   [_window makeKeyAndVisible];
-  
+
   _rootViewController = [[UIViewController alloc] init];
   _rootViewController.view.backgroundColor = [UIColor colorWithRed:FBTweakValue(@"Window", @"Color", @"Red", 0.9, 0.0, 1.0)
                                                         green:FBTweakValue(@"Window", @"Color", @"Green", 0.9, 0.0, 1.0)
@@ -46,27 +59,54 @@
   _label.textColor = [UIColor blackColor];
   _label.font = [UIFont systemFontOfSize:FBTweakValue(@"Content", @"Text", @"Size", 60.0)];
   FBTweakBind(_label, text, @"Content", @"Text", @"String", @"Tweaks");
-  FBTweakBind(_label, textColor, @"Content", @"Text", @"Color", @"#ff0000ff");
+  FBTweakBind(_label, textColor, @"Content", @"Text", @"Color", @"#ff0000ff", [UIColor whiteColor]);
   FBTweakBind(_label, alpha, @"Content", @"Text", @"Alpha", 0.5, 0.0, 1.0);
   [_rootViewController.view addSubview:_label];
 
-  FBTweakBind(_rootViewController.view, backgroundColor, @"Content", @"Background", @"Color", @"#ffffffff");
+  FBTweakBind(_rootViewController.view, backgroundColor, @"Content", @"Background", @"Color", @"#ffffffff", [UIColor whiteColor]);
 
   UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(labelTapped)];
   [_label addGestureRecognizer:tapRecognizer];
   
   _flipTweak = FBTweakInline(@"Window", @"Effects", @"Upside Down", NO);
   [_flipTweak addObserver:self];
-  
+
   CGRect tweaksButtonFrame = _window.bounds;
   tweaksButtonFrame.origin.y = _label.bounds.size.height;
   tweaksButtonFrame.size.height = tweaksButtonFrame.size.height - _label.bounds.size.height;
-  UIButton *tweaksButton = [[UIButton alloc] initWithFrame:tweaksButtonFrame];
-  [tweaksButton setTitle:@"Show Tweaks" forState:UIControlStateNormal];
-  [tweaksButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-  [tweaksButton addTarget:self action:@selector(buttonTapped) forControlEvents:UIControlEventTouchUpInside];
-  [_rootViewController.view addSubview:tweaksButton];
+  _tweaksButton = [[UIButton alloc] initWithFrame:tweaksButtonFrame];
+  [_tweaksButton setTitle:@"Show Tweaks" forState:UIControlStateNormal];
+  [_tweaksButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+  [_tweaksButton addTarget:self action:@selector(buttonTapped) forControlEvents:UIControlEventTouchUpInside];
+  [_rootViewController.view addSubview:_tweaksButton];
+    
+  FBTweak *animationDurationTweak = FBTweakInline(@"Content", @"Animation", @"Duration", 0.5);
+  animationDurationTweak.stepValue = [NSNumber numberWithFloat:0.005f];
+  animationDurationTweak.precisionValue = [NSNumber numberWithFloat:3.0f];
   
+
+  FBTweakAction(@"Actions", @"Scoped", @"Two", ^{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Hello" message:@"Scoped alert test #2." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Done", nil];
+    [alert show];
+  });
+
+  typedef NS_ENUM(NSUInteger, FBColor) {
+    FBBlackColor,
+    FBBlueColor,
+    FBGreenColor,
+  };
+
+  NSNumber *colorIndex = FBTweakValue(@"Content", @"Tweaks Button", @"Color", @(FBBlackColor), (@{
+    @(FBBlackColor) : @"Black",
+    @(FBBlueColor) : @"Blue",
+    @(FBGreenColor) : @"Green",
+  }));
+  UIColor *color = (colorIndex.integerValue == FBBlackColor ? [UIColor blackColor] : colorIndex.integerValue == FBBlueColor ? [UIColor blueColor] : [UIColor greenColor]);
+  [_tweaksButton setTitleColor:color forState:UIControlStateNormal];
+
+  NSNumber *rotation = FBTweakValue(@"Content", @"Text", @"Rotation (radians)", @(0), (@[@(0), @(M_PI_4), @(M_PI_2)]));
+  _label.transform = CGAffineTransformRotate(CGAffineTransformIdentity, [rotation floatValue]);
+
   return YES;
 }
 

@@ -129,16 +129,13 @@ static CGFloat const _FBDistanceBetweenKeyboardAndTextfield = 10.0f;
   UIViewAnimationCurve curve = [userInfo[UIKeyboardAnimationCurveUserInfoKey] integerValue];
   CGSize kbSize = [userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
 
-
   endFrame = [view.window convertRect:endFrame fromWindow:nil];
   endFrame = [view convertRect:endFrame fromView:view.window];
 
   CGRect activeTextFieldRect = [_activeTextField.superview convertRect:_activeTextField.frame toView:scrollView];
   CGRect rootViewRect = scrollView.frame;
   CGFloat kbHeight = kbSize.height;
-  if (UIInterfaceOrientationIsLandscape([self _topViewController].interfaceOrientation)) {
-    kbHeight = kbSize.width;
-  }
+
   CGFloat move = CGRectGetMaxY(activeTextFieldRect) - (CGRectGetHeight(rootViewRect) - kbHeight - _FBDistanceBetweenKeyboardAndTextfield);
 
   void (^animations)() = ^{

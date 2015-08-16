@@ -29,6 +29,19 @@
   return sharedInstance;
 }
 
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+  if ((self = [self init])) {
+    _orderedCategories = [[coder decodeObjectForKey:@"categories"] mutableCopy];
+    
+    for (FBTweakCategory *tweakCategory in _orderedCategories) {
+      [_namedCategories setObject:tweakCategory forKey:tweakCategory.name];
+    }
+  }
+  
+  return self;
+}
+
 - (instancetype)init
 {
   if ((self = [super init])) {
@@ -37,6 +50,11 @@
   }
   
   return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+  [coder encodeObject:_orderedCategories forKey:@"categories"];
 }
 
 - (NSArray *)tweakCategories
@@ -66,7 +84,9 @@
   for (FBTweakCategory *category in self.tweakCategories) {
     for (FBTweakCollection *collection in category.tweakCollections) {
       for (FBTweak *tweak in collection.tweaks) {
-        tweak.currentValue = nil;
+        if (!tweak.isAction) {
+          tweak.currentValue = nil;
+        }
       }
     }
   }

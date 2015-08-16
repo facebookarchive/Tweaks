@@ -11,15 +11,6 @@
 
 @class FBTweak;
 
-typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
-  _FBTweakTableViewCellModeNone = 0,
-  _FBTweakTableViewCellModeBoolean,
-  _FBTweakTableViewCellModeInteger,
-  _FBTweakTableViewCellModeReal,
-  _FBTweakTableViewCellModeString,
-  _FBTweakTableViewCellModeColor,
-};
-
 /**
   @abstract A table cell to edit a tweak.
  */
@@ -34,7 +25,5 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
 
 //! @abstract The tweak to show in the cell.
 @property (nonatomic, strong, readwrite) FBTweak *tweak;
-
-- (_FBTweakTableViewCellMode)mode;
 
 @end
