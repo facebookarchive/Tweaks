@@ -10,28 +10,33 @@
 #import "_FBTweakColorViewController.h"
 #import "_FBRGBView.h"
 #import "_FBHSBView.h"
+#import "_FBKeyboardManager.h"
 #import "FBColorUtils.h"
 #import "FBTweak.h"
 
-@interface FBTweakColorViewController () <FBColorViewDelegate>
+@interface _FBTweakColorViewController () <FBColorViewDelegate>
 {
   @private
 
   UIView<FBColorView>* _currentView;
   NSArray* _colorSelectionViews;
   FBTweak* _tweak;
+  _FBKeyboardManager* _keyboardManager;
 }
 
 @end
 
-@implementation FBTweakColorViewController
+@implementation _FBTweakColorViewController
 
 - (instancetype)initWithTweak:(FBTweak*)tweak
 {
+  NSParameterAssert(tweak != nil);
+  NSParameterAssert([tweak.possibleValues isKindOfClass:[UIColor class]]);
   self = [super init];
   if (self) {
     self.automaticallyAdjustsScrollViewInsets = NO;
     _tweak = tweak;
+    _keyboardManager = [[_FBKeyboardManager alloc] init];
   }
   return self;
 }
@@ -44,6 +49,18 @@
   self.navigationItem.titleView = segmentedControl;
   segmentedControl.selectedSegmentIndex = 0;
   [self _segmentControlDidChangeValue:segmentedControl];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+  [super viewWillAppear:animated];
+  [_keyboardManager enable];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+  [super viewWillDisappear:animated];
+  [_keyboardManager disable];
 }
 
 #pragma mark - FBColorViewDelegate methods
@@ -79,6 +96,8 @@
   NSDictionary *views = NSDictionaryOfVariableBindings(_currentView);
   [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_currentView]|" options:0 metrics:nil views:views]];
   [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_currentView]|" options:0 metrics:nil views:views]];
+
+  [_keyboardManager setScrollView:_currentView.scrollView];
 }
 
 - (UISegmentedControl*)_createSegmentedControl

@@ -10,9 +10,21 @@
 #import <UIKit/UIKit.h>
 
 /**
- @abstract Keyboard TextField manager. Adjust the content so that the target object remains visible.
+ @abstract Keyboard manager. Adjusts the content so that the target object remains visible.
  */
-@interface FBKeyboardManager : NSObject
+@interface _FBKeyboardManager : NSObject
+
+/**
+ @abstract Creates a keyboard manager.
+ @discussion This is the designated initializer.
+ @param scrollView The that contains the content to adjust.
+ */
+- (instancetype)initWithViewScrollView:(UIScrollView*)scrollView;
+
+/**
+ @abstract Sets the scrollView that contains the content to adjust.
+ */
+- (void)setScrollView:(UIScrollView*)scrollView;
 
 /**
  *  Enables the keyboard manager. The manager is enabled by default.

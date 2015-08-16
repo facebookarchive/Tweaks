@@ -11,80 +11,49 @@
 
 static CGFloat const _FBDistanceBetweenKeyboardAndTextfield = 10.0f;
 
-@interface UIView (Utils)
-- (id)firstSubviewOfClass:(Class)className;
-@end
-
-@implementation UIView (Utils)
-
-- (id)firstSubviewOfClass:(Class)className
+@interface _FBKeyboardManager ()
 {
-  return [self firstSubviewOfClass:className depthLevel:3];
-}
-
-- (id)firstSubviewOfClass:(Class)className depthLevel:(NSInteger)depthLevel
-{
-  if (depthLevel == 0) {
-    return nil;
-  }
-
-  NSInteger count = depthLevel;
-
-  NSArray *subviews = self.subviews;
-
-  while (count > 0) {
-    for (UIView *v in subviews) {
-      if ([v isKindOfClass:className]) {
-        return v;
-      }
-    }
-
-    count--;
-
-    for (UIView *v in subviews) {
-      UIView *retVal = [v firstSubviewOfClass:className depthLevel:count];
-      if (retVal) {
-        return retVal;
-      }
-    }
-  }
-
-  return nil;
+  __weak UIView* _activeTextField;
+  __weak UIScrollView* _scrollView;
 }
 
 @end
 
-@interface FBKeyboardManager ()
+@implementation _FBKeyboardManager
+
+- (instancetype)init
 {
-  UIView* _activeTextField;
+  return [self initWithViewScrollView:nil];
 }
 
-@end
-
-@implementation FBKeyboardManager
-
-- (id)init
+- (instancetype)initWithViewScrollView:(UIScrollView*)scrollView
 {
   self = [super init];
   if (self) {
+    _scrollView = scrollView;
     [self enable];
   }
   return self;
 }
 
+- (void)setScrollView:(UIScrollView*)scrollView
+{
+  _scrollView = scrollView;
+}
+
 - (void)enable
 {
-  // register for keyboard notifications
+  [self disable];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_keyboardFrameChanged:) name:UIKeyboardWillChangeFrameNotification object:nil];
-
-  // register for testfield notifications
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_textFieldDidBeginEditing:) name:UITextFieldTextDidBeginEditingNotification object:nil];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_textFieldDidEndEditing:) name:UITextFieldTextDidEndEditingNotification object:nil];
 }
 
 - (void)disable
 {
-  [[NSNotificationCenter defaultCenter] removeObserver:self];
+  [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillChangeFrameNotification object:nil];
+  [[NSNotificationCenter defaultCenter] removeObserver:self name:UITextFieldTextDidBeginEditingNotification object:nil];
+  [[NSNotificationCenter defaultCenter] removeObserver:self name:UITextFieldTextDidEndEditingNotification object:nil];
 }
 
 - (void)dealloc
@@ -94,60 +63,41 @@ static CGFloat const _FBDistanceBetweenKeyboardAndTextfield = 10.0f;
 
 #pragma mark - Private methods
 
-- (UIViewController*)_topViewController
-{
-  UIViewController *topController = [UIApplication sharedApplication].keyWindow.rootViewController;
-
-  while (topController.presentedViewController) {
-    topController = topController.presentedViewController;
-  }
-  if ([topController isKindOfClass:UINavigationController.class]) {
-    topController = [(UINavigationController*)topController topViewController];
-  }
-
-  return topController;
-}
-
--(void)_setRootViewFrame:(CGRect)frame withDuration:(CGFloat)duration options:(UIViewAnimationOptions)options
-{
-  UIViewController *controller = [self _topViewController];
-  [UIView animateWithDuration:duration delay:0 options:options animations:^{
-    [controller.view setFrame:frame];
-  } completion:nil];
-}
-
 - (void)_keyboardFrameChanged:(NSNotification *)notification
 {
-  UIView* view = [self _topViewController].view;
-  UIScrollView* scrollView = [view firstSubviewOfClass:[UIScrollView class]];
-  if (scrollView == nil) {
+  if (!_activeTextField) {
     return;
   }
+
+  UIView* contentView = _scrollView.superview;
+
   NSDictionary* userInfo = [notification userInfo];
   CGRect endFrame = [userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
   NSTimeInterval duration = [userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
   UIViewAnimationCurve curve = [userInfo[UIKeyboardAnimationCurveUserInfoKey] integerValue];
   CGSize kbSize = [userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
 
-  endFrame = [view.window convertRect:endFrame fromWindow:nil];
-  endFrame = [view convertRect:endFrame fromView:view.window];
+  endFrame = [contentView.window convertRect:endFrame fromWindow:nil];
+  endFrame = [contentView convertRect:endFrame fromView:contentView.window];
 
-  CGRect activeTextFieldRect = [_activeTextField.superview convertRect:_activeTextField.frame toView:scrollView];
-  CGRect rootViewRect = scrollView.frame;
+  CGRect activeTextFieldRect = [_activeTextField.superview convertRect:_activeTextField.frame toView:_scrollView];
+  CGRect rootViewRect = _scrollView.frame;
   CGFloat kbHeight = kbSize.height;
 
   CGFloat move = CGRectGetMaxY(activeTextFieldRect) - (CGRectGetHeight(rootViewRect) - kbHeight - _FBDistanceBetweenKeyboardAndTextfield);
 
   void (^animations)() = ^{
-    scrollView.contentOffset = CGPointMake(0, move);
-    CGFloat height = CGRectGetHeight(view.bounds);
-    UIEdgeInsets contentInset = scrollView.contentInset;
-    contentInset.bottom = (height - CGRectGetMinY(endFrame));
-    scrollView.contentInset = contentInset;
+    CGPoint contentOffset = _scrollView.contentOffset;
+    contentOffset.y = move;
+    _scrollView.contentOffset = contentOffset;
 
-    UIEdgeInsets scrollIndicatorInsets = scrollView.scrollIndicatorInsets;
-    scrollIndicatorInsets.bottom = (height - CGRectGetMinY(endFrame));
-    scrollView.scrollIndicatorInsets = scrollIndicatorInsets;
+    UIEdgeInsets contentInset = _scrollView.contentInset;
+    contentInset.bottom = (contentView.bounds.size.height - CGRectGetMinY(endFrame));
+    _scrollView.contentInset = contentInset;
+
+    UIEdgeInsets scrollIndicatorInsets = _scrollView.scrollIndicatorInsets;
+    scrollIndicatorInsets.bottom = (contentView.bounds.size.height - CGRectGetMinY(endFrame));
+    _scrollView.scrollIndicatorInsets = scrollIndicatorInsets;
   };
 
   UIViewAnimationOptions options = (curve << 16) | UIViewAnimationOptionBeginFromCurrentState;

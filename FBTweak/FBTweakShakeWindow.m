@@ -19,7 +19,6 @@ static CFTimeInterval _FBTweakShakeWindowMinTimeInterval = 0.4;
 @implementation FBTweakShakeWindow {
   BOOL _shaking;
   BOOL _active;
-  FBKeyboardManager* _keyboardManager;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
@@ -43,7 +42,6 @@ static void _FBTweakShakeWindowCommonInit(FBTweakShakeWindow *self)
 {
   // Maintain this state manually using notifications so Tweaks can be used in app extensions, where UIApplication is unavailable.
   self->_active = YES;
-  self->_keyboardManager = [[FBKeyboardManager alloc] init];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_applicationWillResignActiveWithNotification:) name:UIApplicationWillResignActiveNotification object:nil];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_applicationDidBecomeActiveWithNotification:) name:UIApplicationDidBecomeActiveNotification object:nil];
 }
@@ -66,7 +64,6 @@ static void _FBTweakShakeWindowCommonInit(FBTweakShakeWindow *self)
 
 - (void)tweakViewControllerPressedDone:(FBTweakViewController *)tweakViewController
 {
-  [_keyboardManager disable];
   [[NSNotificationCenter defaultCenter] postNotificationName:FBTweakShakeViewControllerDidDismissNotification object:tweakViewController];
   [tweakViewController.view endEditing:YES];
   [tweakViewController dismissViewControllerAnimated:YES completion:NULL];
@@ -81,7 +78,6 @@ static void _FBTweakShakeWindowCommonInit(FBTweakShakeWindow *self)
   
   // Prevent double-presenting the tweaks view controller.
   if (![visibleViewController isKindOfClass:[FBTweakViewController class]]) {
-    [_keyboardManager enable];
     FBTweakStore *store = [FBTweakStore sharedInstance];
     FBTweakViewController *viewController = [[FBTweakViewController alloc] initWithStore:store];
     viewController.tweaksDelegate = self;

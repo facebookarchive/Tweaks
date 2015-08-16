@@ -15,6 +15,7 @@
 #import "_FBTweakColorViewController.h"
 #import "_FBTweakDictionaryViewController.h"
 #import "_FBTweakArrayViewController.h"
+#import "_FBKeyboardManager.h"
 
 @interface _FBTweakCollectionViewController () <UITableViewDelegate, UITableViewDataSource>
 @end
@@ -22,6 +23,7 @@
 @implementation _FBTweakCollectionViewController {
   UITableView *_tableView;
   NSArray *_sortedCollections;
+  _FBKeyboardManager* _keyboardManager;
 }
 
 - (instancetype)initWithTweakCategory:(FBTweakCategory *)category
@@ -38,7 +40,7 @@
 - (void)viewDidLoad
 {
   [super viewDidLoad];
-  
+
   _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
   _tableView.delegate = self;
   _tableView.dataSource = self;
@@ -46,6 +48,8 @@
   [self.view addSubview:_tableView];
   
   self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(_done)];
+
+  _keyboardManager = [[_FBKeyboardManager alloc] initWithViewScrollView:_tableView];
 }
 
 - (void)dealloc
@@ -60,6 +64,14 @@
   
   [_tableView deselectRowAtIndexPath:_tableView.indexPathForSelectedRow animated:animated];
   [self _reloadData];
+
+  [_keyboardManager enable];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+  [super viewWillDisappear:animated];
+  [_keyboardManager disable];
 }
 
 - (void)_reloadData
@@ -73,30 +85,6 @@
 - (void)_done
 {
   [_delegate tweakCollectionViewControllerSelectedDone:self];
-}
-
-- (void)_keyboardFrameChanged:(NSNotification *)notification
-{
-  CGRect endFrame = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
-  endFrame = [self.view.window convertRect:endFrame fromWindow:nil];
-  endFrame = [self.view convertRect:endFrame fromView:self.view.window];
-  
-  NSTimeInterval duration = [notification.userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
-  UIViewAnimationCurve curve = [notification.userInfo[UIKeyboardAnimationCurveUserInfoKey] integerValue];
-  
-  void (^animations)() = ^{
-    UIEdgeInsets contentInset = _tableView.contentInset;
-    contentInset.bottom = (self.view.bounds.size.height - CGRectGetMinY(endFrame));
-    _tableView.contentInset = contentInset;
-    
-    UIEdgeInsets scrollIndicatorInsets = _tableView.scrollIndicatorInsets;
-    scrollIndicatorInsets.bottom = (self.view.bounds.size.height - CGRectGetMinY(endFrame));
-    _tableView.scrollIndicatorInsets = scrollIndicatorInsets;
-  };
-  
-  UIViewAnimationOptions options = (curve << 16) | UIViewAnimationOptionBeginFromCurrentState;
-  
-  [UIView animateWithDuration:duration delay:0 options:options animations:animations completion:NULL];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -142,7 +130,7 @@
     _FBTweakArrayViewController *vc = [[_FBTweakArrayViewController alloc] initWithTweak:tweak];
     [self.navigationController pushViewController:vc animated:YES];
   } else if ([tweak.possibleValues isKindOfClass:[UIColor class]]) {
-    FBTweakColorViewController *vc = [[FBTweakColorViewController alloc] initWithTweak:tweak];
+    _FBTweakColorViewController *vc = [[_FBTweakColorViewController alloc] initWithTweak:tweak];
     [self.navigationController pushViewController:vc animated:YES];
   }
 }

@@ -14,7 +14,7 @@
 /**
  *  @abstract Displays a view to edit a tweak with color value.
  */
-@interface FBTweakColorViewController : UIViewController
+@interface _FBTweakColorViewController : UIViewController
 
 /**
  @abstract Create a RGB view controller.
@@ -23,7 +23,7 @@
  */
 - (instancetype)initWithTweak:(FBTweak *)tweak;
 
-//! @abstract The tweak to edit.
+//! @abstract The color tweak to display in the view controller.
 @property (nonatomic, strong, readonly) FBTweak *tweak;
 
 @end
