@@ -28,11 +28,9 @@
 @property(nonatomic, assign) CGFloat maximumValue;
 
 /**
- *  Sets the array of CGColorRef objects defining the color of each gradient stop on the track.
+ *  The array of CGColorRef objects defining the color of each gradient stop on the track.
  *  The location of each gradient stop is evaluated with formula: i * width_of_the_track / number_of_colors.
- *  
- *  @param colors An array of CGColorRef objects.
  */
-- (void)setColors:(NSArray*)colors;
+@property(nonatomic, copy) NSArray* colors;
 
 @end

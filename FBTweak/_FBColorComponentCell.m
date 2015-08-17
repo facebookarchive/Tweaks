@@ -7,58 +7,35 @@
  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import "_FBColorComponentView.h"
+#import "_FBColorComponentCell.h"
 #import "_FBSliderView.h"
 
 extern CGFloat const FBRGBColorComponentMaxValue;
-static CGFloat const _FBColorComponentViewSpacing = 5.0f;
-static CGFloat const _FBColorComponentLabelWidth = 60.0f;
+static CGFloat const _FBColorComponentMargin = 5.0f;
+static CGFloat const _FBColorComponentTextSpacing = 10.0f;
 static CGFloat const _FBColorComponentTextFieldWidth = 50.0f;
 
-@interface _FBColorComponentView () <UITextFieldDelegate>
+@interface _FBColorComponentCell () <UITextFieldDelegate>
 {
 
-  @private
-  
-  BOOL _didSetupConstraints;
-}
+@private
 
-@property(nonatomic, strong, readwrite) UILabel* label;
-@property(nonatomic, strong, readwrite) _FBSliderView* slider;
-@property(nonatomic, strong, readwrite) UITextField* textField;
+  UILabel* _label;
+  _FBSliderView* _slider;
+  UITextField* _textField;
+}
 
 @end
 
-@implementation _FBColorComponentView
+@implementation _FBColorComponentCell
 
-+ (BOOL)requiresConstraintBasedLayout
+- (instancetype)init
 {
-  return YES;
-}
-
-- (instancetype)initWithFrame:(CGRect)frame
-{
-  self = [super initWithFrame:frame];
-  if (self) {
-    [self _baseInit];
+  if ((self = [super init])) {
+    [self _init];
   }
-  return self;
-}
 
-- (instancetype)initWithCoder:(NSCoder *)aDecoder
-{
-  self = [super initWithCoder:aDecoder];
-  if (self) {
-    [self _baseInit];
-  }
   return self;
-}
-
-- (void)setTag:(NSInteger)tag
-{
-  [super setTag:tag];
-  _textField.tag = tag;
-  _slider.tag = tag;
 }
 
 - (void)setTitle:(NSString *)title
@@ -102,13 +79,14 @@ static CGFloat const _FBColorComponentTextFieldWidth = 50.0f;
   return _slider.value;
 }
 
-- (void)updateConstraints
+- (void)setColors:(NSArray *)colors
 {
-  if (_didSetupConstraints == NO){
-    [self _setupConstraints];
-    _didSetupConstraints = YES;
-  }
-  [super updateConstraints];
+  _slider.colors = colors;
+}
+
+- (NSArray *)colors
+{
+  return _slider.colors;
 }
 
 #pragma mark - UITextFieldDelegate methods
@@ -116,7 +94,7 @@ static CGFloat const _FBColorComponentTextFieldWidth = 50.0f;
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
   [self setValue:[textField.text floatValue]];
-  [self sendActionsForControlEvents:UIControlEventValueChanged];
+  [self.delegate colorComponentCell:self didChangeValue:self.value];
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
@@ -140,47 +118,52 @@ static CGFloat const _FBColorComponentTextFieldWidth = 50.0f;
 
 #pragma mark - Private methods
 
-- (void)_baseInit
+- (void)_init
 {
+  self.selectionStyle = UITableViewCellSelectionStyleNone;
+
   _format = @"%.f";
 
   _label = [[UILabel alloc] init];
   _label.translatesAutoresizingMaskIntoConstraints = NO;
   _label.adjustsFontSizeToFitWidth = YES;
-  [self addSubview:_label];
+  [self.contentView addSubview:_label];
 
   _slider = [[_FBSliderView alloc] init];
   _slider.maximumValue = FBRGBColorComponentMaxValue;
   _slider.translatesAutoresizingMaskIntoConstraints = NO;
-  [self addSubview:_slider];
+  [self.contentView addSubview:_slider];
 
   _textField = [[UITextField alloc] init];
-  _textField.borderStyle = UITextBorderStyleRoundedRect;
+  _textField.textAlignment = NSTextAlignmentCenter;
   _textField.translatesAutoresizingMaskIntoConstraints = NO;
   [_textField setKeyboardType:UIKeyboardTypeNumbersAndPunctuation];
-  [self addSubview:_textField];
+  [self.contentView addSubview:_textField];
 
   [self setValue:0.0f];
   [_slider addTarget:self action:@selector(_didChangeSliderValue:) forControlEvents:UIControlEventValueChanged];
   [_textField setDelegate:self];
+
+  [self _installConstraints];
 }
 
 - (void)_didChangeSliderValue:(_FBSliderView*)sender
 {
   [self setValue:sender.value];
-  [self sendActionsForControlEvents:UIControlEventValueChanged];
+  [self.delegate colorComponentCell:self didChangeValue:self.value];
 }
 
-- (void)_setupConstraints
+- (void)_installConstraints
 {
   NSDictionary *views = @{ @"label" : _label, @"slider" : _slider, @"textField" : _textField };
-  NSDictionary* metrics = @{ @"spacing" : @(_FBColorComponentViewSpacing),
-                             @"label_width" : @(_FBColorComponentLabelWidth),
+  NSDictionary* metrics = @{ @"margin" : @(_FBColorComponentMargin),
+                             @"spacing" : @(_FBColorComponentTextSpacing),
                              @"textfield_width" : @(_FBColorComponentTextFieldWidth) };
-  [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[label(label_width)]-spacing-[slider]-spacing-[textField(textfield_width)]|"
+  [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-margin-[label]-spacing-[slider]-spacing-[textField(textfield_width)]-margin-|"
                                                                options:NSLayoutFormatAlignAllCenterY metrics:metrics views:views]];
-  [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[label]|" options:0 metrics:nil views:views]];
-  [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[textField]|" options:0 metrics:nil views:views]];
+  [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-margin-[label]-margin-|" options:0 metrics:metrics views:views]];
+  [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-margin-[textField]-margin-|" options:0 metrics:metrics views:views]];
+  [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-margin-[slider]-margin-|" options:0 metrics:metrics views:views]];
 }
 
 @end

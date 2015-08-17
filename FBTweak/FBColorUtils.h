@@ -15,6 +15,22 @@ typedef struct { CGFloat hue, saturation, brightness, alpha; } HSB;
 extern CGFloat const FBRGBColorComponentMaxValue;
 extern CGFloat const FBAlphaComponentMaxValue;
 extern CGFloat const FBHSBColorComponentMaxValue;
+extern NSUInteger const FBRGBAColorComponentsSize;
+extern NSUInteger const FBHSBAColorComponentsSize;
+
+typedef NS_ENUM(NSUInteger, _FBRGBColorComponent) {
+  _FBRGBColorComponentRed,
+  _FBRGBColorComponentGreed,
+  _FBRGBColorComponentBlue,
+  _FBRGBColorComponentAlpha
+};
+
+typedef NS_ENUM(NSUInteger, _FBHSBColorComponent) {
+  _FBHSBColorComponentHue,
+  _FBHSBColorComponentSaturation,
+  _FBHSBColorComponentBrightness,
+  _FBHSBColorComponentAlpha
+};
 
 /**
  * Converts an RGB color value to HSV.

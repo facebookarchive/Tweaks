@@ -9,12 +9,18 @@
 
 #import <UIKit/UIKit.h>
 
-@class _FBSliderView;
+@class _FBColorComponentCell;
+
+@protocol _FBColorComponentCellDelegate <NSObject>
+
+- (void)colorComponentCell:(_FBColorComponentCell*)cell didChangeValue:(CGFloat)value;
+
+@end
 
 /**
- @abstract A view to edit a color component.
+ @abstract A cell to edit a color component.
  */
-@interface _FBColorComponentView : UIControl
+@interface _FBColorComponentCell : UITableViewCell
 
 //! @abstract The title.
 @property(nonatomic, copy) NSString* title;
@@ -28,10 +34,13 @@
 //! @abstract The maximum value. The default value is 255.0.
 @property(nonatomic, assign) CGFloat maximumValue;
 
-//! @abstract The format string to use apply for textfield value. `%.f` by default. 
+//! @abstract The format string to apply for textfield value. `%.f` by default.
 @property(nonatomic, copy) NSString* format;
 
-//! @abstract The color slider to edit color component.
-@property(nonatomic, strong, readonly) _FBSliderView* slider;
+//! @abstract The array of CGColorRef objects defining the color of each gradient stop on the track.
+@property(nonatomic, copy) NSArray* colors;
+
+//! @abstract The cell's delegate.
+@property(nonatomic, weak) id<_FBColorComponentCellDelegate> delegate;
 
 @end

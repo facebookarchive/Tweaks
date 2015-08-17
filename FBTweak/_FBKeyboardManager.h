@@ -22,11 +22,6 @@
 - (instancetype)initWithViewScrollView:(UIScrollView*)scrollView;
 
 /**
- @abstract Sets the scrollView that contains the content to adjust.
- */
-- (void)setScrollView:(UIScrollView*)scrollView;
-
-/**
  *  Enables the keyboard manager. The manager is enabled by default.
  */
 - (void)enable;

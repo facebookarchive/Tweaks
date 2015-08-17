@@ -25,11 +25,6 @@ static const CGFloat _FBSliderViewTrackHeight = 3.0f;
 
 @implementation _FBSliderView
 
-+ (BOOL)requiresConstraintBasedLayout
-{
-  return YES;
-}
-
 - (instancetype)initWithFrame:(CGRect)frame
 {
   self = [super initWithFrame:frame];
@@ -82,6 +77,11 @@ static const CGFloat _FBSliderViewTrackHeight = 3.0f;
 {
   _trackLayer.colors = colors;
   [self _updateLocations];
+}
+
+- (NSArray*)colors
+{
+  return _trackLayer.colors;
 }
 
 #pragma mark - UIControl touch tracking events

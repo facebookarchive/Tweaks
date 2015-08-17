@@ -23,11 +23,6 @@
 
 @implementation _FBColorWheelView
 
-+ (BOOL)requiresConstraintBasedLayout
-{
-  return YES;
-}
-
 - (instancetype)initWithFrame:(CGRect)frame
 {
   self = [super initWithFrame:frame];
@@ -37,8 +32,6 @@
 
     self.layer.delegate = self;
     [self.layer addSublayer:[self indicatorLayer]];
-
-//    [self setSelectedPoint:CGPointMake(dimension / 2, dimension / 2)];
   }
   return self;
 }

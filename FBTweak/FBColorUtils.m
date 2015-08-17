@@ -12,6 +12,8 @@
 CGFloat const FBRGBColorComponentMaxValue = 255.0f;
 CGFloat const FBAlphaComponentMaxValue = 100.0f;
 CGFloat const FBHSBColorComponentMaxValue = 1.0f;
+NSUInteger const FBRGBAColorComponentsSize = 4;
+NSUInteger const FBHSBAColorComponentsSize = 4;
 
 extern void FBRGB2HSB(RGB rgb, HSB* outHSB)
 {

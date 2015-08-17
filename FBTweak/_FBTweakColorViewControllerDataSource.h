@@ -9,11 +9,14 @@
 
 #import <UIKit/UIKit.h>
 
-#import "_FBColorView.h"
-
 /**
- @abstract A view to edit RGBA color components.
+ @abstract The _FBTweakColorViewControllerDataSource protocol declares an interface that provides cells for table view.
  */
-@interface _FBRGBView : UIView <_FBColorView>
+@protocol _FBTweakColorViewControllerDataSource <UITableViewDataSource>
+
+@required
+
+//! @abstract The current color value.
+@property(nonatomic, strong) UIColor* value;
 
 @end

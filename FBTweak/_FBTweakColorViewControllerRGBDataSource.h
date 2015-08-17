@@ -8,12 +8,11 @@
  */
 
 #import <UIKit/UIKit.h>
-
-#import "_FBColorView.h"
+#import "_FBTweakColorViewControllerDataSource.h"
 
 /**
- @abstract A view to edit HSB color components.
+ @abstract A data source to privide cell's for RGB table view.
  */
-@interface _FBHSBView : UIView <_FBColorView>
+@interface _FBTweakColorViewControllerRGBDataSource : NSObject <_FBTweakColorViewControllerDataSource>
 
 @end

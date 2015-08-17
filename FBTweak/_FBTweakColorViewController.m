@@ -8,20 +8,23 @@
  */
 
 #import "_FBTweakColorViewController.h"
-#import "_FBRGBView.h"
-#import "_FBHSBView.h"
+#import "_FBTweakColorViewControllerHSBDataSource.h"
+#import "_FBTweakColorViewControllerRGBDataSource.h"
 #import "_FBKeyboardManager.h"
 #import "FBColorUtils.h"
 #import "FBTweak.h"
 
-@interface _FBTweakColorViewController () <_FBColorViewDelegate>
+static void * kContext = &kContext;
+
+@interface _FBTweakColorViewController ()
 {
   @private
 
-  UIView<_FBColorView>* _currentView;
-  NSArray* _colorSelectionViews;
+  NSObject <_FBTweakColorViewControllerDataSource>* _rgbDataSource;
+  NSObject <_FBTweakColorViewControllerDataSource>* _hsbDataSource;
   FBTweak* _tweak;
   _FBKeyboardManager* _keyboardManager;
+  UITableView *_tableView;
 }
 
 @end
@@ -34,16 +37,33 @@
   NSParameterAssert([tweak.possibleValues isKindOfClass:[UIColor class]]);
   self = [super init];
   if (self) {
-    self.automaticallyAdjustsScrollViewInsets = NO;
     _tweak = tweak;
-    _keyboardManager = [[_FBKeyboardManager alloc] init];
+    _rgbDataSource = [[_FBTweakColorViewControllerRGBDataSource alloc] init];
+    _hsbDataSource = [[_FBTweakColorViewControllerHSBDataSource alloc] init];
+    [_rgbDataSource addObserver:self forKeyPath:NSStringFromSelector(@selector(value)) options:NSKeyValueObservingOptionNew context:kContext];
+    [_hsbDataSource addObserver:self forKeyPath:NSStringFromSelector(@selector(value)) options:NSKeyValueObservingOptionNew context:kContext];
   }
   return self;
+}
+
+- (void)dealloc
+{
+  [_rgbDataSource removeObserver:self forKeyPath:NSStringFromSelector(@selector(value))];
+  [_hsbDataSource removeObserver:self forKeyPath:NSStringFromSelector(@selector(value))];
 }
 
 - (void)viewDidLoad
 {
   [super viewDidLoad];
+
+  _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
+  _tableView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+  _tableView.delegate = self;
+  _tableView.estimatedRowHeight = 44.0;
+  _tableView.rowHeight = UITableViewAutomaticDimension;
+  [self.view addSubview:_tableView];
+
+  _keyboardManager = [[_FBKeyboardManager alloc] initWithViewScrollView:_tableView];
 
   UISegmentedControl* segmentedControl = [self _createSegmentedControl];
   self.navigationItem.titleView = segmentedControl;
@@ -63,41 +83,30 @@
   [_keyboardManager disable];
 }
 
-#pragma mark - FBColorViewDelegate methods
+#pragma mark - KVO methods
 
-- (void)colorView:(id<_FBColorView>)colorView didChangeValue:(UIColor*)colorValue
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(NSObject<_FBTweakColorViewControllerDataSource>*)dataSource change:(NSDictionary *)change context:(void *)context
 {
-  _tweak.currentValue = FBHexStringFromColor(colorValue);
+  if (context != kContext) {
+    return;
+  }
+  _tweak.currentValue = FBHexStringFromColor(dataSource.value);
 }
 
 #pragma mark - Private methods
 
-- (UIView<_FBColorView>*)_colorSelectionViewAtIndex:(NSUInteger)idx
+- (UIColor*)_colorValue
 {
-  if (!_colorSelectionViews) {
-    UIView* rgbView = [[_FBRGBView alloc] initWithFrame:self.view.bounds];
-    UIView* hsbView = [[_FBHSBView alloc] initWithFrame:self.view.bounds];
-    _colorSelectionViews = @[rgbView, hsbView];
-  }
-  return idx < [_colorSelectionViews count] ? _colorSelectionViews[idx] : nil;
+  FBTweakValue value = (_tweak.currentValue ?: _tweak.defaultValue);
+  return FBColorFromHexString(value);
 }
 
 - (IBAction)_segmentControlDidChangeValue:(UISegmentedControl*)sender
 {
-  _currentView.delegate = nil;
-  [_currentView removeFromSuperview];
-  _currentView = [self _colorSelectionViewAtIndex:sender.selectedSegmentIndex];
-  FBTweakValue value = (_tweak.currentValue ?: _tweak.defaultValue);
-  _currentView.value = FBColorFromHexString(value);
-  _currentView.delegate = self;
-  [self _applyNavBarInsetsForView:_currentView];
-  [self.view addSubview:_currentView];
-  _currentView.translatesAutoresizingMaskIntoConstraints = NO;
-  NSDictionary *views = NSDictionaryOfVariableBindings(_currentView);
-  [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_currentView]|" options:0 metrics:nil views:views]];
-  [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_currentView]|" options:0 metrics:nil views:views]];
-
-  [_keyboardManager setScrollView:_currentView.scrollView];
+  NSObject<_FBTweakColorViewControllerDataSource>* dataSource = sender.selectedSegmentIndex == 0 ? _rgbDataSource : _hsbDataSource;
+  dataSource.value = [self _colorValue];
+  _tableView.dataSource = dataSource;
+  [_tableView reloadData];
 }
 
 - (UISegmentedControl*)_createSegmentedControl
@@ -106,18 +115,6 @@
   [segmentedControl addTarget:self action:@selector(_segmentControlDidChangeValue:) forControlEvents:UIControlEventValueChanged];
   [segmentedControl sizeToFit];
   return segmentedControl;
-}
-
-- (void)_applyNavBarInsetsForView:(UIView<_FBColorView>*)view
-{
-  // For insetting with a navigation bar
-  CGFloat topInset = CGRectGetHeight(self.navigationController.navigationBar.frame) + CGRectGetHeight([UIApplication sharedApplication].statusBarFrame);
-  if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
-    topInset = CGRectGetHeight(self.navigationController.navigationBar.frame) + CGRectGetWidth([UIApplication sharedApplication].statusBarFrame);
-  }
-  UIEdgeInsets insets = UIEdgeInsetsMake(topInset, 0, 0, 0);
-  view.scrollView.contentInset = insets;
-  view.scrollView.scrollIndicatorInsets = insets;
 }
 
 @end
