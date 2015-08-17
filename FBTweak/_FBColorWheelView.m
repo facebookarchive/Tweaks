@@ -32,6 +32,10 @@
 
     self.layer.delegate = self;
     [self.layer addSublayer:[self indicatorLayer]];
+    UIPanGestureRecognizer* panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(_handlePanGesture:)];
+    panGestureRecognizer.minimumNumberOfTouches = 1;
+    panGestureRecognizer.maximumNumberOfTouches = 1;
+    [self addGestureRecognizer:panGestureRecognizer];
   }
   return self;
 }
@@ -56,57 +60,17 @@
   return _indicatorLayer;
 }
 
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
-{
-  CGPoint position = [[touches anyObject] locationInView:self];
-  [self onTouchEventWithPosition:position];
-}
-
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
-{
-  CGPoint position = [[touches anyObject] locationInView:self];
-  [self onTouchEventWithPosition:position];
-}
-
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
-{
-  CGPoint position = [[touches anyObject] locationInView:self];
-  [self onTouchEventWithPosition:position];
-}
-
-- (void)onTouchEventWithPosition:(CGPoint)point {
-  CGFloat radius = CGRectGetWidth(self.bounds) / 2;
-  CGFloat dist = sqrtf((radius - point.x) * (radius - point.x) + (radius - point.y) * (radius - point.y));
-
-  if (dist <= radius) {
-    [self colorWheelValueWithPosition:point hue:&_hue saturation:&_saturation];
-    [self setSelectedPoint:point];
-    [self sendActionsForControlEvents:UIControlEventValueChanged];
-  }
-}
-
-- (void)setSelectedPoint:(CGPoint)point
-{
-  UIColor* selectedColor = [UIColor colorWithHue:_hue saturation:_saturation brightness:1.0f alpha:1.0f];
-  [CATransaction begin];
-  [CATransaction setValue:(id)kCFBooleanTrue
-                   forKey:kCATransactionDisableActions];
-  self.indicatorLayer.position = point;
-  self.indicatorLayer.backgroundColor = selectedColor.CGColor;
-  [CATransaction commit];
-}
-
 - (void)setHue:(CGFloat)hue
 {
   _hue = hue;
-  [self setSelectedPoint:[self _selectedPoint]];
+  [self _setSelectedPoint:[self _selectedPoint]];
   [self setNeedsDisplay];
 }
 
 - (void)setSaturation:(CGFloat)saturation
 {
   _saturation = saturation;
-  [self setSelectedPoint:[self _selectedPoint]];
+  [self _setSelectedPoint:[self _selectedPoint]];
   [self setNeedsDisplay];
 }
 
@@ -126,12 +90,36 @@
 - (void)layoutSublayersOfLayer:(CALayer *)layer
 {
   if (layer == self.layer) {
-    [self setSelectedPoint:[self _selectedPoint]];
+    [self _setSelectedPoint:[self _selectedPoint]];
     [self.layer setNeedsDisplay];
   }
 }
 
 #pragma mark - Private methods
+
+- (void)_handlePanGesture:(UIPanGestureRecognizer*)panGestureRecognizer
+{
+  CGPoint position = [panGestureRecognizer locationInView:self];
+  CGFloat radius = CGRectGetWidth(self.bounds) / 2;
+  CGFloat dist = sqrtf((radius - position.x) * (radius - position.x) + (radius - position.y) * (radius - position.y));
+
+  if (dist <= radius) {
+    [self colorWheelValueWithPosition:position hue:&_hue saturation:&_saturation];
+    [self _setSelectedPoint:position];
+    [self sendActionsForControlEvents:UIControlEventValueChanged];
+  }
+}
+
+- (void)_setSelectedPoint:(CGPoint)point
+{
+  UIColor* selectedColor = [UIColor colorWithHue:_hue saturation:_saturation brightness:1.0f alpha:1.0f];
+  [CATransaction begin];
+  [CATransaction setValue:(id)kCFBooleanTrue
+                   forKey:kCATransactionDisableActions];
+  self.indicatorLayer.position = point;
+  self.indicatorLayer.backgroundColor = selectedColor.CGColor;
+  [CATransaction commit];
+}
 
 - (CGPoint)_selectedPoint
 {

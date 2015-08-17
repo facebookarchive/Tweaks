@@ -58,7 +58,6 @@ static void * kContext = &kContext;
 
   _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
   _tableView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
-  _tableView.delegate = self;
   _tableView.estimatedRowHeight = 44.0;
   _tableView.rowHeight = UITableViewAutomaticDimension;
   [self.view addSubview:_tableView];
