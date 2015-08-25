@@ -12,11 +12,11 @@
 typedef struct { CGFloat red, green, blue, alpha; } RGB;
 typedef struct { CGFloat hue, saturation, brightness, alpha; } HSB;
 
-extern CGFloat const FBRGBColorComponentMaxValue;
-extern CGFloat const FBAlphaComponentMaxValue;
-extern CGFloat const FBHSBColorComponentMaxValue;
-extern NSUInteger const FBRGBAColorComponentsSize;
-extern NSUInteger const FBHSBAColorComponentsSize;
+extern CGFloat const _FBRGBColorComponentMaxValue;
+extern CGFloat const _FBAlphaComponentMaxValue;
+extern CGFloat const _FBHSBColorComponentMaxValue;
+extern NSUInteger const _FBRGBAColorComponentsSize;
+extern NSUInteger const _FBHSBAColorComponentsSize;
 
 typedef NS_ENUM(NSUInteger, _FBRGBColorComponent) {
   _FBRGBColorComponentRed,
@@ -38,19 +38,19 @@ typedef NS_ENUM(NSUInteger, _FBHSBColorComponent) {
  * returns h, s, and b in the set [0, 1].
  *
  *  @param rgb   The rgb color values
- *  @param outHSB The hsb color values
+ *  @return The hsb color values
  */
-extern void FBRGB2HSB(RGB rgb, HSB* outHSB);
+extern HSB _FBRGB2HSB(RGB rgb);
 
 /**
  * Converts an HSB color value to RGB.
  * Assumes h, s, and b are contained in the set [0, 1] and
  * returns r, g, and b in the set [0, 255].
  *
- *  @param outRGB   The rgb color values
  *  @param hsb The hsb color values
+ *  @return The rgb color values
  */
-extern void FBHSB2RGB(HSB hsb, RGB* outRGB);
+extern RGB _FBHSB2RGB(HSB hsb);
 
 /**
  *  Returns the rgb values of the color components.
@@ -59,22 +59,4 @@ extern void FBHSB2RGB(HSB hsb, RGB* outRGB);
  *
  *  @return The values of the color components (including alpha).
  */
-extern RGB FBRGBColorComponents(UIColor* color);
-
-/**
- *  Converts hex string to the UIColor representation.
- *
- *  @param color The color value.
- *
- *  @return The hex string color value.
- */
-extern NSString* FBHexStringFromColor(UIColor* color);
-
-/**
- *  Converts UIColor value to the hex string.
- *
- *  @param hexString The hex string color value.
- *
- *  @return The color value.
- */
-extern UIColor* FBColorFromHexString(NSString* hexString);
+extern RGB _FBRGBColorComponents(UIColor *color);

@@ -11,18 +11,10 @@
 #import "_FBColorWheelView.h"
 
 static CGFloat const _FBColorWheelDimention = 200.0f;
-static CGFloat const _FBViewMargin = 10.0f;
 
-@interface _FBColorWheelCell () {
-
-@private
-
-  _FBColorWheelView* _colorWheel;
+@implementation _FBColorWheelCell {
+  _FBColorWheelView *_colorWheel;
 }
-
-@end
-
-@implementation _FBColorWheelCell
 
 - (instancetype)init
 {
@@ -53,6 +45,13 @@ static CGFloat const _FBViewMargin = 10.0f;
   _colorWheel.saturation = saturation;
 }
 
+-(void)layoutSubviews
+{
+  [super layoutSubviews];
+
+  _colorWheel.center = (CGPoint){CGRectGetMidX(self.contentView.bounds), CGRectGetMidY(self.contentView.bounds)};
+}
+
 #pragma mark - Private methods
 
 - (void)_init
@@ -61,20 +60,9 @@ static CGFloat const _FBViewMargin = 10.0f;
 
   _colorWheel = [[_FBColorWheelView alloc] init];
   _colorWheel.translatesAutoresizingMaskIntoConstraints = NO;
+  _colorWheel.bounds = (CGRect){0, 0, _FBColorWheelDimention, _FBColorWheelDimention};
   [_colorWheel addTarget:self action:@selector(_didChangeValue:) forControlEvents:UIControlEventValueChanged];
   [self.contentView addSubview:_colorWheel];
-
-  [self _installConstraints];
-}
-
-- (void)_installConstraints
-{
-  NSDictionary* views = NSDictionaryOfVariableBindings(_colorWheel);
-  NSDictionary* metrics = @{ @"color_wheel_dimension" : @(_FBColorWheelDimention),
-                             @"margin" : @(_FBViewMargin)};
-  [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(>=margin)-[_colorWheel(color_wheel_dimension)]-(>=margin)-|" options:0 metrics:metrics views:views]];
-  [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-margin-[_colorWheel(color_wheel_dimension)]-margin-|" options:0 metrics:metrics views:views]];
-  [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:_colorWheel attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0.0]];
 }
 
 - (void)_didChangeValue:(_FBColorWheelView*)sender

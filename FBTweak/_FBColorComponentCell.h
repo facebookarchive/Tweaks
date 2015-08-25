@@ -23,7 +23,7 @@
 @interface _FBColorComponentCell : UITableViewCell
 
 //! @abstract The title.
-@property(nonatomic, copy) NSString* title;
+@property(nonatomic, copy) NSString *title;
 
 //! @abstract The current value. The default value is 0.0.
 @property(nonatomic, assign) CGFloat value;
@@ -35,10 +35,10 @@
 @property(nonatomic, assign) CGFloat maximumValue;
 
 //! @abstract The format string to apply for textfield value. `%.f` by default.
-@property(nonatomic, copy) NSString* format;
+@property(nonatomic, copy) NSString *format;
 
 //! @abstract The array of CGColorRef objects defining the color of each gradient stop on the track.
-@property(nonatomic, copy) NSArray* colors;
+@property(nonatomic, copy) NSArray *colors;
 
 //! @abstract The cell's delegate.
 @property(nonatomic, weak) id<_FBColorComponentCellDelegate> delegate;

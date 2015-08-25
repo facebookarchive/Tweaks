@@ -23,7 +23,7 @@
 @implementation _FBTweakCollectionViewController {
   UITableView *_tableView;
   NSArray *_sortedCollections;
-  _FBKeyboardManager* _keyboardManager;
+  _FBKeyboardManager *_keyboardManager;
 }
 
 - (instancetype)initWithTweakCategory:(FBTweakCategory *)category

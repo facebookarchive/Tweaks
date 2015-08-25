@@ -9,14 +9,9 @@
 
 #import "_FBKeyboardManager.h"
 
-@interface _FBKeyboardManager ()
-{
-  __weak UIScrollView* _scrollView;
+@implementation _FBKeyboardManager {
+  __weak UIScrollView *_scrollView;
 }
-
-@end
-
-@implementation _FBKeyboardManager
 
 - (instancetype)init
 {
@@ -53,9 +48,9 @@
 
 - (void)_keyboardFrameChanged:(NSNotification *)notification
 {
-  UIView* contentView = _scrollView.superview;
+  UIView *contentView = _scrollView.superview;
 
-  NSDictionary* userInfo = [notification userInfo];
+  NSDictionary *userInfo = [notification userInfo];
   CGRect endFrame = [userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
   endFrame = [contentView.window convertRect:endFrame fromWindow:nil];
   endFrame = [contentView convertRect:endFrame fromView:contentView.window];

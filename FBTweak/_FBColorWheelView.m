@@ -8,20 +8,13 @@
  */
 
 #import "_FBColorWheelView.h"
-#import "FBColorUtils.h"
+#import "_FBColorUtils.h"
 
-@interface _FBColorWheelView () {
-
-  @private
-
-  CALayer* _indicatorLayer;
+@implementation _FBColorWheelView {
+  CALayer *_indicatorLayer;
   CGFloat _hue;
   CGFloat _saturation;
 }
-
-@end
-
-@implementation _FBColorWheelView
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
@@ -32,7 +25,7 @@
 
     self.layer.delegate = self;
     [self.layer addSublayer:[self indicatorLayer]];
-    UIPanGestureRecognizer* panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(_handlePanGesture:)];
+    UIPanGestureRecognizer *panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(_handlePanGesture:)];
     panGestureRecognizer.minimumNumberOfTouches = 1;
     panGestureRecognizer.maximumNumberOfTouches = 1;
     [self addGestureRecognizer:panGestureRecognizer];
@@ -112,7 +105,7 @@
 
 - (void)_setSelectedPoint:(CGPoint)point
 {
-  UIColor* selectedColor = [UIColor colorWithHue:_hue saturation:_saturation brightness:1.0f alpha:1.0f];
+  UIColor *selectedColor = [UIColor colorWithHue:_hue saturation:_saturation brightness:1.0f alpha:1.0f];
   [CATransaction begin];
   [CATransaction setValue:(id)kCFBooleanTrue
                    forKey:kCATransactionDisableActions];
@@ -142,7 +135,7 @@
         if (saturation > 0.99) a = (1.0 - saturation) * 100;
         else a = 1.0;
         HSB hsb = {hue, saturation, 1.0f, a};
-        FBHSB2RGB(hsb, &rgb);
+        rgb = _FBHSB2RGB(hsb);
       }
 
       int i = 4 * (x + y * size.width);

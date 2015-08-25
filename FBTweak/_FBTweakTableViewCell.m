@@ -8,27 +8,17 @@
  */
 
 #import "FBTweak.h"
-#import "FBColorUtils.h"
 #import "_FBTweakTableViewCell.h"
 
-@interface UIImage (Utils)
-+ (UIImage*)imageWithColor:(UIColor*)color size:(CGSize)size;
-@end
-
-@implementation UIImage (Utils)
-
-+ (UIImage*)imageWithColor:(UIColor*)color size:(CGSize)size
-{
+static UIImage *_FBCreateColorCellsThumbnail(UIColor *color, CGSize size) {
   UIGraphicsBeginImageContext(size);
-  UIBezierPath* rPath = [UIBezierPath bezierPathWithRect:CGRectMake(0., 0., size.width, size.height)];
+  UIBezierPath *rPath = [UIBezierPath bezierPathWithRect:CGRectMake(0, 0, size.width, size.height)];
   [color setFill];
   [rPath fill];
-  UIImage* image = UIGraphicsGetImageFromCurrentImageContext();
+  UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
   UIGraphicsEndImageContext();
   return image;
 }
-
-@end
 
 typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
   _FBTweakTableViewCellModeNone = 0,
@@ -137,12 +127,10 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
     mode = _FBTweakTableViewCellModeDictionary;
   } else if ([tweak.possibleValues isKindOfClass:[NSArray class]]) {
     mode = _FBTweakTableViewCellModeArray;
+  } else if ([tweak.possibleValues isKindOfClass:[UIColor class]]) {
+    mode = _FBTweakTableViewCellModeColor;
   } else if ([value isKindOfClass:[NSString class]]) {
-    if ([value hasPrefix:@"#"]) {
-      mode = _FBTweakTableViewCellModeColor;
-    } else {
-      mode = _FBTweakTableViewCellModeString;
-    }
+    mode = _FBTweakTableViewCellModeString;
   } else if ([value isKindOfClass:[NSNumber class]]) {
     // In the 64-bit runtime, BOOL is a real boolean.
     // NSNumber doesn't always agree; compare both.
@@ -371,7 +359,7 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
       self.detailTextLabel.text = [value description];
     }
   } else if (_mode == _FBTweakTableViewCellModeColor) {
-    [self.imageView setImage:[UIImage imageWithColor:FBColorFromHexString(value) size:CGSizeMake(30, 30)]];
+    [self.imageView setImage:_FBCreateColorCellsThumbnail(value, CGSizeMake(30, 30))];
   }
 }
 

@@ -9,30 +9,27 @@
 
 #import "_FBTweakColorViewControllerRGBDataSource.h"
 #import "_FBColorComponentCell.h"
-#import "FBColorUtils.h"
+#import "_FBColorUtils.h"
 
-@interface _FBTweakColorViewControllerRGBDataSource () <_FBColorComponentCellDelegate> {
-
-  @private
-
-  NSArray* _titles;
-  NSArray* _maxValues;
-  RGB _colorComponents;
-  NSArray* _colorComponentCells;
-  UITableViewCell* _colorSampleCell;
-}
+@interface _FBTweakColorViewControllerRGBDataSource () <_FBColorComponentCellDelegate>
 
 @end
 
-@implementation _FBTweakColorViewControllerRGBDataSource
+@implementation _FBTweakColorViewControllerRGBDataSource {
+  NSArray *_titles;
+  NSArray *_maxValues;
+  RGB _colorComponents;
+  NSArray *_colorComponentCells;
+  UITableViewCell *_colorSampleCell;
+}
 
 - (instancetype)init
 {
   self = [super init];
   if (self) {
     _titles = @[@"R", @"G", @"B", @"A"];
-    _maxValues = @[@(FBRGBColorComponentMaxValue), @(FBRGBColorComponentMaxValue), @(FBRGBColorComponentMaxValue),
-                   @(FBAlphaComponentMaxValue)];
+    _maxValues = @[@(_FBRGBColorComponentMaxValue), @(_FBRGBColorComponentMaxValue), @(_FBRGBColorComponentMaxValue),
+                   @(_FBAlphaComponentMaxValue)];
     [self _createCells];
   }
   return self;
@@ -41,7 +38,7 @@
 - (void)setValue:(UIColor *)value
 {
   [self willChangeValueForKey:NSStringFromSelector(@selector(value))];
-  _colorComponents = FBRGBColorComponents(value);
+  _colorComponents = _FBRGBColorComponents(value);
   [self _reloadData];
   [self didChangeValueForKey:NSStringFromSelector(@selector(value))];
 }
@@ -87,11 +84,11 @@
 - (void)_reloadData
 {
   _colorSampleCell.backgroundColor = self.value;
-  NSArray* components = [self _colorComponentsWithRGB:_colorComponents];
-  for (int i = 0; i < FBRGBAColorComponentsSize; ++i) {
-    _FBColorComponentCell* cell = _colorComponentCells[i];
+  NSArray *components = [self _colorComponentsWithRGB:_colorComponents];
+  for (int i = 0; i < _FBRGBAColorComponentsSize; ++i) {
+    _FBColorComponentCell *cell = _colorComponentCells[i];
     cell.value = [components[i] floatValue] * [_maxValues[i] floatValue];
-    if (i < FBRGBAColorComponentsSize - 1) {
+    if (i < _FBRGBAColorComponentsSize - 1) {
       cell.colors = [self _colorsWithComponents:components colorIndex:i];
     }
   }
@@ -99,11 +96,11 @@
 
 - (void)_createCells
 {
-  NSMutableArray* tmp = [NSMutableArray array];
-  NSArray* components = [self _colorComponentsWithRGB:_colorComponents];
-  for (int i = 0; i < FBRGBAColorComponentsSize; ++i) {
-    _FBColorComponentCell* cell = [[_FBColorComponentCell alloc] init];
-    if (i < FBRGBAColorComponentsSize - 1) {
+  NSMutableArray *tmp = [NSMutableArray array];
+  NSArray *components = [self _colorComponentsWithRGB:_colorComponents];
+  for (int i = 0; i < _FBRGBAColorComponentsSize; ++i) {
+    _FBColorComponentCell *cell = [[_FBColorComponentCell alloc] init];
+    if (i < _FBRGBAColorComponentsSize - 1) {
       cell.colors = [self _colorsWithComponents:components colorIndex:i];
     }
     cell.value = [components[i] floatValue] * [_maxValues[i] floatValue];
@@ -126,7 +123,7 @@
 {
   CGFloat currentColorValue = [colorComponents[colorIndex] floatValue];
   CGFloat colors[12];
-  for (NSUInteger i = 0; i < FBRGBAColorComponentsSize; i++)
+  for (NSUInteger i = 0; i < _FBRGBAColorComponentsSize; i++)
   {
     colors[i] = [colorComponents[i] floatValue];
     colors[i + 4] = [colorComponents[i] floatValue];
@@ -135,9 +132,9 @@
   colors[colorIndex] = 0;
   colors[colorIndex + 4] = currentColorValue;
   colors[colorIndex + 8] = 1.0;
-  UIColor* start = [UIColor colorWithRed:colors[0] green:colors[1] blue:colors[2] alpha:1.0f];
-  UIColor* middle = [UIColor colorWithRed:colors[4] green:colors[5] blue:colors[6] alpha:1.0f];
-  UIColor* end = [UIColor colorWithRed:colors[8] green:colors[9] blue:colors[10] alpha:1.0f];
+  UIColor *start = [UIColor colorWithRed:colors[0] green:colors[1] blue:colors[2] alpha:1.0f];
+  UIColor *middle = [UIColor colorWithRed:colors[4] green:colors[5] blue:colors[6] alpha:1.0f];
+  UIColor *end = [UIColor colorWithRed:colors[8] green:colors[9] blue:colors[10] alpha:1.0f];
   return @[(id)start.CGColor, (id)middle.CGColor, (id)end.CGColor];
 }
 

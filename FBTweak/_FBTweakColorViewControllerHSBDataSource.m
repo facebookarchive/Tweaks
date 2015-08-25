@@ -10,31 +10,28 @@
 #import "_FBTweakColorViewControllerHSBDataSource.h"
 #import "_FBColorComponentCell.h"
 #import "_FBColorWheelCell.h"
-#import "FBColorUtils.h"
+#import "_FBColorUtils.h"
 
-@interface _FBTweakColorViewControllerHSBDataSource () <_FBColorComponentCellDelegate, _FBColorWheelCellDelegate> {
-
-@private
-
-  NSArray* _titles;
-  NSArray* _maxValues;
-  HSB _colorComponents;
-  NSArray* _colorComponentCells;
-  UITableViewCell* _colorSampleCell;
-  _FBColorWheelCell* _colorWheelCell;
-}
+@interface _FBTweakColorViewControllerHSBDataSource () <_FBColorComponentCellDelegate, _FBColorWheelCellDelegate>
 
 @end
 
-@implementation _FBTweakColorViewControllerHSBDataSource
+@implementation _FBTweakColorViewControllerHSBDataSource {
+  NSArray *_titles;
+  NSArray *_maxValues;
+  HSB _colorComponents;
+  NSArray *_colorComponentCells;
+  UITableViewCell *_colorSampleCell;
+  _FBColorWheelCell *_colorWheelCell;
+}
 
 - (instancetype)init
 {
   self = [super init];
   if (self) {
     _titles = @[@"H", @"S", @"B", @"A"];
-    _maxValues = @[@(FBHSBColorComponentMaxValue), @(FBHSBColorComponentMaxValue), @(FBHSBColorComponentMaxValue),
-                           @(FBAlphaComponentMaxValue)];
+    _maxValues = @[@(_FBHSBColorComponentMaxValue), @(_FBHSBColorComponentMaxValue), @(_FBHSBColorComponentMaxValue),
+                           @(_FBAlphaComponentMaxValue)];
     [self _createCells];
   }
   return self;
@@ -42,7 +39,7 @@
 
 - (void)setValue:(UIColor *)value
 {
-  FBRGB2HSB(FBRGBColorComponents(value), &_colorComponents);
+  _colorComponents = _FBRGB2HSB(_FBRGBColorComponents(value));
   [self _reloadData];
 }
 
@@ -72,7 +69,7 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-  return 2;
+  return 2; // color sample + color components
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -80,7 +77,7 @@
   if (section == 0) {
     return 1;
   }
-  return [_colorComponentCells count] + 1;
+  return [_colorComponentCells count] + 1; // color wheel + hsba components
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -102,29 +99,29 @@
   _colorWheelCell.hue = _colorComponents.hue;
   _colorWheelCell.saturation = _colorComponents.saturation;
 
-  NSArray* components = [self _colorComponentsWithHSB:_colorComponents];
-  for (int i = 0; i < FBHSBAColorComponentsSize; ++i) {
-    _FBColorComponentCell* cell = _colorComponentCells[i];
-    if (i == FBRGBAColorComponentsSize - 2) { // set colors for brightness component only
-      UIColor* tmp = [UIColor colorWithHue:_colorComponents.hue saturation:_colorComponents.saturation brightness:1.0f alpha:1.0f];
+  NSArray *components = [self _colorComponentsWithHSB:_colorComponents];
+  for (int i = 0; i < _FBHSBAColorComponentsSize; ++i) {
+    _FBColorComponentCell *cell = _colorComponentCells[i];
+    if (i == _FBRGBAColorComponentsSize - 2) { // set colors for brightness component only
+      UIColor *tmp = [UIColor colorWithHue:_colorComponents.hue saturation:_colorComponents.saturation brightness:1.0f alpha:1.0f];
       cell.colors = @[(id)[UIColor blackColor].CGColor, (id)tmp.CGColor];
     }
-    cell.value = [components[i] floatValue] * (i == FBHSBAColorComponentsSize - 1 ? [_maxValues[i] floatValue] : 1);
+    cell.value = [components[i] floatValue] * (i == _FBHSBAColorComponentsSize - 1 ? [_maxValues[i] floatValue] : 1);
   }
 }
 
 - (void)_createCells
 {
-  NSArray* components = [self _colorComponentsWithHSB:_colorComponents];
-  NSMutableArray* tmp = [NSMutableArray array];
-  for (int i = 0; i < FBHSBAColorComponentsSize; ++i) {
-    _FBColorComponentCell* cell = [[_FBColorComponentCell alloc] init];
-    if (i == FBRGBAColorComponentsSize - 2) { // set colors for brightness component only
-      UIColor* tmp = [UIColor colorWithHue:_colorComponents.hue saturation:_colorComponents.saturation brightness:1.0f alpha:1.0f];
+  NSArray *components = [self _colorComponentsWithHSB:_colorComponents];
+  NSMutableArray *tmp = [NSMutableArray array];
+  for (int i = 0; i < _FBHSBAColorComponentsSize; ++i) {
+    _FBColorComponentCell *cell = [[_FBColorComponentCell alloc] init];
+    if (i == _FBRGBAColorComponentsSize - 2) { // set colors for brightness component only
+      UIColor *tmp = [UIColor colorWithHue:_colorComponents.hue saturation:_colorComponents.saturation brightness:1.0f alpha:1.0f];
       cell.colors = @[(id)[UIColor blackColor].CGColor, (id)tmp.CGColor];
     }
-    cell.format = i == FBHSBAColorComponentsSize - 1 ? @"%.f" : @"%.2f";
-    cell.value = [components[i] floatValue] * (i == FBHSBAColorComponentsSize - 1 ? [_maxValues[i] floatValue] : 1);
+    cell.format = i == _FBHSBAColorComponentsSize - 1 ? @"%.f" : @"%.2f";
+    cell.value = [components[i] floatValue] * (i == _FBHSBAColorComponentsSize - 1 ? [_maxValues[i] floatValue] : 1);
     cell.title = _titles[i];
     cell.maximumValue = [_maxValues[i] floatValue];
     cell.delegate = self;
@@ -153,7 +150,7 @@
       _colorComponents.brightness = value;
       break;
     case _FBHSBColorComponentAlpha:
-      _colorComponents.alpha = value / FBAlphaComponentMaxValue;
+      _colorComponents.alpha = value / _FBAlphaComponentMaxValue;
       break;
   }
   [self didChangeValueForKey:NSStringFromSelector(@selector(value))];

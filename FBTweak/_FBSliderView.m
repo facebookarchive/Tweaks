@@ -13,17 +13,10 @@ static const CGFloat _FBSliderViewHeight = 28.0f;
 static const CGFloat _FBSliderViewThumbDimension = 28.0f;
 static const CGFloat _FBSliderViewTrackHeight = 3.0f;
 
-@interface _FBSliderView () {
-
-  @private
-
-  CALayer* _thumbLayer;
-  CAGradientLayer* _trackLayer;
+@implementation _FBSliderView {
+  CALayer *_thumbLayer;
+  CAGradientLayer *_trackLayer;
 }
-
-@end
-
-@implementation _FBSliderView
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
@@ -144,7 +137,7 @@ static const CGFloat _FBSliderViewTrackHeight = 3.0f;
     return;
   }
   CGFloat step = 1.0f / (size - 1);
-  NSMutableArray* locations = [NSMutableArray array];
+  NSMutableArray *locations = [NSMutableArray array];
   [locations addObject:@(0.0f)];
   for (NSUInteger i = 1; i < size - 1; ++i) {
     [locations addObject:@(i * step)];

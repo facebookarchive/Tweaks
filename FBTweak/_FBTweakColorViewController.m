@@ -11,25 +11,23 @@
 #import "_FBTweakColorViewControllerHSBDataSource.h"
 #import "_FBTweakColorViewControllerRGBDataSource.h"
 #import "_FBKeyboardManager.h"
-#import "FBColorUtils.h"
 #import "FBTweak.h"
 
 static void * kContext = &kContext;
+static CGFloat const _FBTweakColorCellDefaultHeight = 44.0;
+static CGFloat const _FBColorWheelCellHeight = 220.0f;
 
-@interface _FBTweakColorViewController ()
-{
-  @private
-
-  NSObject <_FBTweakColorViewControllerDataSource>* _rgbDataSource;
-  NSObject <_FBTweakColorViewControllerDataSource>* _hsbDataSource;
-  FBTweak* _tweak;
-  _FBKeyboardManager* _keyboardManager;
-  UITableView *_tableView;
-}
+@interface _FBTweakColorViewController () <UITableViewDelegate>
 
 @end
 
-@implementation _FBTweakColorViewController
+@implementation _FBTweakColorViewController {
+  NSObject <_FBTweakColorViewControllerDataSource>* _rgbDataSource;
+  NSObject <_FBTweakColorViewControllerDataSource>* _hsbDataSource;
+  FBTweak *_tweak;
+  _FBKeyboardManager *_keyboardManager;
+  UITableView *_tableView;
+}
 
 - (instancetype)initWithTweak:(FBTweak*)tweak
 {
@@ -58,13 +56,12 @@ static void * kContext = &kContext;
 
   _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
   _tableView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
-  _tableView.estimatedRowHeight = 44.0;
-  _tableView.rowHeight = UITableViewAutomaticDimension;
+  _tableView.delegate = self;
   [self.view addSubview:_tableView];
 
   _keyboardManager = [[_FBKeyboardManager alloc] initWithViewScrollView:_tableView];
 
-  UISegmentedControl* segmentedControl = [self _createSegmentedControl];
+  UISegmentedControl *segmentedControl = [self _createSegmentedControl];
   self.navigationItem.titleView = segmentedControl;
   segmentedControl.selectedSegmentIndex = 0;
   [self _segmentControlDidChangeValue:segmentedControl];
@@ -89,18 +86,27 @@ static void * kContext = &kContext;
   if (context != kContext) {
     return;
   }
-  _tweak.currentValue = FBHexStringFromColor(dataSource.value);
+  _tweak.currentValue = dataSource.value;
+}
+
+#pragma mark - UITableViewDelegate
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+  if (tableView.dataSource == _hsbDataSource && indexPath.section == 1 && indexPath.row == 0) {
+    return _FBColorWheelCellHeight;
+  }
+  return _FBTweakColorCellDefaultHeight;
 }
 
 #pragma mark - Private methods
 
 - (UIColor*)_colorValue
 {
-  FBTweakValue value = (_tweak.currentValue ?: _tweak.defaultValue);
-  return FBColorFromHexString(value);
+  return _tweak.currentValue ?: _tweak.defaultValue;
 }
 
-- (IBAction)_segmentControlDidChangeValue:(UISegmentedControl*)sender
+- (void)_segmentControlDidChangeValue:(UISegmentedControl*)sender
 {
   NSObject<_FBTweakColorViewControllerDataSource>* dataSource = sender.selectedSegmentIndex == 0 ? _rgbDataSource : _hsbDataSource;
   dataSource.value = [self _colorValue];
@@ -110,7 +116,7 @@ static void * kContext = &kContext;
 
 - (UISegmentedControl*)_createSegmentedControl
 {
-  UISegmentedControl* segmentedControl = [[UISegmentedControl alloc] initWithItems:@[@"RGB", @"HSB"]];
+  UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithItems:@[@"RGB", @"HSB"]];
   [segmentedControl addTarget:self action:@selector(_segmentControlDidChangeValue:) forControlEvents:UIControlEventValueChanged];
   [segmentedControl sizeToFit];
   return segmentedControl;

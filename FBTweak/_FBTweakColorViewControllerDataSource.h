@@ -17,6 +17,6 @@
 @required
 
 //! @abstract The current color value.
-@property(nonatomic, strong) UIColor* value;
+@property(nonatomic, strong) UIColor *value;
 
 @end
