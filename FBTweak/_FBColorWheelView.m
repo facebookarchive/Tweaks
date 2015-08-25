@@ -10,6 +10,54 @@
 #import "_FBColorWheelView.h"
 #import "_FBColorUtils.h"
 
+static void _FBColorWheelValue(CGPoint position, CGFloat radius, CGFloat *hue, CGFloat* saturation){
+  float dx = (float)(position.x - radius) / radius;
+  float dy = (float)(position.y - radius) / radius;
+  float d = sqrtf((float)(dx*dx + dy*dy));
+  *saturation = d;
+  if (d == 0) {
+    *hue = 0;
+  } else {
+    *hue = acosf((float)dx / d) / M_PI / 2.0f;
+    if (dy < 0) *hue = 1.0 - *hue;
+  }
+}
+
+static CGImageRef _FBCreateColorWheelImage(CGRect bounds) {
+  CGFloat dimension = MIN(CGRectGetWidth(bounds), CGRectGetHeight(bounds));
+  CFMutableDataRef bitmapData = CFDataCreateMutable(NULL, 0);
+  CFDataSetLength(bitmapData, dimension * dimension * 4);
+  UInt8 * bitmap = CFDataGetMutableBytePtr(bitmapData);
+  for (int y = 0; y < dimension; y++) {
+    for (int x = 0; x < dimension; x++) {
+      CGFloat hue, saturation, a = 0.0f;
+      _FBColorWheelValue(CGPointMake(x, y), dimension / 2, &hue, &saturation);
+      RGB rgb = {0.0f, 0.0f, 0.0f, 0.0f};
+      if (saturation < 1.0) {
+        // Antialias the edge of the circle.
+        if (saturation > 0.99) a = (1.0 - saturation) * 100;
+        else a = 1.0;
+        HSB hsb = {hue, saturation, 1.0f, a};
+        rgb = _FBHSB2RGB(hsb);
+      }
+
+      int i = 4 * (x + y * dimension);
+      bitmap[i] = rgb.red * 0xff;
+      bitmap[i+1] = rgb.green * 0xff;
+      bitmap[i+2] = rgb.blue * 0xff;
+      bitmap[i+3] = rgb.alpha * 0xff;
+    }
+  }
+
+  CGDataProviderRef dataProvider = CGDataProviderCreateWithCFData(bitmapData);
+  CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+  CGImageRef imageRef = CGImageCreate(dimension, dimension, 8, 32, dimension * 4, colorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaLast, dataProvider, NULL, 0, kCGRenderingIntentDefault);
+  CGDataProviderRelease(dataProvider);
+  CGColorSpaceRelease(colorSpace);
+  CFRelease(bitmapData);
+  return imageRef;
+}
+
 @implementation _FBColorWheelView {
   CALayer *_indicatorLayer;
   CGFloat _hue;
@@ -23,34 +71,14 @@
     _hue = 0.0f;
     _saturation = 0.0f;
 
-    self.layer.delegate = self;
-    [self.layer addSublayer:[self indicatorLayer]];
+    _indicatorLayer = [self _createIndicatorLayer];
+    [self.layer addSublayer:_indicatorLayer];
     UIPanGestureRecognizer *panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(_handlePanGesture:)];
     panGestureRecognizer.minimumNumberOfTouches = 1;
     panGestureRecognizer.maximumNumberOfTouches = 1;
     [self addGestureRecognizer:panGestureRecognizer];
   }
   return self;
-}
-
-- (CALayer*)indicatorLayer
-{
-  if (!_indicatorLayer) {
-    CGFloat dimension = 33;
-    UIColor *edgeColor = [UIColor colorWithWhite:0.9 alpha:0.8];
-    _indicatorLayer = [CALayer layer];
-    _indicatorLayer.cornerRadius = dimension / 2;
-    _indicatorLayer.borderColor = edgeColor.CGColor;
-    _indicatorLayer.borderWidth = 2;
-    _indicatorLayer.backgroundColor = [UIColor whiteColor].CGColor;
-    _indicatorLayer.bounds = CGRectMake(0, 0, dimension, dimension);
-    _indicatorLayer.position = CGPointMake(CGRectGetWidth(self.bounds) / 2, CGRectGetHeight(self.bounds) / 2);
-    _indicatorLayer.shadowColor = [UIColor blackColor].CGColor;
-    _indicatorLayer.shadowOffset = CGSizeZero;
-    _indicatorLayer.shadowRadius = 1;
-    _indicatorLayer.shadowOpacity = 0.5f;
-  }
-  return _indicatorLayer;
 }
 
 - (void)setHue:(CGFloat)hue
@@ -71,13 +99,7 @@
 
 - (void)displayLayer:(CALayer *)layer
 {
-  CGFloat dimension = MIN(CGRectGetWidth(self.frame), CGRectGetHeight(self.frame));
-  CFMutableDataRef bitmapData = CFDataCreateMutable(NULL, 0);
-  CFDataSetLength(bitmapData, dimension * dimension * 4);
-  [self colorWheelBitmap:CFDataGetMutableBytePtr(bitmapData) withSize:CGSizeMake(dimension, dimension)];
-  id image = [self imageWithRGBAData:bitmapData width:dimension height:dimension];
-  CFRelease(bitmapData);
-  self.layer.contents = image;
+  self.layer.contents = (__bridge_transfer id)_FBCreateColorWheelImage(self.bounds);
 }
 
 - (void)layoutSublayersOfLayer:(CALayer *)layer
@@ -90,6 +112,24 @@
 
 #pragma mark - Private methods
 
+- (CALayer*)_createIndicatorLayer
+{
+  CGFloat dimension = 33;
+  UIColor *edgeColor = [UIColor colorWithWhite:0.9 alpha:0.8];
+  CALayer* indicatorLayer = [CALayer layer];
+  indicatorLayer.cornerRadius = dimension / 2;
+  indicatorLayer.borderColor = edgeColor.CGColor;
+  indicatorLayer.borderWidth = 2;
+  indicatorLayer.backgroundColor = [UIColor whiteColor].CGColor;
+  indicatorLayer.bounds = CGRectMake(0, 0, dimension, dimension);
+  indicatorLayer.position = CGPointMake(CGRectGetWidth(self.bounds) / 2, CGRectGetHeight(self.bounds) / 2);
+  indicatorLayer.shadowColor = [UIColor blackColor].CGColor;
+  indicatorLayer.shadowOffset = CGSizeZero;
+  indicatorLayer.shadowRadius = 1;
+  indicatorLayer.shadowOpacity = 0.5f;
+  return indicatorLayer;
+}
+
 - (void)_handlePanGesture:(UIPanGestureRecognizer*)panGestureRecognizer
 {
   CGPoint position = [panGestureRecognizer locationInView:self];
@@ -97,7 +137,7 @@
   CGFloat dist = sqrtf((radius - position.x) * (radius - position.x) + (radius - position.y) * (radius - position.y));
 
   if (dist <= radius) {
-    [self colorWheelValueWithPosition:position hue:&_hue saturation:&_saturation];
+    _FBColorWheelValue(position, radius, &_hue, &_saturation);
     [self _setSelectedPoint:position];
     [self sendActionsForControlEvents:UIControlEventValueChanged];
   }
@@ -109,8 +149,8 @@
   [CATransaction begin];
   [CATransaction setValue:(id)kCFBooleanTrue
                    forKey:kCATransactionDisableActions];
-  self.indicatorLayer.position = point;
-  self.indicatorLayer.backgroundColor = selectedColor.CGColor;
+  _indicatorLayer.position = point;
+  _indicatorLayer.backgroundColor = selectedColor.CGColor;
   [CATransaction commit];
 }
 
@@ -121,55 +161,6 @@
   CGFloat x = dimension / 2 + radius * cosf(_hue * M_PI * 2.0f);
   CGFloat y = dimension / 2 + radius * sinf(_hue * M_PI * 2.0f);
   return CGPointMake(x, y);
-}
-
-- (void)colorWheelBitmap:(out UInt8 *)bitmap withSize:(CGSize)size
-{
-  for (int y = 0; y < size.width; y++) {
-    for (int x = 0; x < size.height; x++) {
-      CGFloat hue, saturation, a = 0.0f;
-      [self colorWheelValueWithPosition:CGPointMake(x, y) hue:&hue saturation:&saturation];
-      RGB rgb = {0.0f, 0.0f, 0.0f, 0.0f};
-      if (saturation < 1.0) {
-        // Antialias the edge of the circle.
-        if (saturation > 0.99) a = (1.0 - saturation) * 100;
-        else a = 1.0;
-        HSB hsb = {hue, saturation, 1.0f, a};
-        rgb = _FBHSB2RGB(hsb);
-      }
-
-      int i = 4 * (x + y * size.width);
-      bitmap[i] = rgb.red * 0xff;
-      bitmap[i+1] = rgb.green * 0xff;
-      bitmap[i+2] = rgb.blue * 0xff;
-      bitmap[i+3] = rgb.alpha * 0xff;
-    }
-  }
-}
-
-- (void)colorWheelValueWithPosition:(CGPoint)position hue:(out CGFloat*)hue saturation:(out CGFloat*)saturation
-{
-  int c = CGRectGetWidth(self.bounds) / 2;
-  float dx = (float)(position.x - c) / c;
-  float dy = (float)(position.y - c) / c;
-  float d = sqrtf((float)(dx*dx + dy*dy));
-  *saturation = d;
-  if (d == 0) {
-    *hue = 0;
-  } else {
-    *hue = acosf((float)dx / d) / M_PI / 2.0f;
-    if (dy < 0) *hue = 1.0 - *hue;
-  }
-}
-
-- (id)imageWithRGBAData:(CFDataRef)data width:(NSUInteger)width  height:(NSUInteger)height
-{
-  CGDataProviderRef dataProvider = CGDataProviderCreateWithCFData(data);
-  CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-  CGImageRef imageRef = CGImageCreate(width, height, 8, 32, width * 4, colorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaLast, dataProvider, NULL, 0, kCGRenderingIntentDefault);
-  CGDataProviderRelease(dataProvider);
-  CGColorSpaceRelease(colorSpace);
-  return (__bridge_transfer id)imageRef;
 }
 
 @end
