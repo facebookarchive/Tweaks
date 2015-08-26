@@ -44,7 +44,7 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
   UIStepper *_stepper;
 }
 
-- (instancetype)initWithReuseIdentifier:(NSString *)reuseIdentifier;
+- (instancetype)initWithReuseIdentifier:(NSString *)reuseIdentifier
 {
   if ((self = [super initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:reuseIdentifier])) {
     _accessoryView = [[UIView alloc] init];

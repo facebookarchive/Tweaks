@@ -22,8 +22,8 @@
  */
 @interface _FBColorWheelCell : UITableViewCell
 
-@property(nonatomic, assign) CGFloat hue;
-@property(nonatomic, assign) CGFloat saturation;
+- (void)setHue:(CGFloat)hue;
+- (void)setSaturation:(CGFloat)saturation;
 
 //! @abstract The cell's delegate.
 @property(nonatomic, weak) id<_FBColorWheelCellDelegate> delegate;

@@ -60,3 +60,34 @@ extern RGB _FBHSB2RGB(HSB hsb);
  *  @return The values of the color components (including alpha).
  */
 extern RGB _FBRGBColorComponents(UIColor *color);
+
+/**
+ *  Returns the color wheel's hue value according to the position, color wheel's center and radius.
+ *
+ *  @param position The position in the color wheel.
+ *  @param center The color wheel's center.
+ *  @param radius The color wheel's radius.
+ *
+ *  @return The hue value.
+ */
+extern CGFloat _FBGetColorWheelHue(CGPoint position, CGPoint center, CGFloat radius);
+
+/**
+ *  Returns the color wheel's saturation value according to the position, color wheel's center and radius.
+ *
+ *  @param position The position in the color wheel.
+ *  @param center The color wheel's center.
+ *  @param radius The color wheel's radius.
+ *
+ *  @return The saturation value.
+ */
+extern CGFloat _FBGetColorWheelSaturation(CGPoint position, CGPoint center, CGFloat radius);
+
+/**
+ *  Creates the color wheel with specified diameter.
+ *
+ *  @param diameter The color wheel's diameter.
+ *
+ *  @return The color wheel image.
+ */
+extern CGImageRef _FBCreateColorWheelImage(CGFloat diameter);

@@ -8,66 +8,130 @@
  */
 
 #import "_FBColorWheelCell.h"
-#import "_FBColorWheelView.h"
+#import "_FBColorUtils.h"
 
-static CGFloat const _FBColorWheelDimention = 200.0f;
+static CGFloat const _FBColorWheelDiameter = 200.0;
+static CGFloat const _FBColorWheelIndicatorDiameter = 33.0;
+
+@interface _FBColorWheelCell () <UIGestureRecognizerDelegate>
+
+@end
 
 @implementation _FBColorWheelCell {
-  _FBColorWheelView *_colorWheel;
+  CALayer *_colorWheelLayer;
+  CALayer *_indicatorLayer;
+  CGFloat _hue;
+  CGFloat _saturation;
 }
 
-- (instancetype)init
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
-  self = [super init];
+  self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
   if (self) {
-    [self _init];
+    _colorWheelLayer = [CALayer layer];
+    _colorWheelLayer.anchorPoint = (CGPoint){0.5, 0.5};
+    _colorWheelLayer.bounds = (CGRect){0, 0, _FBColorWheelDiameter, _FBColorWheelDiameter};
+    _colorWheelLayer.contents = (__bridge_transfer id)_FBCreateColorWheelImage(_FBColorWheelDiameter);
+    [self.layer addSublayer:_colorWheelLayer];
+    _indicatorLayer = [self _createIndicatorLayer];
+    [self.layer addSublayer:_indicatorLayer];
+
+    UIPanGestureRecognizer *panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(_handlePanGesture:)];
+    panGestureRecognizer.minimumNumberOfTouches = 1;
+    panGestureRecognizer.maximumNumberOfTouches = 1;
+    panGestureRecognizer.delegate = self;
+    [self addGestureRecognizer:panGestureRecognizer];
+    [self setSelectionStyle:UITableViewCellSelectionStyleNone];
   }
   return self;
 }
 
-- (CGFloat)hue
-{
-  return _colorWheel.hue;
-}
-
 - (void)setHue:(CGFloat)hue
 {
-  _colorWheel.hue = hue;
-}
-
-- (CGFloat)saturation
-{
-  return _colorWheel.saturation;
+  _hue = hue;
+  [self _setSelectedPoint:[self _selectedPoint]];
 }
 
 - (void)setSaturation:(CGFloat)saturation
 {
-  _colorWheel.saturation = saturation;
+  _saturation = saturation;
+  [self _setSelectedPoint:[self _selectedPoint]];
 }
 
--(void)layoutSubviews
+- (void)layoutSubviews
 {
   [super layoutSubviews];
 
-  _colorWheel.center = (CGPoint){CGRectGetMidX(self.contentView.bounds), CGRectGetMidY(self.contentView.bounds)};
+  _colorWheelLayer.position = (CGPoint){CGRectGetMidX(self.contentView.bounds), CGRectGetMidY(self.contentView.bounds)};
+  [self _setSelectedPoint:[self _selectedPoint]];
+}
+
+#pragma mark - UIGestureRecognizerDelegate
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
+{
+  CGPoint position = [touch locationInView:self];
+  return [self _shouldHandleTouchAtPosition:position];
 }
 
 #pragma mark - Private methods
 
-- (void)_init
+- (CALayer*)_createIndicatorLayer
 {
-  self.selectionStyle = UITableViewCellSelectionStyleNone;
-
-  _colorWheel = [[_FBColorWheelView alloc] init];
-  _colorWheel.translatesAutoresizingMaskIntoConstraints = NO;
-  _colorWheel.bounds = (CGRect){0, 0, _FBColorWheelDimention, _FBColorWheelDimention};
-  [_colorWheel addTarget:self action:@selector(_didChangeValue:) forControlEvents:UIControlEventValueChanged];
-  [self.contentView addSubview:_colorWheel];
+  UIColor *edgeColor = [UIColor colorWithWhite:0.9 alpha:0.8];
+  CALayer* indicatorLayer = [CALayer layer];
+  indicatorLayer.cornerRadius = _FBColorWheelIndicatorDiameter / 2;
+  indicatorLayer.borderColor = edgeColor.CGColor;
+  indicatorLayer.borderWidth = 2;
+  indicatorLayer.backgroundColor = [UIColor whiteColor].CGColor;
+  indicatorLayer.bounds = CGRectMake(0, 0, _FBColorWheelIndicatorDiameter, _FBColorWheelIndicatorDiameter);
+  indicatorLayer.position = CGPointMake(CGRectGetWidth(self.bounds) / 2, CGRectGetHeight(self.bounds) / 2);
+  indicatorLayer.shadowColor = [UIColor blackColor].CGColor;
+  indicatorLayer.shadowOffset = CGSizeZero;
+  indicatorLayer.shadowRadius = 1;
+  indicatorLayer.shadowOpacity = 0.5f;
+  return indicatorLayer;
 }
 
-- (void)_didChangeValue:(_FBColorWheelView*)sender
+- (BOOL)_shouldHandleTouchAtPosition:(CGPoint)position
 {
-  [self.delegate colorWheelCell:self didChangeHue:self.hue saturation:self.saturation];
+  CGFloat radius = _FBColorWheelDiameter / 2;
+  CGPoint center = self.contentView.center;
+  CGFloat dist = sqrtf((center.x - position.x) * (center.x - position.x) + (center.y - position.y) * (center.y - position.y));
+  return dist <= radius;
+}
+
+- (void)_handlePanGesture:(UIPanGestureRecognizer*)panGestureRecognizer
+{
+  CGPoint position = [panGestureRecognizer locationInView:self];
+  if (![self _shouldHandleTouchAtPosition:position]) {
+    return;
+  }
+  CGFloat radius = _FBColorWheelDiameter / 2;
+  CGPoint center = self.contentView.center;
+  _hue = _FBGetColorWheelHue(position, center, radius);
+  _saturation = _FBGetColorWheelSaturation(position, center, radius);
+  [self _setSelectedPoint:position];
+  [self.delegate colorWheelCell:self didChangeHue:_hue saturation:_saturation];
+}
+
+- (void)_setSelectedPoint:(CGPoint)point
+{
+  UIColor *selectedColor = [UIColor colorWithHue:_hue saturation:_saturation brightness:1.0f alpha:1.0f];
+  [CATransaction begin];
+  [CATransaction setValue:(id)kCFBooleanTrue
+                   forKey:kCATransactionDisableActions];
+  _indicatorLayer.position = point;
+  _indicatorLayer.backgroundColor = selectedColor.CGColor;
+  [CATransaction commit];
+}
+
+- (CGPoint)_selectedPoint
+{
+  CGFloat radius = _saturation * _FBColorWheelDiameter / 2;
+  CGFloat x = _FBColorWheelDiameter / 2 + radius * cosf(_hue * M_PI * 2.0f) + CGRectGetMinX(_colorWheelLayer.frame);
+  CGFloat y = _FBColorWheelDiameter / 2 + radius * sinf(_hue * M_PI * 2.0f) + CGRectGetMinY(_colorWheelLayer.frame);
+  return CGPointMake(x, y);
 }
 
 @end

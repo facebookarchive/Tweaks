@@ -13,7 +13,7 @@
 #import "_FBKeyboardManager.h"
 #import "FBTweak.h"
 
-static void * kContext = &kContext;
+static void *kContext = &kContext;
 static CGFloat const _FBTweakColorCellDefaultHeight = 44.0;
 static CGFloat const _FBColorWheelCellHeight = 220.0f;
 
@@ -22,8 +22,8 @@ static CGFloat const _FBColorWheelCellHeight = 220.0f;
 @end
 
 @implementation _FBTweakColorViewController {
-  NSObject <_FBTweakColorViewControllerDataSource>* _rgbDataSource;
-  NSObject <_FBTweakColorViewControllerDataSource>* _hsbDataSource;
+  NSObject <_FBTweakColorViewControllerDataSource> *_rgbDataSource;
+  NSObject <_FBTweakColorViewControllerDataSource> *_hsbDataSource;
   FBTweak *_tweak;
   _FBKeyboardManager *_keyboardManager;
   UITableView *_tableView;
