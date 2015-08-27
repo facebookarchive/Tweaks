@@ -175,6 +175,13 @@
   }
 
   if (_currentValue != currentValue) {
+      
+    for (id<FBTweakObserver> observer in [_observers setRepresentation]) {
+      if ([observer respondsToSelector:@selector(tweakWillChange:)]) {
+        [observer tweakWillChange:self];
+      }
+    }
+      
     _currentValue = currentValue;
     [[NSUserDefaults standardUserDefaults] setObject:_currentValue forKey:_identifier];
     
