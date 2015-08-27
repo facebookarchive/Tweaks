@@ -48,7 +48,7 @@ typedef struct {
 #define fb_tweak_entry_block_field(type, entry, field) (*(type (^__unsafe_unretained (*))(void))(entry->field))()
 
 extern NSString *_FBTweakIdentifier(fb_tweak_entry *entry);
-  
+
 #if __has_feature(objc_arc)
 #define _FBTweakRelease(x)
 #else

@@ -76,7 +76,8 @@
 {
   if ((self = [super init])) {
     _identifier = identifier;
-    _currentValue = [[NSUserDefaults standardUserDefaults] objectForKey:_identifier];
+    NSData *archivedValue = [[NSUserDefaults standardUserDefaults] objectForKey:_identifier];
+    _currentValue = (archivedValue == nil ? archivedValue : [NSKeyedUnarchiver unarchiveObjectWithData:archivedValue]);
   }
   
   return self;
@@ -183,8 +184,9 @@
     }
       
     _currentValue = currentValue;
-    [[NSUserDefaults standardUserDefaults] setObject:_currentValue forKey:_identifier];
-    
+    // we can't store UIColor to the plist file. That is why we archive value to the NSData.
+    [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:_currentValue] forKey:_identifier];
+
     for (id<FBTweakObserver> observer in [_observers setRepresentation]) {
       [observer tweakDidChange:self];
     }

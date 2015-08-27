@@ -14,6 +14,7 @@
 #import "FBTweakStore.h"
 #import "FBTweakCategory.h"
 
+#import <UIKit/UIKit.h>
 #import <libkern/OSAtomic.h>
 #import <mach-o/getsect.h>
 #import <mach-o/dyld.h>

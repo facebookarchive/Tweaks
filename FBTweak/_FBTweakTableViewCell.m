@@ -10,6 +10,16 @@
 #import "FBTweak.h"
 #import "_FBTweakTableViewCell.h"
 
+static UIImage *_FBCreateColorCellsThumbnail(UIColor *color, CGSize size) {
+  UIGraphicsBeginImageContext(size);
+  UIBezierPath *rPath = [UIBezierPath bezierPathWithRect:CGRectMake(0, 0, size.width, size.height)];
+  [color setFill];
+  [rPath fill];
+  UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+  UIGraphicsEndImageContext();
+  return image;
+}
+
 typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
   _FBTweakTableViewCellModeNone = 0,
   _FBTweakTableViewCellModeBoolean,
@@ -19,6 +29,7 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
   _FBTweakTableViewCellModeAction,
   _FBTweakTableViewCellModeDictionary,
   _FBTweakTableViewCellModeArray,
+  _FBTweakTableViewCellModeColor,
 };
 
 @interface _FBTweakTableViewCell () <UITextFieldDelegate>
@@ -33,7 +44,7 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
   UIStepper *_stepper;
 }
 
-- (instancetype)initWithReuseIdentifier:(NSString *)reuseIdentifier;
+- (instancetype)initWithReuseIdentifier:(NSString *)reuseIdentifier
 {
   if ((self = [super initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:reuseIdentifier])) {
     _accessoryView = [[UIView alloc] init];
@@ -89,6 +100,10 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
     CGRect textBounds = CGRectMake(0, 0, textFieldWidth, self.bounds.size.height);
     _textField.frame = CGRectIntegral(textBounds);
     _accessoryView.bounds = CGRectIntegral(textBounds);
+  } else if (_mode == _FBTweakTableViewCellModeColor) {
+    CGRect textBounds = CGRectMake(0, 0, self.bounds.size.width / 3, self.bounds.size.height);
+    _textField.frame = CGRectIntegral(textBounds);
+    _accessoryView.bounds = CGRectIntegral(textBounds);
   } else if (_mode == _FBTweakTableViewCellModeAction) {
     _accessoryView.bounds = CGRectZero;
   }
@@ -112,6 +127,8 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
     mode = _FBTweakTableViewCellModeDictionary;
   } else if ([tweak.possibleValues isKindOfClass:[NSArray class]]) {
     mode = _FBTweakTableViewCellModeArray;
+  } else if ([value isKindOfClass:[UIColor class]]) {
+    mode = _FBTweakTableViewCellModeColor;
   } else if ([value isKindOfClass:[NSString class]]) {
     mode = _FBTweakTableViewCellModeString;
   } else if ([value isKindOfClass:[NSNumber class]]) {
@@ -229,6 +246,13 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
     self.accessoryView = nil;
     self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     self.selectionStyle = UITableViewCellSelectionStyleBlue;
+  } else if (_mode == _FBTweakTableViewCellModeColor) {
+    _switch.hidden = YES;
+    _textField.hidden = YES;
+    _stepper.hidden = YES;
+    self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    self.accessoryView = nil;
+    self.imageView.hidden = NO;
   } else {
     _switch.hidden = YES;
     _textField.hidden = YES;
@@ -270,7 +294,7 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
 
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
-  if (_mode == _FBTweakTableViewCellModeString) {
+  if (_mode == _FBTweakTableViewCellModeString || _mode == _FBTweakTableViewCellModeColor) {
     [self _updateValue:_textField.text primary:NO write:YES];
   } else if (_mode == _FBTweakTableViewCellModeInteger) {
     NSNumber *number = @([_textField.text longLongValue]);
@@ -334,6 +358,8 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
     if (primary) {
       self.detailTextLabel.text = [value description];
     }
+  } else if (_mode == _FBTweakTableViewCellModeColor) {
+    [self.imageView setImage:_FBCreateColorCellsThumbnail(value, CGSizeMake(30, 30))];
   }
 }
 
