@@ -157,4 +157,12 @@ typedef id FBTweakValue;
  */
 - (void)tweakDidChange:(FBTweak *)tweak;
 
+@optional
+
+/**
+ @abstract Called when a tweak's value will change.
+ @param tweak The tweak which value will change.
+ */
+- (void)tweakWillChange:(FBTweak *)tweak;
+
 @end

@@ -123,6 +123,15 @@ Then, you can watch for when the tweak changes:
 }
 ```
 
+Also you have de ability to implement the optional method `tweakWillChange:` in order to handle the previous value of your tweak:
+
+```objective-c
+- (void)tweakWillChange:(FBTweak *)tweak
+{
+  NSLog(@"%@", tweak.currentValue); // Here current value is the previous value of the tweak
+}
+```
+
 To override when tweaks are enabled, you can define the `FB_TWEAK_ENABLED` macro. It's suggested to avoid including them when submitting to the App Store.
 
 ### Using from a Swift Project
