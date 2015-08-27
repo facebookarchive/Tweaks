@@ -127,7 +127,7 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
     mode = _FBTweakTableViewCellModeDictionary;
   } else if ([tweak.possibleValues isKindOfClass:[NSArray class]]) {
     mode = _FBTweakTableViewCellModeArray;
-  } else if ([tweak.possibleValues isKindOfClass:[UIColor class]]) {
+  } else if ([value isKindOfClass:[UIColor class]]) {
     mode = _FBTweakTableViewCellModeColor;
   } else if ([value isKindOfClass:[NSString class]]) {
     mode = _FBTweakTableViewCellModeString;

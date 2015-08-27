@@ -129,7 +129,7 @@
   } else if ([tweak.possibleValues isKindOfClass:[NSArray class]]) {
     _FBTweakArrayViewController *vc = [[_FBTweakArrayViewController alloc] initWithTweak:tweak];
     [self.navigationController pushViewController:vc animated:YES];
-  } else if ([tweak.possibleValues isKindOfClass:[UIColor class]]) {
+  } else if ([tweak.defaultValue isKindOfClass:[UIColor class]]) {
     _FBTweakColorViewController *vc = [[_FBTweakColorViewController alloc] initWithTweak:tweak];
     [self.navigationController pushViewController:vc animated:YES];
   }

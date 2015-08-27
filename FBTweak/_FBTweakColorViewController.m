@@ -31,8 +31,7 @@ static CGFloat const _FBColorWheelCellHeight = 220.0f;
 
 - (instancetype)initWithTweak:(FBTweak*)tweak
 {
-  NSParameterAssert(tweak != nil);
-  NSParameterAssert([tweak.possibleValues isKindOfClass:[UIColor class]]);
+  NSParameterAssert([tweak.defaultValue isKindOfClass:[UIColor class]]);
   self = [super init];
   if (self) {
     _tweak = tweak;
