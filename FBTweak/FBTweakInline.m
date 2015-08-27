@@ -14,6 +14,7 @@
 #import "FBTweakStore.h"
 #import "FBTweakCategory.h"
 
+#import <UIKit/UIKit.h>
 #import <libkern/OSAtomic.h>
 #import <mach-o/getsect.h>
 #import <mach-o/dyld.h>
@@ -51,10 +52,18 @@ static FBTweak *_FBTweakCreateWithEntry(NSString *identifier, fb_tweak_entry *en
     tweak.defaultValue = [NSNumber numberWithInt:fb_tweak_entry_block_field(int, entry, value)];
   } else if (strcmp(*entry->encoding, @encode(unsigned int)) == 0) {
     tweak.defaultValue = [NSNumber numberWithUnsignedInt:fb_tweak_entry_block_field(unsigned int, entry, value)];
+  } else if (strcmp(*entry->encoding, @encode(long)) == 0) {
+    tweak.defaultValue = [NSNumber numberWithLong:fb_tweak_entry_block_field(long, entry, value)];
+  } else if (strcmp(*entry->encoding, @encode(unsigned long)) == 0) {
+    tweak.defaultValue = [NSNumber numberWithUnsignedLong:fb_tweak_entry_block_field(unsigned long, entry, value)];
   } else if (strcmp(*entry->encoding, @encode(long long)) == 0) {
     tweak.defaultValue = [NSNumber numberWithLongLong:fb_tweak_entry_block_field(long long, entry, value)];
   } else if (strcmp(*entry->encoding, @encode(unsigned long long)) == 0) {
     tweak.defaultValue = [NSNumber numberWithUnsignedLongLong:fb_tweak_entry_block_field(unsigned long long, entry, value)];
+  } else if (strcmp(*entry->encoding, @encode(NSInteger)) == 0) {
+    tweak.defaultValue = [NSNumber numberWithInteger:fb_tweak_entry_block_field(NSInteger, entry, value)];
+  } else if (strcmp(*entry->encoding, @encode(NSUInteger)) == 0) {
+    tweak.defaultValue = [NSNumber numberWithUnsignedInteger:fb_tweak_entry_block_field(NSUInteger, entry, value)];
   } else if (*entry->encoding[0] == '[') {
     // Assume it's a C string.
     tweak.defaultValue = [NSString stringWithUTF8String:fb_tweak_entry_block_field(char *, entry, value)];
