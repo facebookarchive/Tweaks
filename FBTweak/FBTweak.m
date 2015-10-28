@@ -77,7 +77,7 @@
   if ((self = [super init])) {
     _identifier = identifier;
     NSData *archivedValue = [[NSUserDefaults standardUserDefaults] objectForKey:_identifier];
-    _currentValue = (archivedValue == nil ? archivedValue : [NSKeyedUnarchiver unarchiveObjectWithData:archivedValue]);
+    _currentValue = (archivedValue != nil && [archivedValue isKindOfClass:[NSData class]] ? [NSKeyedUnarchiver unarchiveObjectWithData:archivedValue] : archivedValue);
   }
   
   return self;
