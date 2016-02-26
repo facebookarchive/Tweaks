@@ -13,7 +13,7 @@
 @interface _FBTweakColorViewControllerHexDataSource () <FBTweakObserver>
 
 @property (nonatomic, strong) UIColor *color;
-@property (nonnull, strong) FBTweak *tweak;
+@property (nonatomic, strong) FBTweak *tweak;
 
 @end
 
