@@ -23,114 +23,114 @@ static CGFloat const _FBColorWheelCellHeight = 220.0f;
 @end
 
 @implementation _FBTweakColorViewController {
-    NSObject<_FBTweakColorViewControllerDataSource> *_rgbDataSource;
-    NSObject<_FBTweakColorViewControllerDataSource> *_hsbDataSource;
-    NSObject<_FBTweakColorViewControllerDataSource> *_hexDataSource;
-    FBTweak *_tweak;
-    _FBKeyboardManager *_keyboardManager;
-    UITableView *_tableView;
+  NSObject<_FBTweakColorViewControllerDataSource> *_rgbDataSource;
+  NSObject<_FBTweakColorViewControllerDataSource> *_hsbDataSource;
+  NSObject<_FBTweakColorViewControllerDataSource> *_hexDataSource;
+  FBTweak *_tweak;
+  _FBKeyboardManager *_keyboardManager;
+  UITableView *_tableView;
 }
 
 - (instancetype)initWithTweak:(FBTweak *)tweak
 {
-    NSParameterAssert([tweak.defaultValue isKindOfClass:[UIColor class]]);
-    if (self = [super init]) {
-        _tweak = tweak;
-        _rgbDataSource = [[_FBTweakColorViewControllerRGBDataSource alloc] init];
-        _hsbDataSource = [[_FBTweakColorViewControllerHSBDataSource alloc] init];
-        _hexDataSource = [[_FBTweakColorViewControllerHexDataSource alloc] init];
-        [_rgbDataSource addObserver:self forKeyPath:NSStringFromSelector(@selector(value)) options:NSKeyValueObservingOptionNew context:kContext];
-        [_hsbDataSource addObserver:self forKeyPath:NSStringFromSelector(@selector(value)) options:NSKeyValueObservingOptionNew context:kContext];
-        [_hexDataSource addObserver:self forKeyPath:NSStringFromSelector(@selector(value)) options:NSKeyValueObservingOptionNew context:kContext];
-    }
-    return self;
+  NSParameterAssert([tweak.defaultValue isKindOfClass:[UIColor class]]);
+  if (self = [super init]) {
+    _tweak = tweak;
+    _rgbDataSource = [[_FBTweakColorViewControllerRGBDataSource alloc] init];
+    _hsbDataSource = [[_FBTweakColorViewControllerHSBDataSource alloc] init];
+    _hexDataSource = [[_FBTweakColorViewControllerHexDataSource alloc] init];
+    [_rgbDataSource addObserver:self forKeyPath:NSStringFromSelector(@selector(value)) options:NSKeyValueObservingOptionNew context:kContext];
+    [_hsbDataSource addObserver:self forKeyPath:NSStringFromSelector(@selector(value)) options:NSKeyValueObservingOptionNew context:kContext];
+    [_hexDataSource addObserver:self forKeyPath:NSStringFromSelector(@selector(value)) options:NSKeyValueObservingOptionNew context:kContext];
+  }
+  return self;
 }
 
 - (void)dealloc
 {
-    [_rgbDataSource removeObserver:self forKeyPath:NSStringFromSelector(@selector(value))];
-    [_hsbDataSource removeObserver:self forKeyPath:NSStringFromSelector(@selector(value))];
-    [_hexDataSource removeObserver:self forKeyPath:NSStringFromSelector(@selector(value))];
+  [_rgbDataSource removeObserver:self forKeyPath:NSStringFromSelector(@selector(value))];
+  [_hsbDataSource removeObserver:self forKeyPath:NSStringFromSelector(@selector(value))];
+  [_hexDataSource removeObserver:self forKeyPath:NSStringFromSelector(@selector(value))];
 }
 
 - (void)viewDidLoad
 {
-    [super viewDidLoad];
-    
-    _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
-    _tableView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
-    _tableView.delegate = self;
-    [self.view addSubview:_tableView];
-    
-    _keyboardManager = [[_FBKeyboardManager alloc] initWithViewScrollView:_tableView];
-    
-    UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithItems:@[@"RGB", @"HSB", @"HEX"]];
-    [segmentedControl addTarget:self action:@selector(_segmentControlDidChangeValue:) forControlEvents:UIControlEventValueChanged];
-    [segmentedControl sizeToFit];
-    self.navigationItem.titleView = segmentedControl;
-    segmentedControl.selectedSegmentIndex = 0;
-    [self _segmentControlDidChangeValue:segmentedControl];
+  [super viewDidLoad];
+  
+  _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
+  _tableView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+  _tableView.delegate = self;
+  [self.view addSubview:_tableView];
+  
+  _keyboardManager = [[_FBKeyboardManager alloc] initWithViewScrollView:_tableView];
+  
+  UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithItems:@[@"RGB", @"HSB", @"HEX"]];
+  [segmentedControl addTarget:self action:@selector(_segmentControlDidChangeValue:) forControlEvents:UIControlEventValueChanged];
+  [segmentedControl sizeToFit];
+  self.navigationItem.titleView = segmentedControl;
+  segmentedControl.selectedSegmentIndex = 0;
+  [self _segmentControlDidChangeValue:segmentedControl];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    [super viewWillAppear:animated];
-    [_keyboardManager enable];
+  [super viewWillAppear:animated];
+  [_keyboardManager enable];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    [super viewWillDisappear:animated];
-    [_keyboardManager disable];
+  [super viewWillDisappear:animated];
+  [_keyboardManager disable];
 }
 
 #pragma mark - KVO methods
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(NSObject<_FBTweakColorViewControllerDataSource> *)dataSource change:(NSDictionary *)change context:(void *)context
 {
-    if (context != kContext) {
-        return;
-    }
-    _tweak.currentValue = dataSource.value;
+  if (context != kContext) {
+    return;
+  }
+  _tweak.currentValue = dataSource.value;
 }
 
 #pragma mark - UITableViewDelegate
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (tableView.dataSource == _hsbDataSource && indexPath.section == 1 && indexPath.row == 0) {
-        return _FBColorWheelCellHeight;
-    }
-    return _FBTweakColorCellDefaultHeight;
+  if (tableView.dataSource == _hsbDataSource && indexPath.section == 1 && indexPath.row == 0) {
+    return _FBColorWheelCellHeight;
+  }
+  return _FBTweakColorCellDefaultHeight;
 }
 
 #pragma mark - Private methods
 
 - (UIColor *)_colorValue
 {
-    return _tweak.currentValue ?: _tweak.defaultValue;
+  return _tweak.currentValue ?: _tweak.defaultValue;
 }
 
 - (void)_segmentControlDidChangeValue:(UISegmentedControl *)sender
 {
-    NSObject<_FBTweakColorViewControllerDataSource> *dataSource = nil;
-    
-    switch (sender.selectedSegmentIndex) {
-        case 0:
-            dataSource = _rgbDataSource;
-            break;
-        case 1:
-            dataSource = _hsbDataSource;
-            break;
-        case 2:
-            dataSource = _hexDataSource;
-            break;
-        default:
-            break;
-    }
-    dataSource.value = [self _colorValue];
-    _tableView.dataSource = dataSource;
-    [_tableView reloadData];
+  NSObject<_FBTweakColorViewControllerDataSource> *dataSource = nil;
+  
+  switch (sender.selectedSegmentIndex) {
+    case 0:
+      dataSource = _rgbDataSource;
+      break;
+    case 1:
+      dataSource = _hsbDataSource;
+      break;
+    case 2:
+      dataSource = _hexDataSource;
+      break;
+    default:
+      break;
+  }
+  dataSource.value = [self _colorValue];
+  _tableView.dataSource = dataSource;
+  [_tableView reloadData];
 }
 
 @end
