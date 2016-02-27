@@ -14,6 +14,12 @@
 #import "_FBKeyboardManager.h"
 #import "FBTweak.h"
 
+typedef NS_ENUM(NSUInteger, FBTweakColorSection) {
+  FBTweakColorSectionRGB,
+  FBTweakColorSectionHSB,
+  FBTweakColorSectionHEX,
+};
+
 static void *kContext = &kContext;
 static CGFloat const _FBTweakColorCellDefaultHeight = 44.0;
 static CGFloat const _FBColorWheelCellHeight = 220.0f;
@@ -113,24 +119,29 @@ static CGFloat const _FBColorWheelCellHeight = 220.0f;
 
 - (void)_segmentControlDidChangeValue:(UISegmentedControl *)sender
 {
+  _tableView.dataSource = [self dataSourceForSegementIndex:sender.selectedSegmentIndex];
+  [_tableView reloadData];
+}
+
+- (id <_FBTweakColorViewControllerDataSource>)dataSourceForSegementIndex:(NSUInteger)index
+{
   NSObject<_FBTweakColorViewControllerDataSource> *dataSource = nil;
   
-  switch (sender.selectedSegmentIndex) {
-    case 0:
+  switch (index) {
+    case FBTweakColorSectionRGB:
       dataSource = _rgbDataSource;
       break;
-    case 1:
+    case FBTweakColorSectionHSB:
       dataSource = _hsbDataSource;
       break;
-    case 2:
+    case FBTweakColorSectionHEX:
       dataSource = _hexDataSource;
       break;
     default:
       break;
   }
   dataSource.value = [self _colorValue];
-  _tableView.dataSource = dataSource;
-  [_tableView reloadData];
+  return dataSource;
 }
 
 @end

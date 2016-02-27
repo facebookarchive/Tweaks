@@ -1,10 +1,11 @@
-//
-//  _FBTweakColorViewControllerHexDataSource.m
-//  FBTweak
-//
-//  Created by Callum Boddy on 25/02/2016.
-//  Copyright © 2016 Facebook. All rights reserved.
-//
+/**
+ Copyright (c) 2014-present, Facebook, Inc.
+ All rights reserved.
+ 
+ This source code is licensed under the BSD-style license found in the
+ LICENSE file in the root directory of this source tree. An additional grant
+ of patent rights can be found in the PATENTS file in the same directory.
+ */
 
 #import "_FBTweakColorViewControllerHexDataSource.h"
 #import "_FBTweakTableViewCell.h"
@@ -21,9 +22,9 @@
   UITableViewCell *_colorSampleCell;
 }
 
-- (instancetype)init {
-  self = [super init];
-  if (self) {
+- (instancetype)init
+{
+  if (self = [super init]) {
     _colorSampleCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
   }
   return self;
@@ -65,6 +66,10 @@
   return [self hexCell];
 }
 
+/**
+ *  By using _FBTweakTableViewCell, it allows us to internally observe changes and configure the tableViewCell without
+ *  having to create a new subclass. So while not a tweak in itself, it provides us the desired behaviour.
+ */
 - (_FBTweakTableViewCell *)hexCell
 {
   _FBTweakTableViewCell *hexCell = [[_FBTweakTableViewCell alloc] initWithReuseIdentifier:@"hexCell"];
@@ -88,22 +93,28 @@
 
 + (NSString *)colorToHexString:(UIColor *)uiColor
 {
-  CGFloat red,green,blue,alpha;
+  CGFloat red, green, blue, alpha;
   [uiColor getRed:&red green:&green blue:&blue alpha:&alpha];
-  red = roundf(red*255);
-  green = roundf(green*255);
-  blue = round(blue*255);
-  NSString *hexString  = [NSString stringWithFormat:@"#%02x%02x%02x", ((int)red),((int)green),((int)blue)];
+  red = roundf(red * 255);
+  green = roundf(green * 255);
+  blue = round(blue * 255);
+  NSString *hexString  = [NSString stringWithFormat:@"#%02x%02x%02x", ((int)red), ((int)green), ((int)blue)];
   return hexString.uppercaseString;
 }
 
 + (UIColor *)colorFromHexString:(NSString *)hexString
 {
-  unsigned rgbValue = 0;
+  if (hexString.length == 0) {
+    return [UIColor blackColor];
+  }
+  NSUInteger rgbValue = 0;
   NSScanner *scanner = [NSScanner scannerWithString:hexString];
   [scanner setScanLocation:1]; // bypass '#' character
   [scanner scanHexInt:&rgbValue];
-  return [UIColor colorWithRed:((rgbValue & 0xFF0000) >> 16)/255.0 green:((rgbValue & 0xFF00) >> 8)/255.0 blue:(rgbValue & 0xFF)/255.0 alpha:1.0];
+  CGFloat redComponent = ((rgbValue & 0xFF0000) >> 16) / 255.0;
+  CGFloat blueComponent = ((rgbValue & 0xFF00) >> 8) / 255.0;
+  CGFloat greenComponent = (rgbValue & 0xFF) / 255.0;
+  return [UIColor colorWithRed:redComponent green:greenComponent blue:blueComponent alpha:1.0];
 }
 
 
