@@ -1,7 +1,7 @@
 /**
  Copyright (c) 2014-present, Facebook, Inc.
  All rights reserved.
-
+ 
  This source code is licensed under the BSD-style license found in the
  LICENSE file in the root directory of this source tree. An additional grant
  of patent rights can be found in the PATENTS file in the same directory.
@@ -10,8 +10,15 @@
 #import "_FBTweakColorViewController.h"
 #import "_FBTweakColorViewControllerHSBDataSource.h"
 #import "_FBTweakColorViewControllerRGBDataSource.h"
+#import "_FBTweakColorViewControllerHexDataSource.h"
 #import "_FBKeyboardManager.h"
 #import "FBTweak.h"
+
+typedef NS_ENUM(NSUInteger, FBTweakColorSection) {
+  FBTweakColorSectionRGB,
+  FBTweakColorSectionHSB,
+  FBTweakColorSectionHEX,
+};
 
 static void *kContext = &kContext;
 static CGFloat const _FBTweakColorCellDefaultHeight = 44.0;
@@ -24,6 +31,7 @@ static CGFloat const _FBColorWheelCellHeight = 220.0f;
 @implementation _FBTweakColorViewController {
   NSObject<_FBTweakColorViewControllerDataSource> *_rgbDataSource;
   NSObject<_FBTweakColorViewControllerDataSource> *_hsbDataSource;
+  NSObject<_FBTweakColorViewControllerDataSource> *_hexDataSource;
   FBTweak *_tweak;
   _FBKeyboardManager *_keyboardManager;
   UITableView *_tableView;
@@ -36,8 +44,10 @@ static CGFloat const _FBColorWheelCellHeight = 220.0f;
     _tweak = tweak;
     _rgbDataSource = [[_FBTweakColorViewControllerRGBDataSource alloc] init];
     _hsbDataSource = [[_FBTweakColorViewControllerHSBDataSource alloc] init];
+    _hexDataSource = [[_FBTweakColorViewControllerHexDataSource alloc] init];
     [_rgbDataSource addObserver:self forKeyPath:NSStringFromSelector(@selector(value)) options:NSKeyValueObservingOptionNew context:kContext];
     [_hsbDataSource addObserver:self forKeyPath:NSStringFromSelector(@selector(value)) options:NSKeyValueObservingOptionNew context:kContext];
+    [_hexDataSource addObserver:self forKeyPath:NSStringFromSelector(@selector(value)) options:NSKeyValueObservingOptionNew context:kContext];
   }
   return self;
 }
@@ -46,20 +56,21 @@ static CGFloat const _FBColorWheelCellHeight = 220.0f;
 {
   [_rgbDataSource removeObserver:self forKeyPath:NSStringFromSelector(@selector(value))];
   [_hsbDataSource removeObserver:self forKeyPath:NSStringFromSelector(@selector(value))];
+  [_hexDataSource removeObserver:self forKeyPath:NSStringFromSelector(@selector(value))];
 }
 
 - (void)viewDidLoad
 {
   [super viewDidLoad];
-
+  
   _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
   _tableView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
   _tableView.delegate = self;
   [self.view addSubview:_tableView];
-
+  
   _keyboardManager = [[_FBKeyboardManager alloc] initWithViewScrollView:_tableView];
-
-  UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithItems:@[@"RGB", @"HSB"]];
+  
+  UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithItems:@[@"RGB", @"HSB", @"HEX"]];
   [segmentedControl addTarget:self action:@selector(_segmentControlDidChangeValue:) forControlEvents:UIControlEventValueChanged];
   [segmentedControl sizeToFit];
   self.navigationItem.titleView = segmentedControl;
@@ -108,10 +119,29 @@ static CGFloat const _FBColorWheelCellHeight = 220.0f;
 
 - (void)_segmentControlDidChangeValue:(UISegmentedControl *)sender
 {
-  NSObject<_FBTweakColorViewControllerDataSource> *dataSource = sender.selectedSegmentIndex == 0 ? _rgbDataSource : _hsbDataSource;
-  dataSource.value = [self _colorValue];
-  _tableView.dataSource = dataSource;
+  _tableView.dataSource = [self dataSourceForSegementIndex:sender.selectedSegmentIndex];
   [_tableView reloadData];
+}
+
+- (id <_FBTweakColorViewControllerDataSource>)dataSourceForSegementIndex:(NSUInteger)index
+{
+  NSObject<_FBTweakColorViewControllerDataSource> *dataSource = nil;
+  
+  switch (index) {
+    case FBTweakColorSectionRGB:
+      dataSource = _rgbDataSource;
+      break;
+    case FBTweakColorSectionHSB:
+      dataSource = _hsbDataSource;
+      break;
+    case FBTweakColorSectionHEX:
+      dataSource = _hexDataSource;
+      break;
+    default:
+      break;
+  }
+  dataSource.value = [self _colorValue];
+  return dataSource;
 }
 
 @end
