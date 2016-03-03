@@ -17,4 +17,6 @@
  */
 @interface FBTweakShakeWindow : UIWindow <FBTweakViewControllerDelegate>
 
+@property (nonatomic) BOOL shakeEnabled;
+
 @end
