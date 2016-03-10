@@ -42,6 +42,7 @@ static void _FBTweakShakeWindowCommonInit(FBTweakShakeWindow *self)
 {
   // Maintain this state manually using notifications so Tweaks can be used in app extensions, where UIApplication is unavailable.
   self->_active = YES;
+  self->_shakeEnabled = YES;
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_applicationWillResignActiveWithNotification:) name:UIApplicationWillResignActiveNotification object:nil];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_applicationDidBecomeActiveWithNotification:) name:UIApplicationDidBecomeActiveNotification object:nil];
 }
@@ -90,7 +91,7 @@ static void _FBTweakShakeWindowCommonInit(FBTweakShakeWindow *self)
 #if TARGET_IPHONE_SIMULATOR && FB_TWEAK_ENABLED
   return YES;
 #elif FB_TWEAK_ENABLED
-  return _shaking && _active;
+  return _shakeEnabled && _shaking && _active;
 #else
   return NO;
 #endif

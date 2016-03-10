@@ -17,4 +17,9 @@
  */
 @interface FBTweakShakeWindow : UIWindow <FBTweakViewControllerDelegate>
 
+/**
+ @abstract Toggles FBTweakShakeWindow's ability to respond to shake gestures. Defaults to YES
+ */
+@property (nonatomic) BOOL shakeEnabled;
+
 @end
