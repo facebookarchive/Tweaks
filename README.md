@@ -136,6 +136,8 @@ To override when tweaks are enabled, you can define the `FB_TWEAK_ENABLED` macro
 
 ### Using from a Swift Project
 
+*Khan Academy's project [SwiftTweaks](http://engineering.khanacademy.org/posts/introducing-swifttweaks.htm) is designed for Swift, and might be a better choice for Swift projects.*
+
 Tweaks can be used from Swift projects. In this case the handy shortcut macros defined in `FBTweakInline.h` are not available, meaning tweaks need to be created programmatically, similar to this example:
 
 ```swift
