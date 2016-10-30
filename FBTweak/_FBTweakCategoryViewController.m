@@ -12,8 +12,13 @@
 #import "_FBTweakCategoryViewController.h"
 #import <MessageUI/MessageUI.h>
 
-@interface _FBTweakCategoryViewController () <UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate, MFMailComposeViewControllerDelegate>
+@interface _FBTweakCategoryViewController () <UITableViewDataSource, UITableViewDelegate, MFMailComposeViewControllerDelegate>
 @end
+
+#if (__IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE8_0) && (!defined(__has_feature) || !__has_feature(attribute_availability_app_extension))
+@interface _FBTweakCategoryViewController () <UIAlertViewDelegate>
+@end
+#endif
 
 @implementation _FBTweakCategoryViewController {
   UITableView *_tableView;
@@ -103,7 +108,7 @@
     [self presentViewController:alertController animated:YES completion:NULL];
   } else {
 #endif
-#if (!defined(__has_feature) || !__has_feature(attribute_availability_app_extension))
+#if (__IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE8_0) && (!defined(__has_feature) || !__has_feature(attribute_availability_app_extension))
     // This is iOS 7 or lower. We need to use UIAlertView, because UIAlertController is not available.
     // UIAlertView, however, is not available in app-extensions, so to allow compilation, we conditionally compile this branch only when we're not an app-extension. UIAlertController is always available in app-extensions, so this is safe.
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Are you sure?"
@@ -176,12 +181,14 @@
   [_delegate tweakCategoryViewController:self selectedCategory:category];
 }
 
+#if (__IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE8_0) && (!defined(__has_feature) || !__has_feature(attribute_availability_app_extension))
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
   if (buttonIndex != alertView.cancelButtonIndex) {
     [_store reset];
   }
 }
+#endif
 
 - (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error
 {
