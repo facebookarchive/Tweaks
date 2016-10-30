@@ -1,4 +1,4 @@
 language: objective-c
 script: 
-  - xctool test -project FBTweak.xcodeproj -scheme FBTweak -sdk iphonesimulator8.1 -destination "platform=iOS Simulator,OS=8.1,name=iPhone 6"
-  - xctool archive -workspace FBTweakExample.xcworkspace -scheme FBTweakExample CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
+  - xcodebuild test -project FBTweak.xcodeproj -scheme FBTweak -sdk iphonesimulator
+  - xcodebuild archive -workspace FBTweakExample.xcworkspace -scheme FBTweakExample CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
