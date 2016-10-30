@@ -40,7 +40,7 @@ extern HSB _FBRGB2HSB(RGB rgb)
     h /= 6;
   }
 
-  return (HSB){.hue = h, .saturation = s, .brightness = b, .alpha = rgb.alpha};
+  return (HSB){ .hue = h, .saturation = s, .brightness = b, .alpha = rgb.alpha };
 }
 
 extern RGB _FBHSB2RGB(HSB hsb)
@@ -53,16 +53,17 @@ extern RGB _FBHSB2RGB(HSB hsb)
   double q = hsb.brightness * (1 - f * hsb.saturation);
   double t = hsb.brightness * (1 - (1 - f) * hsb.saturation);
 
-  switch(i % 6){
+  switch (i % 6){
     case 0: r = hsb.brightness, g = t, b = p; break;
     case 1: r = q, g = hsb.brightness, b = p; break;
     case 2: r = p, g = hsb.brightness, b = t; break;
     case 3: r = p, g = q, b = hsb.brightness; break;
     case 4: r = t, g = p, b = hsb.brightness; break;
     case 5: r = hsb.brightness, g = p, b = q; break;
+    default: r = g = b = 0; break;
   }
 
-  return (RGB){.red = r, .green = g, .blue = b, .alpha = hsb.alpha};
+  return (RGB){ .red = r, .green = g, .blue = b, .alpha = hsb.alpha };
 }
 
 extern RGB _FBRGBColorComponents(UIColor *color)

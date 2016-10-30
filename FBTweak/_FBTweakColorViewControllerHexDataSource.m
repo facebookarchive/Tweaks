@@ -107,7 +107,7 @@
   if (hexString.length == 0) {
     return [UIColor blackColor];
   }
-  NSUInteger rgbValue = 0;
+  unsigned int rgbValue = 0;
   NSScanner *scanner = [NSScanner scannerWithString:hexString];
   [scanner setScanLocation:1]; // bypass '#' character
   [scanner scanHexInt:&rgbValue];
