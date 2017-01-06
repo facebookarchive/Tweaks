@@ -91,15 +91,16 @@ To configure your tweaks, you need a way to show the configuration UI. There's t
 ```
 
  - You can present a `FBTweakViewController` from anywhere in your app. Be sure to restrict the activation UI to debug builds!
+
  ```objective-c
- - (void) showTweaks {
+ - (void)showTweaks {
     FBTweakViewController *tweakVC = [[FBTweakViewController alloc] initWithStore:[FBTweakStore sharedInstance]];
     tweakVC.tweaksDelegate = self;
     // Assuming this is in the app delegate
     [self.window.rootViewController presentViewController:tweakVC animated:YES completion:nil];
 }
 
-- (void) tweakViewControllerPressedDone:(FBTweakViewController *)tweakViewController {
+- (void)tweakViewControllerPressedDone:(FBTweakViewController *)tweakViewController {
     [tweakViewController dismissViewControllerAnimated:YES completion:NULL];
 }
 ```
